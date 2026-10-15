@@ -2,7 +2,7 @@
 
 Single source of truth for milestone status. Rules: [AGENTS.md](AGENTS.md). Ledger: [docs/governance/livewire-v4-parity.md](docs/governance/livewire-v4-parity.md).
 
-**Active milestone:** M1 — Core runtime & protocol (closeout)
+**Active milestone:** M2 — Forms, validation & directive suite
 
 The program is complete when every ledger row is `done` (M1–M7). Each milestone closes **all** ledger rows tagged with it.
 
@@ -19,14 +19,14 @@ The program is complete when every ledger row is `done` (M1–M7). Each mileston
 
 ## M1 — Core runtime & protocol
 
-**Branch:** `milestone/M1-core-runtime` · **Status:** active (DoD pending merge)
+**Branch:** `milestone/M1-core-runtime` · **Status:** done (merged)
 
 - [x] Ledger rows: all M1 rows `done` (incl. DX-7 docs + DX-8 starter kit cutover).
 - [x] 100% Kover (`kona-brew`) and 100% Vitest (`js/src`, 123 tests); CI enforced.
 - [x] Kotlin + Java samples with smoke and round-trip tests; both pass a Chromium run.
 - [x] Performance baseline recorded ([docs/performance/baseline.md](docs/performance/baseline.md)).
-- [ ] Kona cutover PR merged (legacy `modules/brew` removed, starter kit + docs).
-- [ ] This repo's M1 PR merged.
+- [x] Kona cutover PR merged (legacy `modules/brew` removed, starter kit + docs) — kona #79.
+- [x] This repo's M1 PR merged — #1.
 
 Protocol (snapshot, checksum, update endpoint, header + CSRF guards, payload limits), hydration/synthesizers (scalars, collections,
 enums, `java.time`, big numbers, UUID, DTO/data classes, `Wireable`), component model (class + inline-template "single file"),
@@ -39,7 +39,7 @@ block markers, request bus, hooks, custom directives, error modals), testing API
 
 ## M2 — Forms, validation & directive suite
 
-**Branch:** `milestone/M2-forms-directives` · **Status:** planned
+**Branch:** `milestone/M2-forms-directives` · **Status:** active
 
 `Form` objects, `@Validate`/`rules()`/messages/attributes, `validate`/`validateOnly`, error bag API, `$errors` (Crema + JS), real-time
 validation, form hooks; `wire:loading` (+ targets/delays), `data-loading`, `wire:dirty`, `wire:confirm`, `wire:offline`, `wire:poll`,
