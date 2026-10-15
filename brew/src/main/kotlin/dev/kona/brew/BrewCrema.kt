@@ -1,12 +1,14 @@
 package dev.kona.brew
 
+import dev.kona.brew.features.SupportSlots
+import dev.kona.brew.features.recordIsland
 import dev.kona.brew.hydration.Coercion
 import dev.kona.crema.CremaEngine
 import dev.kona.crema.CremaTag
 
 /**
- * Crema surface: `<brew:name … />`, `@brew('name', $params, $key)`, `@brewStyles`, `@brewScripts`,
- * `@brewScriptConfig`, `@js($value)`, `@script`/`@assets`, `@entangle`, `@this`.
+ * Crema surface: `<brew:name … />`, `@brew`, `@island`, `@teleport`, `@placeholder`,
+ * `@script`/`@assets`, `@entangle`, `@this`.
  */
 internal object BrewCrema {
     fun install(engine: CremaEngine, manager: BrewManager) {
@@ -31,6 +33,14 @@ internal object BrewCrema {
             "\$wire.\$entangle('$name')"
         }
         engine.directive("this") { "\$wire" }
+        engine.directive("placeholder") { call ->
+            val args = call.arguments()
+            when {
+                args.isNotEmpty() -> args[0].toString()
+                !manager.config.lazyPlaceholder.isNullOrBlank() -> manager.config.lazyPlaceholder!!
+                else -> "<div wire:lazy></div>"
+            }
+        }
         engine.blockDirective("script") { call ->
             collectBlock(manager, call.body.trim().removePrefix("<script>").removeSuffix("</script>").trim(), "scripts")
             ""
@@ -39,6 +49,48 @@ internal object BrewCrema {
             collectBlock(manager, call.expand().trim(), "assets")
             ""
         }
+        engine.blockDirective("island") { call ->
+            val name = islandName(call.expression, call.arguments())
+            val html = call.expand()
+            val current = manager.current()
+            if (current != null) recordIsland(current, name, html, islandMeta(call.expression))
+            """<div wire:island="$name">$html</div>"""
+        }
+        engine.blockDirective("teleport") { call ->
+            val args = call.arguments()
+            val selector = if (args.isNotEmpty()) args[0].toString() else call.expression.trim().trim('\'', '"')
+            val body = call.expand()
+            """<template wire:teleport="$selector">$body</template>"""
+        }
+        engine.blockDirective("slot") { call ->
+            val args = call.arguments()
+            val name = if (args.isNotEmpty()) args[0].toString() else "default"
+            val html = call.expand()
+            val current = manager.current()
+            if (current != null) SupportSlots.put(current, name, html)
+            html
+        }
+    }
+
+    internal fun islandName(expression: String, args: List<Any?>): String {
+        if (args.isNotEmpty()) {
+            val fromArgs = args[0]?.toString().orEmpty()
+            if (fromArgs.isNotBlank() && fromArgs != "null") return fromArgs
+        }
+        val named = expression.substringAfter("name:", missingDelimiterValue = "")
+            .substringBefore(',')
+            .trim()
+            .trim('\'', '"')
+        return if (named.isBlank()) "default" else named
+    }
+
+    internal fun islandMeta(expression: String): Map<String, Any?> {
+        val meta = linkedMapOf<String, Any?>()
+        if (expression.contains("lazy")) meta["lazy"] = true
+        if (expression.contains("defer")) meta["defer"] = true
+        if (expression.contains("always")) meta["always"] = true
+        if (expression.contains("skip")) meta["skip"] = true
+        return meta
     }
 
     private fun collectBlock(manager: BrewManager, source: String, key: String) {
@@ -50,15 +102,30 @@ internal object BrewCrema {
     }
 
     private fun renderTag(manager: BrewManager, tag: CremaTag): String {
+        val name = resolveTagName(tag)
         val params = LinkedHashMap<String, Any?>()
         var key: String? = null
-        for ((name, value) in tag.attributes) {
-            when (name) {
+        for ((attr, value) in tag.attributes) {
+            when (attr) {
                 "key", "wire:key" -> key = value?.toString()
-                else -> params[if (name.contains('-') && !name.contains(':')) camel(name) else name] = value
+                "is", "component" -> Unit
+                else -> params[if (attr.contains('-') && !attr.contains(':')) camel(attr) else attr] = value
             }
         }
-        return manager.mount(tag.name, params, key)
+        for ((slotName, slotHtml) in tag.slots) {
+            params["__slot_$slotName"] = slotHtml
+        }
+        if (tag.slot.isNotBlank()) params["__slot_default"] = tag.slot
+        return manager.mount(name, params, key)
+    }
+
+    private fun resolveTagName(tag: CremaTag): String {
+        if (tag.name != "dynamic-component" && tag.name != "is") return tag.name
+        val fromIs = tag.attributes["is"]?.toString()
+        if (fromIs != null) return fromIs
+        val fromComponent = tag.attributes["component"]?.toString()
+        if (fromComponent != null) return fromComponent
+        error("<brew:dynamic-component> requires :is or :component")
     }
 
     private val KEBAB = Regex("-+([a-zA-Z0-9])")

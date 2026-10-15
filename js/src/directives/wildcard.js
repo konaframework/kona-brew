@@ -9,7 +9,7 @@ const RESERVED = [
     'key', 'target', 'dirty', 'sort', 'name', 'cloak', 'show', 'text', 'bind', 'ref',
     'transition', 'offline', 'confirm',
 ]
-const BREW_ONLY_MODIFIERS = ['async', 'renderless', 'preserve-scroll', 'prepend', 'append']
+const BREW_ONLY_MODIFIERS = ['async', 'renderless', 'preserve-scroll', 'prepend', 'append', 'island']
 
 /**
  * Any other `wire:<event>` becomes an Alpine `x-on` listener (keeping every
@@ -19,7 +19,26 @@ export function registerWildcardDirective() {
     on('directive.init', ({ el, directive, cleanup, component }) => {
         if (RESERVED.includes(directive.value) || customDirectiveHasBeenRegistered(directive.value)) return
 
-        let modifiers = directive.modifiers.filter(modifier => ! BREW_ONLY_MODIFIERS.includes(modifier))
+        let modifiers = []
+
+        for (let i = 0; i < directive.modifiers.length; i++) {
+            let modifier = directive.modifiers[i]
+
+            if (BREW_ONLY_MODIFIERS.includes(modifier)) {
+                // Drop the island name token that follows `.island`...
+                if (modifier === 'island') {
+                    let next = directive.modifiers[i + 1]
+
+                    if (next && ! BREW_ONLY_MODIFIERS.includes(next) && ! ['prevent', 'stop', 'window', 'document', 'outside', 'once', 'debounce', 'throttle', 'self', 'camel', 'dot', 'passive', 'capture'].includes(next)) {
+                        i++
+                    }
+                }
+
+                continue
+            }
+
+            modifiers.push(modifier)
+        }
 
         if (directive.value === 'submit' && ! modifiers.includes('prevent')) modifiers.push('prevent')
 

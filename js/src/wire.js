@@ -199,6 +199,12 @@ wireProperty('$js', component => component.$js ??= {})
 
 wireProperty('$entangle', component => (name, live = false) => entangle(component, name, live))
 
+wireProperty('$parent', component => {
+    let parent = component.parent
+
+    return parent ? parent.$wire : new Proxy({}, { get: () => () => {} })
+})
+
 /**
  * `$wire` inside Alpine expressions resolves its component lazily, and
  * `$watch` registered from an element is torn down with that element.

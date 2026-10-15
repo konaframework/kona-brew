@@ -34,6 +34,8 @@ class BrewConfig @JvmOverloads constructor(
     val assetUrl: String? = null,
     /** CSP nonce added to Brew's `<script>` / `<style>` tags (`brew.nonce`). */
     val scriptNonce: String? = null,
+    /** Default lazy-load placeholder HTML (`brew.lazy_placeholder`). */
+    val lazyPlaceholder: String? = null,
 ) {
     val updateUri: String get() = "$path/update"
 

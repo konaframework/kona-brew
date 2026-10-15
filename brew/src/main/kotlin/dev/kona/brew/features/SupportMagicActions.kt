@@ -39,6 +39,31 @@ class SupportMagicActions : ComponentHook() {
                 component.dispatch(name, payload)
                 returnEarly()
             }
+            "\$parent" -> {
+                val parent = component.parent() ?: run {
+                    returnEarly()
+                    return null
+                }
+                val rawMethod = params.getOrNull(0)
+                if (rawMethod == null) {
+                    returnEarly()
+                    return null
+                }
+                val parentMethod = rawMethod.toString()
+                val parentParams = params.drop(1)
+                if (parentMethod.startsWith("\$")) {
+                    val early = ReturnEarly()
+                    val finish = parent.state().hooks.call(parentMethod, parentParams, early, metadata, context)
+                    returnEarly(finish(early.value))
+                    return null
+                }
+                val candidates = ComponentMeta.of(parent).actions[parentMethod]
+                    ?: throw dev.kona.brew.MethodNotFoundException(parentMethod, parent.name())
+                val target = candidates.firstOrNull { it.parameterCount == parentParams.size }
+                    ?: candidates.maxBy { it.parameterCount }
+                returnEarly(manager.wrapped(parent) { manager.invoker.call(parent, target, parentParams) })
+                return null
+            }
         }
         return null
     }

@@ -9,9 +9,13 @@ import dev.kona.brew.features.SupportMagicActions
 import dev.kona.brew.features.SupportDownloads
 import dev.kona.brew.features.SupportEcho
 import dev.kona.brew.features.SupportEvents
+import dev.kona.brew.features.SupportIslands
 import dev.kona.brew.features.SupportJsEvaluation
+import dev.kona.brew.features.SupportLazyLoading
+import dev.kona.brew.features.SupportNesting
 import dev.kona.brew.features.SupportRedirects
 import dev.kona.brew.features.SupportScripts
+import dev.kona.brew.features.SupportSlots
 import dev.kona.brew.features.SupportStreaming
 import dev.kona.brew.features.SupportTransitions
 import dev.kona.brew.features.SupportValidation
@@ -73,7 +77,14 @@ class BrewManager @JvmOverloads constructor(
     private val stack = ThreadLocal.withInitial { ArrayDeque<Component>() }
     private val request = ThreadLocal<Request?>()
 
+    /** When true, `@Lazy` / `@Defer` mount immediately (`Brew.withoutLazyLoading()`). */
+    @Volatile
+    var lazyDisabled: Boolean = false
+
     init {
+        componentHook { SupportSlots() }
+        componentHook { SupportNesting() }
+        componentHook { SupportLazyLoading() }
         componentHook { SupportLifecycleHooks() }
         componentHook { SupportLockedProperties() }
         componentHook { SupportComputed() }
@@ -87,7 +98,19 @@ class BrewManager @JvmOverloads constructor(
         componentHook { SupportDownloads() }
         componentHook { SupportScripts() }
         componentHook { SupportEcho() }
+        componentHook { SupportIslands() }
         views?.let { BrewCrema.install(it, this) }
+    }
+
+    /** Disable lazy/defer for the duration of [block] (tests). */
+    fun <T> withoutLazyLoading(block: () -> T): T {
+        val previous = lazyDisabled
+        lazyDisabled = true
+        try {
+            return block()
+        } finally {
+            lazyDisabled = previous
+        }
     }
 
     /** Attach the Crema engine used for component views (installs `<brew:…>`, `@brew`, `@brewScripts`, …). */
@@ -157,6 +180,9 @@ class BrewManager @JvmOverloads constructor(
     /** Component currently mounting / updating on this thread (`app('livewire')->current()`). */
     fun current(): Component? = stack.get().lastOrNull()
 
+    /** Mount/update stack for this thread (outermost parent first). */
+    fun currentStack(): List<Component> = stack.get().toList()
+
     /** Request being handled on this thread, if any. */
     fun currentRequest(): Request? = request.get()
 
@@ -179,6 +205,7 @@ class BrewManager @JvmOverloads constructor(
     /** Mount and return the full [ComponentResult] (used by testing and nesting). */
     fun mountComponent(name: String, params: Map<String, Any?>, key: String?): ComponentResult {
         currentRequest()?.setAttribute(RENDERED_ATTRIBUTE, true)
+        val parent = stack.get().lastOrNull()
         val component = newComponent(name)
         val context = ComponentContext(component, mounting = true)
         stack.get().addLast(component)
@@ -194,6 +221,9 @@ class BrewManager @JvmOverloads constructor(
                 linkedMapOf("wire:snapshot" to json(snapshot), "wire:effects" to if (context.effects.isEmpty()) "[]" else json(context.effects)),
                 name,
             )
+            if (parent != null) {
+                SupportNesting.trackChild(parent, component.id(), HtmlRoot.rootTagName(withSnapshot), key)
+            }
             return ComponentResult(component, withSnapshot, snapshot, context)
         } finally {
             stack.get().removeLast()
@@ -260,7 +290,8 @@ class BrewManager @JvmOverloads constructor(
         val request = currentRequest()
         memo["path"] = if (request == null) "" else request.path.trimStart('/')
         memo["method"] = if (request == null) "GET" else request.method
-        memo["children"] = emptyMap<String, Any?>()
+        @Suppress("UNCHECKED_CAST")
+        memo["children"] = (component.state().store["children"] as? Map<String, Any?>) ?: emptyMap<String, Any?>()
         memo["scripts"] = emptyList<Any?>()
         memo["assets"] = emptyList<Any?>()
         memo["errors"] = emptyList<Any?>()

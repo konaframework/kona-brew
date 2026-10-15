@@ -202,6 +202,7 @@ abstract class Component {
         @Suppress("UNCHECKED_CAST")
         val list = state().store.getOrPut("dispatched") { mutableListOf<Event>() } as MutableList<Event>
         list += event
+        dev.kona.brew.features.SupportNesting.notifyParent(this, name, params)
         return event
     }
 
@@ -278,6 +279,17 @@ abstract class Component {
     fun streamDownload(contents: String, name: String, contentType: String = "application/octet-stream") {
         download(contents.toByteArray(Charsets.UTF_8), name, contentType)
     }
+
+    /** Parent component when nested (`$this->parent()` / `$parent`). */
+    fun parent(): Component? {
+        (state().store["parent"] as? Component)?.let { return it }
+        val stack = state().manager.currentStack()
+        val idx = stack.indexOf(this)
+        return if (idx > 0) stack[idx - 1] else null
+    }
+
+    /** Default lazy placeholder HTML (`placeholder()`). */
+    open fun placeholder(): String? = null
 
     private fun nameOrClass(): String {
         val s = state ?: return javaClass.simpleName

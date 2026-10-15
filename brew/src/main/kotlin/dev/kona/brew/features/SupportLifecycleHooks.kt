@@ -18,15 +18,19 @@ class SupportLifecycleHooks : ComponentHook() {
     private val meta: ComponentMeta by lazy { ComponentMeta.of(component) }
 
     override fun mount(params: Map<String, Any?>, key: String?) {
-        for ((name, value) in params) {
+        val publicParams = params.filterKeys {
+            !it.startsWith("__slot_") && !it.startsWith("wire:") && !it.startsWith("@") &&
+                it != "lazy" && it != "defer" && it != "bundle"
+        }
+        for ((name, value) in publicParams) {
             val prop = meta.properties[name] ?: continue
             prop.set(component, Coercion.toType(value, prop.type, prop.genericType))
         }
         callHook("boot")
         callMixinHook("boot")
         callMixinHook("initialize")
-        callNamed("mount", params)
-        meta.mixins.forEach { mixin -> callNamed("mount$mixin", params) }
+        callNamed("mount", publicParams)
+        meta.mixins.forEach { mixin -> callNamed("mount$mixin", publicParams) }
         callHook("booted")
         callMixinHook("booted")
     }

@@ -44,10 +44,12 @@ class BrewSampleTest {
         val html = page.body
 
         assertEquals(200, page.status)
-        assertEquals(3, Regex("wire:snapshot=").findAll(html).count(), html)
+        assertTrue(Regex("wire:snapshot=").findAll(html).count() >= 5, html)
         assertTrue(html.contains("<output>3</output>"), html)
         assertTrue(html.contains("Grind the beans"), html)
         assertTrue(html.contains("Kona Peaberry"), html)
+        assertTrue(html.contains("Dashboard") && html.contains("wire:island=\"stats\""), html)
+        assertTrue(html.contains("Loading panel") || html.contains("Lazy ready"), html)
         assertTrue(Regex("""<script src="/brew/brew(\.min)?\.js\?id=[0-9a-f]{8}" data-csrf="[^"]+" data-update-uri="/brew/update"""").containsMatchIn(html), html)
         assertTrue(html.contains("<!-- Brew Styles -->"), html)
     }

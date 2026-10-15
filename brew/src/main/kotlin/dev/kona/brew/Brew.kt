@@ -31,6 +31,10 @@ object Brew {
     fun mount(name: String, params: Map<String, Any?> = emptyMap(), key: String? = null): String =
         manager().mount(name, params, key)
 
+    /** Run [block] with lazy/defer disabled (`Livewire::withoutLazyLoading`). */
+    @JvmStatic
+    fun <T> withoutLazyLoading(block: () -> T): T = manager().withoutLazyLoading(block)
+
     @JvmStatic
     fun component(name: String, type: Class<out Component>): BrewManager = manager().component(name, type)
 
