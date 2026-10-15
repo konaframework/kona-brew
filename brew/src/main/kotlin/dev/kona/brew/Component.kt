@@ -1,5 +1,6 @@
 package dev.kona.brew
 
+import dev.kona.brew.features.SupportDownloads
 import dev.kona.brew.hydration.Coercion
 import dev.kona.brew.lifecycle.HookSet
 import dev.kona.brew.meta.ComponentMeta
@@ -191,6 +192,92 @@ abstract class Component {
     open fun messages(): Map<String, String> = emptyMap()
 
     open fun validationAttributes(): Map<String, String> = emptyMap()
+
+    /** Event listeners map (`getListeners()` / `$listeners`). Keys are event names; values are method names. */
+    open fun listeners(): Map<String, String> = emptyMap()
+
+    /** Queue a browser event (`$this->dispatch('name', key to value)`). */
+    fun dispatch(name: String, params: Map<String, Any?> = emptyMap()): Event {
+        val event = Event(name, params)
+        @Suppress("UNCHECKED_CAST")
+        val list = state().store.getOrPut("dispatched") { mutableListOf<Event>() } as MutableList<Event>
+        list += event
+        return event
+    }
+
+    /** Kotlin named-params style: `dispatch("saved", "id" to 1)`. */
+    fun dispatch(name: String, vararg params: Pair<String, Any?>): Event =
+        dispatch(name, params.toMap())
+
+    /** Evaluate JS in the browser after morph (`$this->js('alert(1)')`). */
+    fun js(expression: String) {
+        @Suppress("UNCHECKED_CAST")
+        val list = state().store.getOrPut("xjs") { mutableListOf<String>() } as MutableList<String>
+        list += expression
+    }
+
+    /** Redirect the browser (`$this->redirect(url)`). */
+    @JvmOverloads
+    fun redirect(url: String, navigate: Boolean = false) {
+        state().store["redirect"] = linkedMapOf("url" to url, "navigate" to navigate)
+        skipRender()
+    }
+
+    @JvmOverloads
+    fun redirectRoute(name: String, parameters: Map<String, Any?> = emptyMap(), navigate: Boolean = false) {
+        state().store["redirect"] = linkedMapOf("route" to name, "parameters" to parameters, "navigate" to navigate)
+        skipRender()
+    }
+
+    @JvmOverloads
+    fun redirectIntended(default: String = "/", navigate: Boolean = false) {
+        state().store["redirect"] = linkedMapOf("intended" to true, "default" to default, "navigate" to navigate)
+        skipRender()
+    }
+
+    /** Stream HTML/text into a `wire:stream` target (`$this->stream(...)`). */
+    @JvmOverloads
+    fun stream(content: String, to: String? = null, replace: Boolean = false) {
+        @Suppress("UNCHECKED_CAST")
+        val list = state().store.getOrPut("streams") { mutableListOf<Map<String, Any?>>() } as MutableList<Map<String, Any?>>
+        list += linkedMapOf("content" to content, "to" to to, "replace" to replace)
+    }
+
+    /** Redirect to a named controller action (`$this->redirectAction(...)`). */
+    @JvmOverloads
+    fun redirectAction(action: String, parameters: Map<String, Any?> = emptyMap(), navigate: Boolean = false) {
+        state().store["redirect"] = linkedMapOf("action" to action, "parameters" to parameters, "navigate" to navigate)
+        skipRender()
+    }
+
+    /** Flash a session value that survives the next redirect (`session()->flash(...)`). */
+    fun flash(key: String, value: Any?) {
+        @Suppress("UNCHECKED_CAST")
+        val bag = state().store.getOrPut("flash") { linkedMapOf<String, Any?>() } as MutableMap<String, Any?>
+        bag[key] = value
+        val request = state().manager.currentRequest()
+        if (request != null) {
+            val session = request.session()
+            if (session != null) session.flash(key, value)
+        }
+    }
+
+    /** Queue a file download effect (`response()->download` parity). */
+    @JvmOverloads
+    fun download(contents: ByteArray, name: String, contentType: String = "application/octet-stream") {
+        state().store["download"] = linkedMapOf(
+            "name" to name,
+            "contentType" to contentType,
+            "content" to SupportDownloads.encode(contents),
+        )
+        skipRender()
+    }
+
+    /** Queue a streamed download from a string supplier. */
+    @JvmOverloads
+    fun streamDownload(contents: String, name: String, contentType: String = "application/octet-stream") {
+        download(contents.toByteArray(Charsets.UTF_8), name, contentType)
+    }
 
     private fun nameOrClass(): String {
         val s = state ?: return javaClass.simpleName

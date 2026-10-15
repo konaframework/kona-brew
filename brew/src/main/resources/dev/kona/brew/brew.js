@@ -5451,6 +5451,71 @@ Expression: "${expression}"
     return match[1].length;
   }
 
+  // src/events.js
+  function dispatch3(component, name, params) {
+    dispatchEvent(component.el, name, params);
+  }
+  function dispatchGlobal(name, params) {
+    dispatchEvent(window, name, params);
+  }
+  function dispatchSelf(component, name, params) {
+    dispatchEvent(component.el, name, params, false);
+  }
+  function dispatchEl(component, selector, name, params) {
+    component.el.querySelectorAll(selector).forEach((target) => {
+      dispatchEvent(target, name, params, false);
+    });
+  }
+  function dispatchTo(componentName, name, params) {
+    componentsByName(componentName).forEach((target) => {
+      dispatchEvent(target.el, name, params, false);
+    });
+  }
+  function dispatchRef(component, ref, name, params) {
+    let el = findRefEl(component, ref);
+    if (el) dispatchEvent(el, name, params, false);
+  }
+  function listen(component, name, callback) {
+    let handler4 = (e) => callback(e.detail);
+    component.el.addEventListener(name, handler4);
+    return () => component.el.removeEventListener(name, handler4);
+  }
+  function on3(eventName, callback) {
+    let handler4 = (e) => {
+      if (!e.__brew) return;
+      callback(e.detail);
+    };
+    window.addEventListener(eventName, handler4);
+    return () => window.removeEventListener(eventName, handler4);
+  }
+  function dispatchEvent(target, name, params, bubbles = true) {
+    if (typeof params === "string") params = [params];
+    let event = new CustomEvent(name, { bubbles, detail: params, composed: true });
+    event.__brew = { name, params, receivedBy: [] };
+    target.dispatchEvent(event);
+  }
+
+  // src/features/entangle.js
+  function entangle2(component, name, live = false) {
+    let options = { live };
+    let api = {
+      get() {
+        return dataGet(component.reactive, name);
+      },
+      set(value) {
+        dataSet(component.reactive, name, value);
+        if (options.live) component.$wire.$set(name, value);
+      }
+    };
+    Object.defineProperty(api, "live", {
+      get() {
+        options.live = true;
+        return api;
+      }
+    });
+    return api;
+  }
+
   // src/wire.js
   var properties = {};
   var aliases = {
@@ -5465,10 +5530,18 @@ Expression: "${expression}"
     commit: "$commit",
     errors: "$errors",
     refs: "$refs",
+    on: "$on",
+    dispatch: "$dispatch",
+    dispatchTo: "$dispatchTo",
+    dispatchSelf: "$dispatchSelf",
+    dispatchEl: "$dispatchEl",
+    dispatchRef: "$dispatchRef",
     intercept: "$intercept",
     interceptAction: "$interceptAction",
     interceptMessage: "$interceptMessage",
-    interceptRequest: "$interceptRequest"
+    interceptRequest: "$interceptRequest",
+    js: "$js",
+    entangle: "$entangle"
   };
   function wireProperty(name, callback) {
     properties[name] = callback;
@@ -5569,6 +5642,18 @@ Expression: "${expression}"
     });
     return reactive3.dirty;
   });
+  wireProperty("$on", (component) => (name, callback) => {
+    let off2 = listen(component, name, callback);
+    component.addCleanup(off2);
+    return off2;
+  });
+  wireProperty("$dispatch", (component) => (name, params) => dispatch3(component, name, params));
+  wireProperty("$dispatchSelf", (component) => (name, params) => dispatchSelf(component, name, params));
+  wireProperty("$dispatchTo", () => (name, event, params) => dispatchTo(name, event, params));
+  wireProperty("$dispatchEl", (component) => (selector, name, params) => dispatchEl(component, selector, name, params));
+  wireProperty("$dispatchRef", (component) => (ref, name, params) => dispatchRef(component, ref, name, params));
+  wireProperty("$js", (component) => component.$js ?? (component.$js = {}));
+  wireProperty("$entangle", (component) => (name, live = false) => entangle2(component, name, live));
   function registerWireMagic() {
     module_default.magic("wire", (el, { cleanup }) => {
       let component;
@@ -9622,7 +9707,7 @@ Expression: "${expression}"
     capture: false,
     passive: false
   };
-  function on3(el, event, fn) {
+  function on4(el, event, fn) {
     el.addEventListener(event, fn, !IE11OrLess && captureMode);
   }
   function off(el, event, fn) {
@@ -10139,7 +10224,7 @@ Expression: "${expression}"
       return modifiedValue;
     }
   };
-  function dispatchEvent(_ref) {
+  function dispatchEvent2(_ref) {
     var sortable = _ref.sortable, rootEl2 = _ref.rootEl, name = _ref.name, targetEl = _ref.targetEl, cloneEl2 = _ref.cloneEl, toEl = _ref.toEl, fromEl = _ref.fromEl, oldIndex2 = _ref.oldIndex, newIndex2 = _ref.newIndex, oldDraggableIndex2 = _ref.oldDraggableIndex, newDraggableIndex2 = _ref.newDraggableIndex, originalEvent = _ref.originalEvent, putSortable2 = _ref.putSortable, extraEventProperties = _ref.extraEventProperties;
     sortable = sortable || rootEl2 && rootEl2[expando];
     if (!sortable)
@@ -10213,7 +10298,7 @@ Expression: "${expression}"
     }, data2));
   };
   function _dispatchEvent(info) {
-    dispatchEvent(_objectSpread22({
+    dispatchEvent2(_objectSpread22({
       putSortable,
       cloneEl,
       targetEl: dragEl,
@@ -10444,14 +10529,14 @@ Expression: "${expression}"
       this.options.touchStartThreshold = 1;
     }
     if (options.supportPointer) {
-      on3(el, "pointerdown", this._onTapStart);
+      on4(el, "pointerdown", this._onTapStart);
     } else {
-      on3(el, "mousedown", this._onTapStart);
-      on3(el, "touchstart", this._onTapStart);
+      on4(el, "mousedown", this._onTapStart);
+      on4(el, "touchstart", this._onTapStart);
     }
     if (this.nativeDraggable) {
-      on3(el, "dragover", this);
-      on3(el, "dragenter", this);
+      on4(el, "dragover", this);
+      on4(el, "dragenter", this);
     }
     sortables.push(this.el);
     options.store && options.store.get && this.sort(options.store.get(this) || []);
@@ -10582,12 +10667,12 @@ Expression: "${expression}"
         options.ignore.split(",").forEach(function(criteria) {
           find2(dragEl, criteria.trim(), _disableDraggable);
         });
-        on3(ownerDocument, "dragover", nearestEmptyInsertDetectEvent);
-        on3(ownerDocument, "mousemove", nearestEmptyInsertDetectEvent);
-        on3(ownerDocument, "touchmove", nearestEmptyInsertDetectEvent);
-        on3(ownerDocument, "mouseup", _this._onDrop);
-        on3(ownerDocument, "touchend", _this._onDrop);
-        on3(ownerDocument, "touchcancel", _this._onDrop);
+        on4(ownerDocument, "dragover", nearestEmptyInsertDetectEvent);
+        on4(ownerDocument, "mousemove", nearestEmptyInsertDetectEvent);
+        on4(ownerDocument, "touchmove", nearestEmptyInsertDetectEvent);
+        on4(ownerDocument, "mouseup", _this._onDrop);
+        on4(ownerDocument, "touchend", _this._onDrop);
+        on4(ownerDocument, "touchcancel", _this._onDrop);
         if (FireFox && this.nativeDraggable) {
           this.options.touchStartThreshold = 4;
           dragEl.draggable = true;
@@ -10600,12 +10685,12 @@ Expression: "${expression}"
             this._onDrop();
             return;
           }
-          on3(ownerDocument, "mouseup", _this._disableDelayedDrag);
-          on3(ownerDocument, "touchend", _this._disableDelayedDrag);
-          on3(ownerDocument, "touchcancel", _this._disableDelayedDrag);
-          on3(ownerDocument, "mousemove", _this._delayedDragTouchMoveHandler);
-          on3(ownerDocument, "touchmove", _this._delayedDragTouchMoveHandler);
-          options.supportPointer && on3(ownerDocument, "pointermove", _this._delayedDragTouchMoveHandler);
+          on4(ownerDocument, "mouseup", _this._disableDelayedDrag);
+          on4(ownerDocument, "touchend", _this._disableDelayedDrag);
+          on4(ownerDocument, "touchcancel", _this._disableDelayedDrag);
+          on4(ownerDocument, "mousemove", _this._delayedDragTouchMoveHandler);
+          on4(ownerDocument, "touchmove", _this._delayedDragTouchMoveHandler);
+          options.supportPointer && on4(ownerDocument, "pointermove", _this._delayedDragTouchMoveHandler);
           _this._dragStartTimer = setTimeout(dragStartFn, options.delay);
         } else {
           dragStartFn();
@@ -10636,15 +10721,15 @@ Expression: "${expression}"
       touch = touch || evt.pointerType == "touch" && evt;
       if (!this.nativeDraggable || touch) {
         if (this.options.supportPointer) {
-          on3(document, "pointermove", this._onTouchMove);
+          on4(document, "pointermove", this._onTouchMove);
         } else if (touch) {
-          on3(document, "touchmove", this._onTouchMove);
+          on4(document, "touchmove", this._onTouchMove);
         } else {
-          on3(document, "mousemove", this._onTouchMove);
+          on4(document, "mousemove", this._onTouchMove);
         }
       } else {
-        on3(dragEl, "dragend", this);
-        on3(rootEl, "dragstart", this._onDragStart);
+        on4(dragEl, "dragend", this);
+        on4(rootEl, "dragstart", this._onDragStart);
       }
       try {
         if (document.selection) {
@@ -10664,7 +10749,7 @@ Expression: "${expression}"
           evt
         });
         if (this.nativeDraggable) {
-          on3(document, "dragover", _checkOutsideTargetEl);
+          on4(document, "dragover", _checkOutsideTargetEl);
         }
         var options = this.options;
         !fallback && toggleClass(dragEl, options.dragClass, false);
@@ -10834,12 +10919,12 @@ Expression: "${expression}"
           dataTransfer.effectAllowed = "move";
           options.setData && options.setData.call(_this, dataTransfer, dragEl);
         }
-        on3(document, "drop", _this);
+        on4(document, "drop", _this);
         css(dragEl, "transform", "translateZ(0)");
       }
       awaitingDragStarted = true;
       _this._dragStartId = _nextTick(_this._dragStarted.bind(_this, fallback, evt));
-      on3(document, "selectstart", _this);
+      on4(document, "selectstart", _this);
       moved = true;
       if (Safari) {
         css(document.body, "user-select", "none");
@@ -11453,14 +11538,14 @@ Expression: "${expression}"
     return clearTimeout(id);
   }
   if (documentExists) {
-    on3(document, "touchmove", function(evt) {
+    on4(document, "touchmove", function(evt) {
       if ((Sortable.active || awaitingDragStarted) && evt.cancelable) {
         evt.preventDefault();
       }
     });
   }
   Sortable.utils = {
-    on: on3,
+    on: on4,
     off,
     css,
     find: find2,
@@ -11527,14 +11612,14 @@ Expression: "${expression}"
       dragStarted: function dragStarted(_ref) {
         var originalEvent = _ref.originalEvent;
         if (this.sortable.nativeDraggable) {
-          on3(document, "dragover", this._handleAutoScroll);
+          on4(document, "dragover", this._handleAutoScroll);
         } else {
           if (this.options.supportPointer) {
-            on3(document, "pointermove", this._handleFallbackAutoScroll);
+            on4(document, "pointermove", this._handleFallbackAutoScroll);
           } else if (originalEvent.touches) {
-            on3(document, "touchmove", this._handleFallbackAutoScroll);
+            on4(document, "touchmove", this._handleFallbackAutoScroll);
           } else {
-            on3(document, "mousemove", this._handleFallbackAutoScroll);
+            on4(document, "mousemove", this._handleFallbackAutoScroll);
           }
         }
       },
@@ -12009,7 +12094,10 @@ Expression: "${expression}"
       if (bundled.length > 0) compileRequest2([message, ...bundled]);
     });
     interceptAction(({ action }) => {
-      if (action.origin?.directive?.modifiers.includes("renderless")) action.metadata.renderless = true;
+      let modifiers = action.origin?.directive?.modifiers || [];
+      if (modifiers.includes("renderless")) action.metadata.renderless = true;
+      if (modifiers.includes("async")) action.metadata.async = true;
+      if (modifiers.includes("preserve-scroll")) action.metadata.preserveScroll = true;
       let active = messageBus().activeMessagesFor(action);
       let message = active[0];
       if (!message) return;
@@ -12299,7 +12387,7 @@ Expression: "${expression}"
     "offline",
     "confirm"
   ];
-  var BREW_ONLY_MODIFIERS = ["async", "renderless", "prepend", "append"];
+  var BREW_ONLY_MODIFIERS = ["async", "renderless", "preserve-scroll", "prepend", "append"];
   function registerWildcardDirective() {
     on2("directive.init", ({ el, directive: directive3, cleanup, component }) => {
       if (RESERVED.includes(directive3.value) || customDirectiveHasBeenRegistered(directive3.value)) return;
@@ -12869,6 +12957,206 @@ Expression: "${expression}"
     return undo;
   }
 
+  // src/features/dispatches.js
+  function registerDispatches() {
+    interceptMessage(({ message, onSuccess }) => {
+      onSuccess(({ payload, onMorphed }) => {
+        onMorphed(() => {
+          dispatchEvents(message.component, payload.effects?.dispatches || []);
+        });
+      });
+    });
+    on2("component.init", ({ component }) => {
+      let dispatches = component.effects?.dispatches || [];
+      if (dispatches.length === 0) return;
+      queueMicrotask(() => {
+        queueMicrotask(() => {
+          queueMicrotask(() => dispatchEvents(component, dispatches));
+        });
+      });
+    });
+  }
+  function dispatchEvents(component, dispatches) {
+    dispatches.forEach(({ name, params = {}, self = false, component: componentName, ref, el }) => {
+      if (self) dispatchSelf(component, name, params);
+      else if (componentName) dispatchTo(componentName, name, params);
+      else if (ref) dispatchRef(component, ref, name, params);
+      else if (el) dispatchEl(component, el, name, params);
+      else dispatch3(component, name, params);
+    });
+  }
+
+  // src/features/listeners.js
+  function registerListeners() {
+    on2("effect", ({ component, effects, cleanup }) => {
+      let names = effects.listeners || [];
+      names.forEach((name) => {
+        let handler4 = (event) => {
+          if (!event.__brew) return;
+          fireAction(component, "__dispatch", [name, event.detail || {}]);
+        };
+        window.addEventListener(name, handler4);
+        cleanup(() => window.removeEventListener(name, handler4));
+      });
+    });
+  }
+
+  // src/features/jsEvaluation.js
+  function registerJsEvaluation() {
+    interceptMessage(({ message, onSuccess }) => {
+      onSuccess(({ payload, onMorphed }) => {
+        onMorphed(() => {
+          let expressions = payload.effects?.xjs || [];
+          expressions.forEach((expression) => {
+            module_default.evaluate(message.component.el, expression);
+          });
+        });
+      });
+    });
+  }
+
+  // src/features/redirects.js
+  function registerRedirects() {
+    interceptMessage(({ message, onSuccess }) => {
+      onSuccess(({ payload }) => {
+        let redirect = payload.effects?.redirect;
+        if (!redirect) return;
+        browser.visit(redirect.url || redirect.default || "/");
+      });
+    });
+  }
+
+  // src/features/streaming.js
+  function registerStreaming() {
+    interceptMessage(({ message, onSuccess }) => {
+      onSuccess(({ payload, onMorphed }) => {
+        onMorphed(() => {
+          let streams = payload.effects?.streams || [];
+          streams.forEach(({ content, to, replace }) => {
+            let targets = to ? message.component.el.querySelectorAll(`[wire\\:stream="${to}"], [wire\\:stream\\.replace="${to}"]`) : message.component.el.querySelectorAll("[wire\\:stream], [wire\\:stream\\.replace]");
+            targets.forEach((el) => {
+              let shouldReplace = replace || el.hasAttribute("wire:stream.replace");
+              if (shouldReplace) el.innerHTML = content;
+              else el.insertAdjacentHTML("beforeend", content);
+            });
+          });
+        });
+      });
+    });
+  }
+
+  // src/features/downloads.js
+  function downloadField(download, key, fallback) {
+    return Object.prototype.hasOwnProperty.call(download, key) ? download[key] : fallback;
+  }
+  function registerDownloads() {
+    interceptMessage(({ onSuccess }) => {
+      onSuccess(({ payload }) => {
+        let download = payload.effects && payload.effects.download;
+        if (!download) return;
+        let content = downloadField(download, "content", "");
+        let name = downloadField(download, "name", "download");
+        let contentType = downloadField(download, "contentType", "application/octet-stream");
+        let binary = atob(content);
+        let bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+        let blob = new Blob([bytes], { type: contentType });
+        let url = URL.createObjectURL(blob);
+        let anchor = document.createElement("a");
+        anchor.href = url;
+        anchor.download = name;
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
+        URL.revokeObjectURL(url);
+      });
+    });
+  }
+
+  // src/features/preserveScroll.js
+  function registerPreserveScroll() {
+    interceptAction(({ action }) => {
+      if (action.origin?.directive?.modifiers.includes("preserve-scroll")) {
+        action.metadata.preserveScroll = true;
+      }
+    });
+    interceptMessage(({ message, onSuccess }) => {
+      let preserve = [...message.actions].some((action) => action.metadata.preserveScroll);
+      if (!preserve) return;
+      let x = window.scrollX;
+      let y = window.scrollY;
+      onSuccess(({ onMorphed }) => {
+        onMorphed(() => window.scrollTo(x, y));
+      });
+    });
+  }
+
+  // src/features/scripts.js
+  function registerScripts() {
+    on2("effect", ({ component, effects }) => {
+      let js = effects.js || {};
+      Object.entries(js).forEach(([name, body]) => {
+        if (!component.$js) component.$js = {};
+        component.$js[name] = (...params) => module_default.evaluate(component.el, body, {
+          scope: { $wire: component.$wire, params }
+        });
+      });
+      let scripts = effects.scripts || [];
+      if (scripts.length === 0) return;
+      if (component.__brewScriptsRan) return;
+      component.__brewScriptsRan = true;
+      scripts.forEach((source) => {
+        module_default.evaluate(component.el, source, { scope: { $wire: component.$wire, $js: component.$js } });
+      });
+    });
+  }
+
+  // src/features/assets.js
+  var injected = /* @__PURE__ */ new Set();
+  function assetKey(html) {
+    return html.trim().slice(0, 40).replace(/[^a-zA-Z0-9_-]/g, "");
+  }
+  function registerAssets() {
+    on2("effect", ({ effects }) => {
+      let assets = effects.assets || [];
+      assets.forEach((html) => {
+        if (typeof html !== "string" || !html.trim()) return;
+        let key = assetKey(html);
+        if (injected.has(key)) return;
+        injected.add(key);
+        let wrapper = document.createElement("div");
+        wrapper.innerHTML = html;
+        [...wrapper.childNodes].forEach((node) => {
+          if (node.nodeType === 1) document.head.appendChild(node);
+        });
+      });
+    });
+  }
+
+  // src/features/echo.js
+  function registerEcho() {
+    on2("effect", ({ component, effects, cleanup }) => {
+      let echo = effects.echo || {};
+      let Echo = window.Echo;
+      if (!Echo || Object.keys(echo).length === 0) return;
+      Object.entries(echo).forEach(([spec, method]) => {
+        let [prefix2, rest] = spec.split(/:(.+)/);
+        let [channel, event] = (rest || "").split(",");
+        if (!channel || !event) return;
+        let channelRef;
+        if (prefix2 === "echo-private") channelRef = Echo.private(channel);
+        else if (prefix2 === "echo-presence") channelRef = Echo.join(channel);
+        else channelRef = Echo.channel(channel);
+        let handler4 = (payload) => fireAction(component, method, [payload]);
+        channelRef.listen(event, handler4);
+        cleanup(() => {
+          if (typeof channelRef.stopListening !== "function") return;
+          channelRef.stopListening(event, handler4);
+        });
+      });
+    });
+  }
+
   // src/index.js
   var Brew = {
     directive: directive2,
@@ -12883,7 +13171,10 @@ Expression: "${expression}"
     all,
     hook: on2,
     trigger: trigger2,
-    triggerAsync
+    triggerAsync,
+    dispatch: dispatchGlobal,
+    dispatchTo,
+    on: on3
   };
   var warnAboutMultipleInstancesOf = (entity) => console.warn(`Detected multiple instances of ${entity} running`);
   if (window.Brew) warnAboutMultipleInstancesOf("Brew");
@@ -12905,6 +13196,16 @@ Expression: "${expression}"
   registerTransitionDirective();
   registerDataLoading();
   registerDisableFormsDuringRequest();
+  registerDispatches();
+  registerListeners();
+  registerJsEvaluation();
+  registerRedirects();
+  registerStreaming();
+  registerDownloads();
+  registerPreserveScroll();
+  registerScripts();
+  registerAssets();
+  registerEcho();
   registerWildcardDirective();
   queueMicrotask(coordinateNetworkInteractions);
   window.Brew = Brew;

@@ -6,7 +6,7 @@ import dev.kona.crema.CremaTag
 
 /**
  * Crema surface: `<brew:name … />`, `@brew('name', $params, $key)`, `@brewStyles`, `@brewScripts`,
- * `@brewScriptConfig`, `@js($value)`.
+ * `@brewScriptConfig`, `@js($value)`, `@script`/`@assets`, `@entangle`, `@this`.
  */
 internal object BrewCrema {
     fun install(engine: CremaEngine, manager: BrewManager) {
@@ -22,6 +22,31 @@ internal object BrewCrema {
         engine.directive("brewScripts") { manager.assets.scripts() }
         engine.directive("brewScriptConfig") { manager.assets.scriptConfig() }
         engine.directive("js") { call -> js(call.evaluate(call.expression)) }
+        engine.directive("entangle") { call ->
+            val args = call.arguments()
+            val name = when {
+                args.isNotEmpty() -> args[0].toString()
+                else -> call.expression.trim().trim('\'', '"')
+            }.replace("'", "\\'")
+            "\$wire.\$entangle('$name')"
+        }
+        engine.directive("this") { "\$wire" }
+        engine.blockDirective("script") { call ->
+            collectBlock(manager, call.body.trim().removePrefix("<script>").removeSuffix("</script>").trim(), "scripts")
+            ""
+        }
+        engine.blockDirective("assets") { call ->
+            collectBlock(manager, call.expand().trim(), "assets")
+            ""
+        }
+    }
+
+    private fun collectBlock(manager: BrewManager, source: String, key: String) {
+        if (source.isEmpty()) return
+        val component = manager.current() ?: return
+        @Suppress("UNCHECKED_CAST")
+        val list = component.state().store.getOrPut(key) { mutableListOf<String>() } as MutableList<String>
+        list += source
     }
 
     private fun renderTag(manager: BrewManager, tag: CremaTag): String {

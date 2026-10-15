@@ -88,3 +88,31 @@ annotation class Transition(
     val type: String = "",
     val skip: Boolean = false,
 )
+
+/** Listen for a browser / server event (`#[On('post-created')]`). Dynamic `{prop}` placeholders are resolved from state. */
+@Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.RUNTIME)
+@Repeatable
+@MustBeDocumented
+annotation class On(vararg val value: String)
+
+/** Run the action in parallel without blocking other requests (`#[Async]` / `.async`). */
+@Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.RUNTIME)
+@MustBeDocumented
+annotation class Async
+
+/** Expose a client-side JS function on `$wire.$js.name` (`#[Js]`). */
+@Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.RUNTIME)
+@MustBeDocumented
+annotation class Js(val name: String = "")
+
+/**
+ * Action returns JSON to the caller and skips HTML render (`#[Json]`).
+ * Validation failures reject the promise with the error bag.
+ */
+@Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.RUNTIME)
+@MustBeDocumented
+annotation class Json

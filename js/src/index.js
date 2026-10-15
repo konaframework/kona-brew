@@ -21,6 +21,17 @@ import { registerShowDirective, registerTextDirective, registerBindDirective } f
 import { registerTransitionDirective } from './directives/transition.js'
 import { registerDataLoading } from './features/dataLoading.js'
 import { registerDisableFormsDuringRequest } from './features/disableForms.js'
+import { registerDispatches } from './features/dispatches.js'
+import { registerListeners } from './features/listeners.js'
+import { registerJsEvaluation } from './features/jsEvaluation.js'
+import { registerRedirects } from './features/redirects.js'
+import { registerStreaming } from './features/streaming.js'
+import { registerDownloads } from './features/downloads.js'
+import { registerPreserveScroll } from './features/preserveScroll.js'
+import { registerScripts } from './features/scripts.js'
+import { registerAssets } from './features/assets.js'
+import { registerEcho } from './features/echo.js'
+import { dispatchGlobal, dispatchTo, on as listenGlobal } from './events.js'
 
 let Brew = {
     directive,
@@ -36,6 +47,9 @@ let Brew = {
     hook,
     trigger,
     triggerAsync,
+    dispatch: dispatchGlobal,
+    dispatchTo,
+    on: listenGlobal,
 }
 
 let warnAboutMultipleInstancesOf = entity => console.warn(`Detected multiple instances of ${entity} running`)
@@ -60,6 +74,16 @@ registerBindDirective()
 registerTransitionDirective()
 registerDataLoading()
 registerDisableFormsDuringRequest()
+registerDispatches()
+registerListeners()
+registerJsEvaluation()
+registerRedirects()
+registerStreaming()
+registerDownloads()
+registerPreserveScroll()
+registerScripts()
+registerAssets()
+registerEcho()
 registerWildcardDirective()
 
 // Deferred so feature code can register action interceptors ahead of the built-in coordination...

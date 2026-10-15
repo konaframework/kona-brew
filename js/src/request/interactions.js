@@ -30,7 +30,11 @@ export function coordinateNetworkInteractions() {
     })
 
     interceptAction(({ action }) => {
-        if (action.origin?.directive?.modifiers.includes('renderless')) action.metadata.renderless = true
+        let modifiers = action.origin?.directive?.modifiers || []
+
+        if (modifiers.includes('renderless')) action.metadata.renderless = true
+        if (modifiers.includes('async')) action.metadata.async = true
+        if (modifiers.includes('preserve-scroll')) action.metadata.preserveScroll = true
 
         let active = messageBus().activeMessagesFor(action)
         let message = active[0]

@@ -7,6 +7,8 @@ import { getErrorsObject } from './features/errors.js'
 import { findRefEl } from './features/refs.js'
 import { checkDirty } from './directives/dirty.js'
 import { isEvaluatingReactiveExpression } from './evaluator.js'
+import { dispatch, dispatchSelf, dispatchTo, dispatchEl, dispatchRef, listen } from './events.js'
+import { entangle } from './features/entangle.js'
 
 let properties = {}
 
@@ -22,10 +24,18 @@ const aliases = {
     commit: '$commit',
     errors: '$errors',
     refs: '$refs',
+    on: '$on',
+    dispatch: '$dispatch',
+    dispatchTo: '$dispatchTo',
+    dispatchSelf: '$dispatchSelf',
+    dispatchEl: '$dispatchEl',
+    dispatchRef: '$dispatchRef',
     intercept: '$intercept',
     interceptAction: '$interceptAction',
     interceptMessage: '$interceptMessage',
     interceptRequest: '$interceptRequest',
+    js: '$js',
+    entangle: '$entangle',
 }
 
 /**
@@ -171,6 +181,24 @@ wireProperty('$dirty', component => property => {
     return reactive.dirty
 })
 
+wireProperty('$on', component => (name, callback) => {
+    let off = listen(component, name, callback)
+
+    component.addCleanup(off)
+
+    return off
+})
+
+wireProperty('$dispatch', component => (name, params) => dispatch(component, name, params))
+wireProperty('$dispatchSelf', component => (name, params) => dispatchSelf(component, name, params))
+wireProperty('$dispatchTo', () => (name, event, params) => dispatchTo(name, event, params))
+wireProperty('$dispatchEl', component => (selector, name, params) => dispatchEl(component, selector, name, params))
+wireProperty('$dispatchRef', component => (ref, name, params) => dispatchRef(component, ref, name, params))
+
+wireProperty('$js', component => component.$js ??= {})
+
+wireProperty('$entangle', component => (name, live = false) => entangle(component, name, live))
+
 /**
  * `$wire` inside Alpine expressions resolves its component lazily, and
  * `$watch` registered from an element is torn down with that element.
@@ -197,4 +225,5 @@ export function registerWireMagic() {
             },
         })
     })
+
 }

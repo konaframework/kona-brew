@@ -24,7 +24,7 @@ Status: `todo` · `done`.
 | PRO-9 | Multiple root element detection error | `MultipleRootElementsException` | M1 | done |
 | PRO-10 | Effects `html`, `returns` | `Effects` map | M1 | done |
 | PRO-10b | Effect `errors` | `Effects` map | M2 | done |
-| PRO-10c | Effects `dispatches`, `redirect`, `xjs`, `download`, `streams`, `scripts`, `assets` | `Effects` map | M3 | todo |
+| PRO-10c | Effects `dispatches`, `redirect`, `xjs`, `download`, `streams`, `scripts`, `assets` | `Effects` map | M3 | done |
 | PRO-10d | Effects `url`, `title` | `Effects` map | M5 | todo |
 | PRO-11 | Locale memo (`SupportLocales`) — request locale restored on update | `memo.locale` → `Lang.setLocale` | M6 | todo |
 | PRO-12 | Release tokens (`SupportReleaseTokens`) — invalidate snapshots after deploy | `memo.release` + `Brew.releaseToken` | M6 | todo |
@@ -96,13 +96,13 @@ Status: `todo` · `done`.
 | ACT-8 | `$refresh` / `$wire.$refresh()` | same | M1 | done |
 | ACT-9 | `wire:confirm` (+ `.prompt`) | same | M2 | done |
 | ACT-10 | Calling actions from Alpine (`$wire.save()`, params, return values) | same | M1 | done |
-| ACT-11 | JavaScript actions (`#[Js]` methods, `$js.name`, `$this->js()`) | `@Js`, `js()` | M3 | todo |
+| ACT-11 | JavaScript actions (`#[Js]` methods, `$js.name`, `$this->js()`) | `@Js`, `js()` | M3 | done |
 | ACT-12 | Magic actions `$set`, `$refresh`, `$toggle`, `$event` | same | M1 | done |
-| ACT-12b | Magic action `$dispatch` | same | M3 | todo |
+| ACT-12b | Magic action `$dispatch` | same | M3 | done |
 | ACT-12c | Magic action `$parent` | same | M4 | todo |
 | ACT-13 | `skipRender()` / `#[Renderless]` / `.renderless` modifier | `skipRender()`, `@Renderless` | M1 | done |
-| ACT-14 | `.async` modifier and `#[Async]` — parallel, non-blocking actions | `@Async`, `.async` | M3 | todo |
-| ACT-15 | `.preserve-scroll` (`SupportPreserveScroll`) | same | M3 | todo |
+| ACT-14 | `.async` modifier and `#[Async]` — parallel, non-blocking actions | `@Async`, `.async` | M3 | done |
+| ACT-15 | `.preserve-scroll` (`SupportPreserveScroll`) | same | M3 | done |
 | ACT-16 | Middleware applied to actions (persistent middleware) | see SEC-4 | M6 | todo |
 | ACT-17 | Protected/private methods not callable; `MethodNotFoundException` | same | M1 | done |
 | ACT-18 | Request bundling: interactions queued per component, `wire:model.live` updates coalesced, actions interrupt/queue (v4 `SupportRequestInteractions`) | JS message bus | M1 | done |
@@ -133,16 +133,16 @@ Status: `todo` · `done`.
 
 | ID | Livewire v4 surface | Brew | M | Status |
 |----|--------------------|------|---|--------|
-| EVT-1 | `$this->dispatch('name', key: value)` | `dispatch(name, params)` | M3 | todo |
-| EVT-2 | `#[On('name')]`, dynamic names `#[On('post-updated.{post.id}')]`, multiple | `@On` | M3 | todo |
-| EVT-3 | `->to(Component::class / name)`, `->self()`, `->component()` | fluent `Dispatch` | M3 | todo |
-| EVT-4 | `$dispatch` / `$dispatchTo` / `$dispatchSelf` from templates & Alpine | same | M3 | todo |
+| EVT-1 | `$this->dispatch('name', key: value)` | `dispatch(name, params)` | M3 | done |
+| EVT-2 | `#[On('name')]`, dynamic names `#[On('post-updated.{post.id}')]`, multiple | `@On` | M3 | done |
+| EVT-3 | `->to(Component::class / name)`, `->self()`, `->component()` | fluent `Dispatch` | M3 | done |
+| EVT-4 | `$dispatch` / `$dispatchTo` / `$dispatchSelf` from templates & Alpine | same | M3 | done |
 | EVT-5 | Listening for events from specific children `@post-saved="..."` on `<livewire:child>` | `SupportNestedComponentListeners` | M4 | todo |
-| EVT-6 | JS: `Livewire.on`, `Livewire.dispatch`, `Livewire.dispatchTo`, `$wire.$on`, `$wire.dispatch*`, `this.$on` in component scripts | same on `Brew` global | M3 | todo |
-| EVT-7 | Alpine `x-on:name.window` receives Livewire events (browser `CustomEvent`) | same | M3 | todo |
-| EVT-8 | Echo events `#[On('echo:channel,Event')]`, private/presence, `broadcastAs` | Kona broadcasting adapter | M3 | todo |
-| EVT-9 | Testing `assertDispatched` / `assertNotDispatched` with param matchers, `dispatch()` in tests | Testable | M3 | todo |
-| EVT-10 | `getListeners()` / `$listeners` legacy | `listeners()` override | M3 | todo |
+| EVT-6 | JS: `Livewire.on`, `Livewire.dispatch`, `Livewire.dispatchTo`, `$wire.$on`, `$wire.dispatch*`, `this.$on` in component scripts | same on `Brew` global | M3 | done |
+| EVT-7 | Alpine `x-on:name.window` receives Livewire events (browser `CustomEvent`) | same | M3 | done |
+| EVT-8 | Echo events `#[On('echo:channel,Event')]`, private/presence, `broadcastAs` | Kona broadcasting adapter | M3 | done |
+| EVT-9 | Testing `assertDispatched` / `assertNotDispatched` with param matchers, `dispatch()` in tests | Testable | M3 | done |
+| EVT-10 | `getListeners()` / `$listeners` legacy | `listeners()` override | M3 | done |
 
 ## Lifecycle hooks
 
@@ -241,7 +241,7 @@ Status: `todo` · `done`.
 | DIR-18 | `wire:replace` (`.self`) | same (shipped with the M1 morph) | M2 | done |
 | DIR-19 | `wire:show` (+ `.transition`) | same | M2 | done |
 | DIR-20 | `wire:sort` (`wire:sort:item`, `:handle`, `:group`, `:ignore`) | same | M6 | todo |
-| DIR-21 | `wire:stream` (`.replace`) + `$this->stream()` | same | M3 | todo |
+| DIR-21 | `wire:stream` (`.replace`) + `$this->stream()` | same | M3 | done |
 | DIR-22 | `wire:text` | same | M2 | done |
 | DIR-23 | `wire:bind:attr` | same | M2 | done |
 | DIR-24 | `wire:key` | same | M1 | done |
@@ -251,17 +251,17 @@ Status: `todo` · `done`.
 
 | ID | Livewire v4 surface | Brew | M | Status |
 |----|--------------------|------|---|--------|
-| ATR-1 | `#[Async]` | `@Async` | M3 | todo |
+| ATR-1 | `#[Async]` | `@Async` | M3 | done |
 | ATR-2 | `#[Computed]` (`persist:`, `seconds:`, `cache:`, `key:`, `tags:`), `unset($this->prop)` | `@Computed` + `forgetComputed()` | M1 | done |
 | ATR-3 | `#[Defer]` | `@Defer` | M4 | todo |
 | ATR-4 | `#[Isolate]` | `@Isolate` | M4 | todo |
-| ATR-5 | `#[Js]` | `@Js` | M3 | todo |
-| ATR-6 | `#[Json]` — method returns JSON to JS, renderless, rejects on validation error | `@Json` | M3 | todo |
+| ATR-5 | `#[Js]` | `@Js` | M3 | done |
+| ATR-6 | `#[Json]` — method returns JSON to JS, renderless, rejects on validation error | `@Json` | M3 | done |
 | ATR-7 | `#[Layout]` | `@Layout` | M5 | todo |
 | ATR-8 | `#[Lazy]` | `@Lazy` | M4 | todo |
 | ATR-9 | `#[Locked]` | `@Locked` | M1 | done |
 | ATR-10 | `#[Modelable]` | `@Modelable` | M4 | todo |
-| ATR-11 | `#[On]` | `@On` | M3 | todo |
+| ATR-11 | `#[On]` | `@On` | M3 | done |
 | ATR-12 | `#[Reactive]` | `@Reactive` | M4 | todo |
 | ATR-13 | `#[Renderless]` | `@Renderless` | M1 | done |
 | ATR-14 | `#[Session]` | `@Session` | M5 | todo |
@@ -280,11 +280,11 @@ Status: `todo` · `done`.
 | BLD-3 | `@placeholder` | see LZY-2 | M4 | todo |
 | BLD-4 | `@persist` | see NAV-2 | M5 | todo |
 | BLD-5 | `@teleport` | see TLP-1 | M4 | todo |
-| BLD-6 | `@script … @endscript` component scripts (run once per component init, `$wire` available, `this.$js`, `$intercept`) | same | M3 | todo |
-| BLD-7 | `@assets … @endassets` (loaded once per page) | same | M3 | todo |
+| BLD-6 | `@script … @endscript` component scripts (run once per component init, `$wire` available, `this.$js`, `$intercept`) | same | M3 | done |
+| BLD-7 | `@assets … @endassets` (loaded once per page) | same | M3 | done |
 | BLD-8 | `@js($value)` | `@js(...)` | M1 | done |
-| BLD-9 | `@entangle('prop')` / `$wire.entangle()` (`.live`) | same | M3 | todo |
-| BLD-10 | `@this` (legacy `$wire` alias) | `@this` | M3 | todo |
+| BLD-9 | `@entangle('prop')` / `$wire.entangle()` (`.live`) | same | M3 | done |
+| BLD-10 | `@this` (legacy `$wire` alias) | `@this` | M3 | done |
 | BLD-11 | Morph markers `<!--[if BLOCK]><![endif]-->` around conditionals/loops (`inject_morph_markers`) | Crema `MORPH_MARKERS` | M1 | done |
 | BLD-12 | Asset routes `/livewire/livewire.js` (+ `.min.js`, `.js.map`), cache-busting `?id=` | `/brew/brew.js` (+ `.min.js`, `.map`) | M1 | done |
 | BLD-12b | CSP asset route `livewire.csp.min.js` | `/brew/brew.csp.min.js` | M6 | todo |
@@ -301,19 +301,19 @@ Status: `todo` · `done`.
 | JS-2 | ESM build for manual bundling (`livewire.esm`, `Livewire.start()`) | `@konaframework/brew` ESM + `Brew.start()` | M1 | done |
 | JS-3 | `$wire` core: props, methods, `$get`, `$set(prop, value, live)` (deep paths), `$toggle`, `$call`, `$refresh`, `$commit`, `$el`, `$id`, `$watch`, `$hook` | `$wire` | M1 | done |
 | JS-3b | `$wire.$errors`, `$wire.$refs` | `$wire` | M2 | done |
-| JS-3c | `$wire.$entangle`, `$on`, `$dispatch*`, `$js`, `$intercept` | `$wire` | M3 | todo |
+| JS-3c | `$wire.$entangle`, `$on`, `$dispatch*`, `$js`, `$intercept` | `$wire` | M3 | done |
 | JS-3d | `$wire.$parent`, `$island` | `$wire` | M4 | todo |
 | JS-3e | `$wire.$upload*` | `$wire` | M6 | todo |
 | JS-4 | `Livewire.find(id)`, `first()`, `getByName(name)`, `all()` | same | M1 | done |
 | JS-5 | `Livewire.hook(...)`: `component.init`, `element.init`, `morph.updating/updated/removing/removed/adding/added`, `morph`, `commit`, `request`, `effect` | same | M1 | done |
 | JS-6 | `Livewire.directive(name, fn)` custom `wire:` directives | same | M1 | done |
-| JS-7 | Interceptors: `Livewire.interceptAction`, `interceptMessage`, `interceptRequest`, `$wire.$intercept` (onSend, onSuccess, onError, onFailure, onCancel, onFinish, `abort`) | same | M3 | todo |
+| JS-7 | Interceptors: `Livewire.interceptAction`, `interceptMessage`, `interceptRequest`, `$wire.$intercept` (onSend, onSuccess, onError, onFailure, onCancel, onFinish, `abort`) | same | M3 | done |
 | JS-8 | Global events `livewire:init`, `livewire:initialized` | `brew:init`, `brew:initialized` | M1 | done |
-| JS-9 | Server-side JS evaluation `$this->js('...')` / `xjs` effect | `js()` | M3 | todo |
+| JS-9 | Server-side JS evaluation `$this->js('...')` / `xjs` effect | `js()` | M3 | done |
 | JS-10 | Error handling: 419 page-expired prompt, 500 modal (debug), `onError` | same | M1 | done |
 | JS-11 | Offline detection | see DIR-15 | M2 | done |
 | JS-12 | Morph algorithm: keyed (wire:key/id) Alpine morph, block markers, `wire:ignore`, `wire:replace`, lookahead | Alpine morph + Brew hooks | M1 | done |
-| JS-13 | File downloads effect | M3 | M3 | todo |
+| JS-13 | File downloads effect | M3 | done |
 | CSP-1 | CSP-safe build (`livewire.csp_safe`, Alpine CSP build, no `eval`) | `brew.csp.min.js` | M6 | todo |
 
 ## Uploads
@@ -334,12 +334,12 @@ Status: `todo` · `done`.
 
 | ID | Livewire v4 surface | Brew | M | Status |
 |----|--------------------|------|---|--------|
-| RDR-1 | `$this->redirect(url, navigate:)`, `redirectRoute`, `redirectIntended`, `redirectAction` | same | M3 | todo |
+| RDR-1 | `$this->redirect(url, navigate:)`, `redirectRoute`, `redirectIntended`, `redirectAction` | same | M3 | done |
 | RDR-2 | Redirect to full-page component (`redirect(Component::class)`) | same | M5 | todo |
-| RDR-3 | Flash messages persist across redirect | Kona session flash | M3 | todo |
-| DWN-1 | Return download response from action (`response()->download`, `streamDownload`) | `Response` download effect | M3 | todo |
-| DWN-2 | `assertFileDownloaded` | Testable | M3 | todo |
-| STR-1 | `$this->stream(to:, content:, replace:)` streaming responses | chunked HTTP | M3 | todo |
+| RDR-3 | Flash messages persist across redirect | Kona session flash | M3 | done |
+| DWN-1 | Return download response from action (`response()->download`, `streamDownload`) | `Response` download effect | M3 | done |
+| DWN-2 | `assertFileDownloaded` | Testable | M3 | done |
+| STR-1 | `$this->stream(to:, content:, replace:)` streaming responses | chunked HTTP | M3 | done |
 
 ## Testing
 
