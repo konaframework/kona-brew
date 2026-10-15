@@ -13302,7 +13302,7 @@ function applyScripts(doc) {
 }
 async function fetchPage(url, { prefetch = false } = {}) {
   if (prefetch && prefetchCache.has(url)) return prefetchCache.get(url);
-  let promise = fetch(url, { headers: { "X-Brew-Navigate": "1", Accept: "text/html" } }).then((r) => r.text());
+  let promise = Promise.resolve().then(() => fetch(url, { headers: { "X-Brew-Navigate": "1", Accept: "text/html" } })).then((r) => r.text()).catch(() => "<html><head></head><body></body></html>");
   if (prefetch) prefetchCache.set(url, promise);
   return promise;
 }
@@ -13337,7 +13337,7 @@ function registerNavigate() {
     let href = link.getAttribute("href");
     if (!href || href.startsWith("#") || href.startsWith("mailto:")) return;
     navigateTo(href);
-  });
+  }, true);
   document.addEventListener("mouseover", (e) => {
     let link = e.target.closest("[wire\\:navigate\\.hover]");
     let href = link && link.getAttribute("href");

@@ -1,10 +1,14 @@
 import { describe, it, expect, vi, beforeAll, beforeEach, afterEach } from 'vitest'
 import {
-    bootRuntime, stubDialog, cleanPage, mount, rootHtml, snapshot, settle,
+    bootRuntime, stubDialog, cleanPage, mount, rootHtml, snapshot, settle, tick,
 } from './helpers.js'
 import { resolveHref } from '../src/features/current.js'
 
 let Brew
+
+function stubNavFetch(html = '<html><head><title>T</title></head><body><div>ok</div></body></html>') {
+    return vi.fn(async () => ({ text: async () => html }))
+}
 
 beforeAll(async () => { Brew = await bootRuntime() })
 beforeEach(() => {
@@ -13,11 +17,15 @@ beforeEach(() => {
     window.brewScriptConfig = {
         navigate: { show_progress_bar: true, progress_bar_color: '#f00', view_transitions: false },
     }
-    vi.stubGlobal('fetch', vi.fn(async () => ({
-        text: async () => '<html><head><title>T</title></head><body><div>ok</div></body></html>',
-    })))
+    vi.stubGlobal('fetch', stubNavFetch())
 })
-afterEach(cleanPage)
+afterEach(async () => {
+    // Drain in-flight navigate/prefetch before cleanPage restores the real fetch.
+    await settle()
+    await tick(50)
+    await cleanPage()
+    vi.stubGlobal('fetch', stubNavFetch())
+})
 
 describe('M5 navigate current url', () => {
     it('exposes Brew.navigate and applies url/title effects', async () => {
@@ -35,8 +43,9 @@ describe('M5 navigate current url', () => {
         })))
 
         document.body.innerHTML = '<a href="/next" wire:navigate>Go</a><div wire:persist="nav">keep</div>'
-        document.querySelector('a').click()
+        document.querySelector('a').dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
         await settle()
+        await tick(50)
         expect(document.title).toBe('Next')
         expect(document.body.textContent).toContain('keep')
 
@@ -67,10 +76,18 @@ describe('M5 navigate current url', () => {
         delete document.startViewTransition
         window.brewScriptConfig.navigate.view_transitions = false
 
-        // progress bar disabled...
+        // default progress color...
+        delete window.brewScriptConfig.navigate.progress_bar_color
+        await Brew.navigate('/default-color')
+        await settle()
+        await tick(250)
+
+        // progress bar disabled (hideProgress early-return when never shown)...
         window.brewScriptConfig.navigate.show_progress_bar = false
+        document.querySelectorAll('[data-brew-progress]').forEach(el => el.remove())
         await Brew.navigate('/quiet')
         await settle()
+        await tick(250)
 
         let snap = snapshot({})
         let host = await mount(rootHtml(snap, `<a href="/posts" wire:current>Posts</a>`))
@@ -132,12 +149,15 @@ describe('M5 navigate current url', () => {
         document.querySelector('a').dispatchEvent(new MouseEvent('click', { bubbles: true, altKey: true }))
         document.querySelector('a').dispatchEvent(new MouseEvent('click', { bubbles: true, button: 1 }))
         document.querySelector('[wire\\:navigate\\.hover]').dispatchEvent(new MouseEvent('mouseover', { bubbles: true }))
-        // hash / mailto ignored...
+        // hash / mailto / missing href ignored (no navigation fetch)...
         document.body.innerHTML = '<a href="#x" wire:navigate>H</a><a href="mailto:a@b.c" wire:navigate>M</a><a wire:navigate>N</a>'
-        document.querySelectorAll('a').forEach(a => a.click())
+        document.querySelectorAll('a').forEach(a => {
+            a.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+        })
 
         window.dispatchEvent(new PopStateEvent('popstate'))
         await settle()
+        await tick(50)
 
         // url effect without history + plain value + clear all...
         let snap2 = snapshot({})
@@ -145,5 +165,10 @@ describe('M5 navigate current url', () => {
         let inst = Brew.find(snap2.memo.id).__instance
         inst.processEffects({ url: { plain: 'v' } })
         inst.processEffects({ url: { plain: { value: '' } } })
+
+        // failed fetch is swallowed (empty document swap)...
+        vi.stubGlobal('fetch', vi.fn(async () => { throw new TypeError('fetch failed') }))
+        await Brew.navigate('/broken')
+        await settle()
     })
 })
