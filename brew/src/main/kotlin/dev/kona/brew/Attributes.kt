@@ -116,3 +116,33 @@ annotation class Js(val name: String = "")
 @Retention(AnnotationRetention.RUNTIME)
 @MustBeDocumented
 annotation class Json
+
+/** Prop is re-synced from the parent on every parent render (`#[Reactive]`). */
+@Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY)
+@Retention(AnnotationRetention.RUNTIME)
+@MustBeDocumented
+annotation class Reactive
+
+/** Prop is the child's `wire:model` binding target (`#[Modelable]`). */
+@Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY)
+@Retention(AnnotationRetention.RUNTIME)
+@MustBeDocumented
+annotation class Modelable
+
+/** Isolate this component into its own network request (`#[Isolate]`). */
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+@MustBeDocumented
+annotation class Isolate
+
+/** Lazy-load the component when it enters the viewport (`#[Lazy]`). */
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+@MustBeDocumented
+annotation class Lazy(val bundle: Boolean = false)
+
+/** Defer loading until after the initial page paint (`#[Defer]`). */
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+@MustBeDocumented
+annotation class Defer(val bundle: Boolean = false)

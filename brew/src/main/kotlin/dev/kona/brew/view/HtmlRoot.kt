@@ -10,12 +10,20 @@ object HtmlRoot {
         "area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr",
     )
 
+    private val TAG_NAME_STOP = charArrayOf(' ', '\t', '\n', '\r', '>', '/')
+
+    /** End index (exclusive) of the root tag name starting after [openAngle]'s `<`. */
+    private fun tagNameEnd(html: String, openAngle: Int): Int {
+        val from = openAngle + 1
+        val stop = html.indexOfAny(TAG_NAME_STOP, from)
+        return if (stop < 0) html.length else stop
+    }
+
     /** Insert [attributes] right after the root tag name. Non-string values are JSON-encoded; all values are escaped. */
     @JvmStatic
     fun insertAttributes(html: String, attributes: Map<String, Any?>, component: String): String {
         val start = rootStart(html) ?: throw RootTagMissingFromViewException(component)
-        var nameEnd = start + 1
-        while (nameEnd < html.length && !html[nameEnd].isWhitespace() && html[nameEnd] != '>' && html[nameEnd] != '/') nameEnd++
+        val nameEnd = tagNameEnd(html, start)
         val rendered = StringBuilder()
         for ((key, value) in attributes) {
             val text = if (value is String) value else Coercion.mapper.writeValueAsString(value)
@@ -28,6 +36,13 @@ object HtmlRoot {
     @JvmStatic
     fun assertSingleRoot(html: String, component: String) {
         if (topLevelElements(html) > 1) throw MultipleRootElementsException(component)
+    }
+
+    /** Lowercase tag name of the root element (`div` when missing). */
+    @JvmStatic
+    fun rootTagName(html: String): String {
+        val start = rootStart(html) ?: return "div"
+        return html.substring(start + 1, tagNameEnd(html, start)).lowercase()
     }
 
     /** Index of the first top-level element's `<`, skipping whitespace, comments and doctype. */

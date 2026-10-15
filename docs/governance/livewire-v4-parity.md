@@ -61,7 +61,7 @@ Status: `todo` · `done`.
 | CMP-7 | Component discovery by package/classpath scan | `Brew.discover("app.brew")` | M1 | done |
 | CMP-8 | `<livewire:name />`, `@livewire('name', [...])` rendering | `<brew:name />`, `@brew('name', ...)` | M1 | done |
 | CMP-9 | Passing props (static, `:prop="$expr"`, `:$prop` shorthand, kebab → camel) | tag attributes → mount params/props | M1 | done |
-| CMP-10 | Non-prop params become HTML attributes on root | `HtmlAttributeForwarding` | M4 | todo |
+| CMP-10 | Non-prop params become HTML attributes on root | `HtmlAttributeForwarding` | M4 | done |
 | CMP-11 | `render()` returning view with data (`->with()`), string templates, `view()` helpers | `view(name, data)`, `template(src)` | M1 | done |
 | CMP-11b | `->title()` / `->layout()` on the rendered view | `View.title/layout` | M5 | todo |
 | CMP-12 | Component stubs customization (`livewire:stubs`) | `./grind brew:stubs` | M7 | todo |
@@ -99,7 +99,7 @@ Status: `todo` · `done`.
 | ACT-11 | JavaScript actions (`#[Js]` methods, `$js.name`, `$this->js()`) | `@Js`, `js()` | M3 | done |
 | ACT-12 | Magic actions `$set`, `$refresh`, `$toggle`, `$event` | same | M1 | done |
 | ACT-12b | Magic action `$dispatch` | same | M3 | done |
-| ACT-12c | Magic action `$parent` | same | M4 | todo |
+| ACT-12c | Magic action `$parent` | same | M4 | done |
 | ACT-13 | `skipRender()` / `#[Renderless]` / `.renderless` modifier | `skipRender()`, `@Renderless` | M1 | done |
 | ACT-14 | `.async` modifier and `#[Async]` — parallel, non-blocking actions | `@Async`, `.async` | M3 | done |
 | ACT-15 | `.preserve-scroll` (`SupportPreserveScroll`) | same | M3 | done |
@@ -137,7 +137,7 @@ Status: `todo` · `done`.
 | EVT-2 | `#[On('name')]`, dynamic names `#[On('post-updated.{post.id}')]`, multiple | `@On` | M3 | done |
 | EVT-3 | `->to(Component::class / name)`, `->self()`, `->component()` | fluent `Dispatch` | M3 | done |
 | EVT-4 | `$dispatch` / `$dispatchTo` / `$dispatchSelf` from templates & Alpine | same | M3 | done |
-| EVT-5 | Listening for events from specific children `@post-saved="..."` on `<livewire:child>` | `SupportNestedComponentListeners` | M4 | todo |
+| EVT-5 | Listening for events from specific children `@post-saved="..."` on `<livewire:child>` | `SupportNestedComponentListeners` | M4 | done |
 | EVT-6 | JS: `Livewire.on`, `Livewire.dispatch`, `Livewire.dispatchTo`, `$wire.$on`, `$wire.dispatch*`, `this.$on` in component scripts | same on `Brew` global | M3 | done |
 | EVT-7 | Alpine `x-on:name.window` receives Livewire events (browser `CustomEvent`) | same | M3 | done |
 | EVT-8 | Echo events `#[On('echo:channel,Event')]`, private/presence, `broadcastAs` | Kona broadcasting adapter | M3 | done |
@@ -161,35 +161,35 @@ Status: `todo` · `done`.
 
 | ID | Livewire v4 surface | Brew | M | Status |
 |----|--------------------|------|---|--------|
-| NST-1 | Nesting child components, children tracked in `memo.children` (tag + id), skipped re-render when parent re-renders | same | M4 | todo |
-| NST-2 | Loops with `wire:key` / `:key`, compiled deterministic keys | same | M4 | todo |
-| NST-3 | `#[Reactive]` props | `@Reactive` | M4 | todo |
-| NST-4 | `wire:model` on child + `#[Modelable]` | `@Modelable` | M4 | todo |
-| NST-5 | Slots: default + named `<livewire:slot name="x">`, `$slots->has()`, slots evaluated in parent context, slot morphing | `<brew:slot>` | M4 | todo |
-| NST-6 | Forwarding HTML attributes `$attributes` (`SupportBladeAttributes`) | `attributes` bag | M4 | todo |
-| NST-7 | `$parent` access from child (`SupportAccessingParent`) | `$parent` magic | M4 | todo |
-| NST-8 | Dynamic components `<livewire:dynamic-component :is="$name" />` / `:component` | `<brew:dynamic-component>` | M4 | todo |
-| NST-9 | Recursive components | same | M4 | todo |
-| NST-10 | Forcing child re-render (changing key) | same | M4 | todo |
-| NST-11 | `#[Isolate]` (no bundling) | `@Isolate` | M4 | todo |
+| NST-1 | Nesting child components, children tracked in `memo.children` (tag + id), skipped re-render when parent re-renders | same | M4 | done |
+| NST-2 | Loops with `wire:key` / `:key`, compiled deterministic keys | same | M4 | done |
+| NST-3 | `#[Reactive]` props | `@Reactive` | M4 | done |
+| NST-4 | `wire:model` on child + `#[Modelable]` | `@Modelable` | M4 | done |
+| NST-5 | Slots: default + named `<livewire:slot name="x">`, `$slots->has()`, slots evaluated in parent context, slot morphing | `<brew:slot>` | M4 | done |
+| NST-6 | Forwarding HTML attributes `$attributes` (`SupportBladeAttributes`) | `attributes` bag | M4 | done |
+| NST-7 | `$parent` access from child (`SupportAccessingParent`) | `$parent` magic | M4 | done |
+| NST-8 | Dynamic components `<livewire:dynamic-component :is="$name" />` / `:component` | `<brew:dynamic-component>` | M4 | done |
+| NST-9 | Recursive components | same | M4 | done |
+| NST-10 | Forcing child re-render (changing key) | same | M4 | done |
+| NST-11 | `#[Isolate]` (no bundling) | `@Isolate` | M4 | done |
 
 ## Lazy, defer, islands, teleport
 
 | ID | Livewire v4 surface | Brew | M | Status |
 |----|--------------------|------|---|--------|
-| LZY-1 | `<livewire:x lazy />`, `#[Lazy]`, `defer` / `#[Defer]` | same | M4 | todo |
-| LZY-2 | `placeholder()` method, `@placeholder` directive, default placeholder view config | same | M4 | todo |
-| LZY-3 | Bundling lazy loads (`lazy.bundle`, `#[Lazy(bundle: true)]`) | same | M4 | todo |
-| LZY-4 | Lazy/defer props passing | same | M4 | todo |
+| LZY-1 | `<livewire:x lazy />`, `#[Lazy]`, `defer` / `#[Defer]` | same | M4 | done |
+| LZY-2 | `placeholder()` method, `@placeholder` directive, default placeholder view config | same | M4 | done |
+| LZY-3 | Bundling lazy loads (`lazy.bundle`, `#[Lazy(bundle: true)]`) | same | M4 | done |
+| LZY-4 | Lazy/defer props passing | same | M4 | done |
 | LZY-5 | Full-page lazy/defer, `lazy: false` to disable | same | M5 | todo |
-| LZY-6 | `Livewire::withoutLazyLoading()` in tests | `Brew.withoutLazyLoading()` | M4 | todo |
-| ISL-1 | `@island … @endisland` (anonymous + `name:`) | `@island` Crema block | M4 | todo |
-| ISL-2 | `lazy: true`, `defer: true`, `@placeholder` within island | same | M4 | todo |
-| ISL-3 | `wire:island="name"` targeting, `.append` / `.prepend` modes | same | M4 | todo |
-| ISL-4 | Nested islands, `always: true`, `skip: true` | same | M4 | todo |
-| ISL-5 | Island polling (`wire:poll` inside island) | same | M4 | todo |
-| ISL-6 | Triggering islands from JS (`$wire.$island('name')` / `.island` modifier) | same | M4 | todo |
-| TLP-1 | `@teleport('selector') … @endteleport` | same | M4 | todo |
+| LZY-6 | `Livewire::withoutLazyLoading()` in tests | `Brew.withoutLazyLoading()` | M4 | done |
+| ISL-1 | `@island … @endisland` (anonymous + `name:`) | `@island` Crema block | M4 | done |
+| ISL-2 | `lazy: true`, `defer: true`, `@placeholder` within island | same | M4 | done |
+| ISL-3 | `wire:island="name"` targeting, `.append` / `.prepend` modes | same | M4 | done |
+| ISL-4 | Nested islands, `always: true`, `skip: true` | same | M4 | done |
+| ISL-5 | Island polling (`wire:poll` inside island) | same | M4 | done |
+| ISL-6 | Triggering islands from JS (`$wire.$island('name')` / `.island` modifier) | same | M4 | done |
+| TLP-1 | `@teleport('selector') … @endteleport` | same | M4 | done |
 
 ## Pages, navigation, URL, session, pagination
 
@@ -253,16 +253,16 @@ Status: `todo` · `done`.
 |----|--------------------|------|---|--------|
 | ATR-1 | `#[Async]` | `@Async` | M3 | done |
 | ATR-2 | `#[Computed]` (`persist:`, `seconds:`, `cache:`, `key:`, `tags:`), `unset($this->prop)` | `@Computed` + `forgetComputed()` | M1 | done |
-| ATR-3 | `#[Defer]` | `@Defer` | M4 | todo |
-| ATR-4 | `#[Isolate]` | `@Isolate` | M4 | todo |
+| ATR-3 | `#[Defer]` | `@Defer` | M4 | done |
+| ATR-4 | `#[Isolate]` | `@Isolate` | M4 | done |
 | ATR-5 | `#[Js]` | `@Js` | M3 | done |
 | ATR-6 | `#[Json]` — method returns JSON to JS, renderless, rejects on validation error | `@Json` | M3 | done |
 | ATR-7 | `#[Layout]` | `@Layout` | M5 | todo |
-| ATR-8 | `#[Lazy]` | `@Lazy` | M4 | todo |
+| ATR-8 | `#[Lazy]` | `@Lazy` | M4 | done |
 | ATR-9 | `#[Locked]` | `@Locked` | M1 | done |
-| ATR-10 | `#[Modelable]` | `@Modelable` | M4 | todo |
+| ATR-10 | `#[Modelable]` | `@Modelable` | M4 | done |
 | ATR-11 | `#[On]` | `@On` | M3 | done |
-| ATR-12 | `#[Reactive]` | `@Reactive` | M4 | todo |
+| ATR-12 | `#[Reactive]` | `@Reactive` | M4 | done |
 | ATR-13 | `#[Renderless]` | `@Renderless` | M1 | done |
 | ATR-14 | `#[Session]` | `@Session` | M5 | todo |
 | ATR-15 | `#[Title]` | `@Title` | M5 | todo |
@@ -276,10 +276,10 @@ Status: `todo` · `done`.
 | ID | Livewire v4 surface | Brew | M | Status |
 |----|--------------------|------|---|--------|
 | BLD-1 | `@livewireStyles`, `@livewireScripts`, `@livewireScriptConfig`, auto-injection when absent (`inject_assets`) | `@brewStyles`, `@brewScripts`, `@brewScriptConfig`, auto-inject | M1 | done |
-| BLD-2 | `@island` | see ISL-* | M4 | todo |
-| BLD-3 | `@placeholder` | see LZY-2 | M4 | todo |
+| BLD-2 | `@island` | see ISL-* | M4 | done |
+| BLD-3 | `@placeholder` | see LZY-2 | M4 | done |
 | BLD-4 | `@persist` | see NAV-2 | M5 | todo |
-| BLD-5 | `@teleport` | see TLP-1 | M4 | todo |
+| BLD-5 | `@teleport` | see TLP-1 | M4 | done |
 | BLD-6 | `@script … @endscript` component scripts (run once per component init, `$wire` available, `this.$js`, `$intercept`) | same | M3 | done |
 | BLD-7 | `@assets … @endassets` (loaded once per page) | same | M3 | done |
 | BLD-8 | `@js($value)` | `@js(...)` | M1 | done |
@@ -302,7 +302,7 @@ Status: `todo` · `done`.
 | JS-3 | `$wire` core: props, methods, `$get`, `$set(prop, value, live)` (deep paths), `$toggle`, `$call`, `$refresh`, `$commit`, `$el`, `$id`, `$watch`, `$hook` | `$wire` | M1 | done |
 | JS-3b | `$wire.$errors`, `$wire.$refs` | `$wire` | M2 | done |
 | JS-3c | `$wire.$entangle`, `$on`, `$dispatch*`, `$js`, `$intercept` | `$wire` | M3 | done |
-| JS-3d | `$wire.$parent`, `$island` | `$wire` | M4 | todo |
+| JS-3d | `$wire.$parent`, `$island` | `$wire` | M4 | done |
 | JS-3e | `$wire.$upload*` | `$wire` | M6 | todo |
 | JS-4 | `Livewire.find(id)`, `first()`, `getByName(name)`, `all()` | same | M1 | done |
 | JS-5 | `Livewire.hook(...)`: `component.init`, `element.init`, `morph.updating/updated/removing/removed/adding/added`, `morph`, `commit`, `request`, `effect` | same | M1 | done |

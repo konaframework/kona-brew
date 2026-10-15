@@ -5654,6 +5654,11 @@ Expression: "${expression}"
   wireProperty("$dispatchRef", (component) => (ref, name, params) => dispatchRef(component, ref, name, params));
   wireProperty("$js", (component) => component.$js ?? (component.$js = {}));
   wireProperty("$entangle", (component) => (name, live = false) => entangle2(component, name, live));
+  wireProperty("$parent", (component) => {
+    let parent = component.parent;
+    return parent ? parent.$wire : new Proxy({}, { get: () => () => {
+    } });
+  });
   function registerWireMagic() {
     module_default.magic("wire", (el, { cleanup }) => {
       let component;
@@ -12387,11 +12392,24 @@ Expression: "${expression}"
     "offline",
     "confirm"
   ];
-  var BREW_ONLY_MODIFIERS = ["async", "renderless", "preserve-scroll", "prepend", "append"];
+  var BREW_ONLY_MODIFIERS = ["async", "renderless", "preserve-scroll", "prepend", "append", "island"];
   function registerWildcardDirective() {
     on2("directive.init", ({ el, directive: directive3, cleanup, component }) => {
       if (RESERVED.includes(directive3.value) || customDirectiveHasBeenRegistered(directive3.value)) return;
-      let modifiers = directive3.modifiers.filter((modifier) => !BREW_ONLY_MODIFIERS.includes(modifier));
+      let modifiers = [];
+      for (let i = 0; i < directive3.modifiers.length; i++) {
+        let modifier = directive3.modifiers[i];
+        if (BREW_ONLY_MODIFIERS.includes(modifier)) {
+          if (modifier === "island") {
+            let next = directive3.modifiers[i + 1];
+            if (next && !BREW_ONLY_MODIFIERS.includes(next) && !["prevent", "stop", "window", "document", "outside", "once", "debounce", "throttle", "self", "camel", "dot", "passive", "capture"].includes(next)) {
+              i++;
+            }
+          }
+          continue;
+        }
+        modifiers.push(modifier);
+      }
       if (directive3.value === "submit" && !modifiers.includes("prevent")) modifiers.push("prevent");
       let attribute = ["x-on:" + directive3.value, ...modifiers].join(".");
       let unbind = module_default.bind(el, {
@@ -13157,6 +13175,76 @@ Expression: "${expression}"
     });
   }
 
+  // src/features/teleport.js
+  function applyTeleports(root) {
+    root.querySelectorAll("template[wire\\:teleport]").forEach((template) => {
+      let selector = template.getAttribute("wire:teleport");
+      if (!selector) return;
+      let target = document.querySelector(selector);
+      if (!target) return;
+      target.append(...template.content.childNodes);
+      template.remove();
+    });
+  }
+  function registerTeleport() {
+    on2("effect", ({ component }) => applyTeleports(component.el));
+  }
+
+  // src/features/islands.js
+  function registerIslands() {
+    interceptAction(({ action }) => {
+      let modifiers = action.origin?.directive?.modifiers || [];
+      let islandIdx = modifiers.indexOf("island");
+      if (islandIdx === -1) return;
+      let name = modifiers[islandIdx + 1] || "default";
+      let mode = modifiers.includes("append") ? "append" : modifiers.includes("prepend") ? "prepend" : "morph";
+      action.metadata.island = { name, mode };
+    });
+    wireProperty("$island", (component) => (name = "default", mode = "morph") => {
+      component.__brewIsland = { name, mode };
+      return fireAction(component, "$refresh");
+    });
+    on2("effect", ({ component, effects }) => {
+      let islands = effects.islands || {};
+      Object.entries(islands).forEach(([name, payload]) => {
+        let el = component.el.querySelector(`[wire\\:island="${name}"]`);
+        if (!el || !payload?.html) return;
+        let mode = component.__brewIsland?.mode || "morph";
+        if (mode === "append") el.insertAdjacentHTML("beforeend", payload.html);
+        else if (mode === "prepend") el.insertAdjacentHTML("afterbegin", payload.html);
+        else el.innerHTML = payload.html;
+      });
+    });
+  }
+
+  // src/features/lazy.js
+  function scheduleLazyLoad(component, defer) {
+    let load = () => fireAction(component, "$refresh");
+    if (defer) {
+      queueMicrotask(load);
+      return;
+    }
+    if (typeof IntersectionObserver === "undefined") {
+      load();
+      return;
+    }
+    let observer2 = new IntersectionObserver((entries) => {
+      if (!entries.some((entry) => entry.isIntersecting)) return;
+      observer2.disconnect();
+      load();
+    });
+    observer2.observe(component.el);
+    component.addCleanup(() => observer2.disconnect());
+  }
+  function registerLazy() {
+    on2("component.init", ({ component }) => {
+      let lazy = component.effects?.lazy || component.snapshot.memo?.lazyLoaded === false;
+      let defer = component.effects?.defer || component.snapshot.memo?.defer;
+      if (!lazy && !defer) return;
+      scheduleLazyLoad(component, !!defer);
+    });
+  }
+
   // src/index.js
   var Brew = {
     directive: directive2,
@@ -13206,6 +13294,9 @@ Expression: "${expression}"
   registerScripts();
   registerAssets();
   registerEcho();
+  registerTeleport();
+  registerIslands();
+  registerLazy();
   registerWildcardDirective();
   queueMicrotask(coordinateNetworkInteractions);
   window.Brew = Brew;

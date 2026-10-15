@@ -52,10 +52,12 @@ class BrewSampleTest {
         String html = page.getBody();
 
         assertEquals(200, page.getStatus());
-        assertEquals(3, html.split("wire:snapshot=", -1).length - 1, html);
+        assertTrue(html.split("wire:snapshot=", -1).length - 1 >= 5, html);
         assertTrue(html.contains("<output>3</output>"), html);
         assertTrue(html.contains("Steam the milk"), html);
         assertTrue(html.contains("Kona Peaberry"), html);
+        assertTrue(html.contains("Dashboard") && html.contains("wire:island=\"stats\""), html);
+        assertTrue(html.contains("Loading panel") || html.contains("Lazy ready"), html);
         assertTrue(Pattern.compile("<script src=\"/brew/brew(\\.min)?\\.js\\?id=[0-9a-f]{8}\" data-csrf=\"[^\"]+\"").matcher(html).find(), html);
     }
 

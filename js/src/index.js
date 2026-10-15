@@ -31,6 +31,9 @@ import { registerPreserveScroll } from './features/preserveScroll.js'
 import { registerScripts } from './features/scripts.js'
 import { registerAssets } from './features/assets.js'
 import { registerEcho } from './features/echo.js'
+import { registerTeleport } from './features/teleport.js'
+import { registerIslands } from './features/islands.js'
+import { registerLazy } from './features/lazy.js'
 import { dispatchGlobal, dispatchTo, on as listenGlobal } from './events.js'
 
 let Brew = {
@@ -84,6 +87,9 @@ registerPreserveScroll()
 registerScripts()
 registerAssets()
 registerEcho()
+registerTeleport()
+registerIslands()
+registerLazy()
 registerWildcardDirective()
 
 // Deferred so feature code can register action interceptors ahead of the built-in coordination...

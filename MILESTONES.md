@@ -2,7 +2,7 @@
 
 Single source of truth for milestone status. Rules: [AGENTS.md](AGENTS.md). Ledger: [docs/governance/livewire-v4-parity.md](docs/governance/livewire-v4-parity.md).
 
-**Active milestone:** M3 — Events, JavaScript API & effects (closing)
+**Active milestone:** M4 — Nesting, slots, lazy/defer, islands, teleport (closing)
 
 The program is complete when every ledger row is `done` (M1–M7). Each milestone closes **all** ledger rows tagged with it.
 
@@ -56,7 +56,7 @@ validation, form hooks; `wire:loading` (+ targets/delays), `data-loading`, `wire
 
 ## M3 — Events, JavaScript API & effects
 
-**Branch:** `milestone/M3-events-js` · **Status:** done (PR pending)
+**Branch:** `milestone/M3-events-js` · **Status:** done (merged #3)
 
 `dispatch` (+ `to`/`self`), `@On` (dynamic names), JS `Brew.on/dispatch*`, `$wire.$on/$dispatch*`, Alpine events, Echo/broadcasting
 events, `@script`/`@assets`/`@entangle`/`@this`, `js()` + `@Js`, `@Json`, `@Async`/`.async`, interceptors, redirects + flash,
@@ -64,7 +64,15 @@ downloads, `wire:stream` + `stream()`, `.preserve-scroll`, event/js/redirect/dow
 
 ## M4 — Nesting, slots, lazy/defer, islands, teleport
 
-**Branch:** `milestone/M4-nesting-islands` · **Status:** planned
+**Branch:** `milestone/M4-nesting-islands` · **Status:** done (PR pending)
+
+- [x] Ledger rows: all M4 rows `done` (33/33).
+- [x] 100% Kover (`kona-brew`) and 100% Vitest (`js/src`).
+- [x] Nesting + `memo.children`, keys, `@Reactive`/`@Modelable`, slots, attribute forwarding, `$parent`, dynamic & recursive,
+      `@Isolate`, child `@event` listeners, `@Lazy`/`@Defer` + placeholders + bundling, `@island`, `@teleport`,
+      `Brew.withoutLazyLoading()`.
+- [x] JS: teleport, islands (`.island` / `$island`), lazy/defer, `$parent`.
+- [x] Kotlin + Java samples (`Dashboard` / `Panel` / `LazyPanel`).
 
 Children + `memo.children`, keys, `@Reactive`, `@Modelable`, slots (default/named), attribute forwarding, `$parent`, dynamic &
 recursive components, child event listeners, `@Isolate`, `@Lazy`/`@Defer` + placeholders + bundling, `@island` (all modes),
