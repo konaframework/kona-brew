@@ -34,6 +34,9 @@ import { registerEcho } from './features/echo.js'
 import { registerTeleport } from './features/teleport.js'
 import { registerIslands } from './features/islands.js'
 import { registerLazy } from './features/lazy.js'
+import { registerNavigate, navigateTo } from './features/navigate.js'
+import { registerCurrentDirective } from './features/current.js'
+import { registerNavigateDirective } from './directives/navigate.js'
 import { dispatchGlobal, dispatchTo, on as listenGlobal } from './events.js'
 
 let Brew = {
@@ -53,6 +56,7 @@ let Brew = {
     dispatch: dispatchGlobal,
     dispatchTo,
     on: listenGlobal,
+    navigate: navigateTo,
 }
 
 let warnAboutMultipleInstancesOf = entity => console.warn(`Detected multiple instances of ${entity} running`)
@@ -90,6 +94,9 @@ registerEcho()
 registerTeleport()
 registerIslands()
 registerLazy()
+registerNavigate()
+registerNavigateDirective()
+registerCurrentDirective()
 registerWildcardDirective()
 
 // Deferred so feature code can register action interceptors ahead of the built-in coordination...

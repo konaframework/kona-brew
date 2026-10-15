@@ -36,6 +36,14 @@ class BrewConfig @JvmOverloads constructor(
     val scriptNonce: String? = null,
     /** Default lazy-load placeholder HTML (`brew.lazy_placeholder`). */
     val lazyPlaceholder: String? = null,
+    /** Default layout for full-page components (`brew.layout`, default `layouts.app`). */
+    val layout: String = "layouts.app",
+    /** Show the navigate progress bar (`brew.navigate.show_progress_bar`). */
+    val navigateShowProgressBar: Boolean = true,
+    /** Progress bar color (`brew.navigate.progress_bar_color`). */
+    val navigateProgressBarColor: String = "#FF9A00",
+    /** Enable View Transitions API on navigate (`brew.navigate.view_transitions`). */
+    val navigateViewTransitions: Boolean = false,
 ) {
     val updateUri: String get() = "$path/update"
 
@@ -65,6 +73,10 @@ class BrewConfig @JvmOverloads constructor(
                 debug = config.getBoolean("app.debug", false),
                 assetUrl = config.getString("brew.asset_url"),
                 scriptNonce = config.getString("brew.nonce"),
+                layout = config.getString("brew.layout", "layouts.app"),
+                navigateShowProgressBar = config.getBoolean("brew.navigate.show_progress_bar", true),
+                navigateProgressBarColor = config.getString("brew.navigate.progress_bar_color", "#FF9A00"),
+                navigateViewTransitions = config.getBoolean("brew.navigate.view_transitions", false),
             )
         }
 

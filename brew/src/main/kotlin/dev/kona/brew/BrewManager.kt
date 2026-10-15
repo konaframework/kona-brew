@@ -13,8 +13,12 @@ import dev.kona.brew.features.SupportIslands
 import dev.kona.brew.features.SupportJsEvaluation
 import dev.kona.brew.features.SupportLazyLoading
 import dev.kona.brew.features.SupportNesting
+import dev.kona.brew.features.SupportPages
+import dev.kona.brew.features.SupportPagination
+import dev.kona.brew.features.SupportQueryString
 import dev.kona.brew.features.SupportRedirects
 import dev.kona.brew.features.SupportScripts
+import dev.kona.brew.features.SupportSession
 import dev.kona.brew.features.SupportSlots
 import dev.kona.brew.features.SupportStreaming
 import dev.kona.brew.features.SupportTransitions
@@ -99,6 +103,10 @@ class BrewManager @JvmOverloads constructor(
         componentHook { SupportScripts() }
         componentHook { SupportEcho() }
         componentHook { SupportIslands() }
+        componentHook { SupportPages() }
+        componentHook { SupportQueryString() }
+        componentHook { SupportSession() }
+        componentHook { SupportPagination() }
         views?.let { BrewCrema.install(it, this) }
     }
 

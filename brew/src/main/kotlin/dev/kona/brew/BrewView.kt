@@ -13,6 +13,14 @@ class BrewView private constructor(
     data: Map<String, Any?>,
 ) {
     val data: MutableMap<String, Any?> = LinkedHashMap(data)
+    /** Layout view name (`->layout('layouts.app')`). */
+    var layoutName: String? = null
+        private set
+    /** Document title (`->title('…')`). */
+    var titleText: String? = null
+        private set
+    /** Named layout slots (`->slot('sidebar', html)`). */
+    val slots: MutableMap<String, String> = linkedMapOf()
 
     /** Add view data (`->with('key', $value)`). */
     fun with(key: String, value: Any?): BrewView {
@@ -22,6 +30,24 @@ class BrewView private constructor(
 
     fun with(values: Map<String, Any?>): BrewView {
         data.putAll(values)
+        return this
+    }
+
+    /** Wrap this view in a layout (`->layout('layouts.app')`). */
+    fun layout(name: String): BrewView {
+        layoutName = name
+        return this
+    }
+
+    /** Set the document title (`->title('Dashboard')`). */
+    fun title(value: String): BrewView {
+        titleText = value
+        return this
+    }
+
+    /** Fill a named layout slot (`->slot('sidebar', html)`). */
+    fun slot(name: String, html: String): BrewView {
+        slots[name] = html
         return this
     }
 

@@ -7113,7 +7113,7 @@ Expression: "${expression}"
   var createFocusTrap = function createFocusTrap2(elements, userOptions) {
     var doc = (userOptions === null || userOptions === void 0 ? void 0 : userOptions.document) || document;
     var trapStack = (userOptions === null || userOptions === void 0 ? void 0 : userOptions.trapStack) || internalTrapStack;
-    var config = _objectSpread2({
+    var config2 = _objectSpread2({
       returnFocusOnDeactivate: true,
       escapeDeactivates: true,
       delayInitialFocus: true,
@@ -7168,7 +7168,7 @@ Expression: "${expression}"
     };
     var trap;
     var getOption = function getOption2(configOverrideOptions, optionName, configOptionName) {
-      return configOverrideOptions && configOverrideOptions[optionName] !== void 0 ? configOverrideOptions[optionName] : config[configOptionName || optionName];
+      return configOverrideOptions && configOverrideOptions[optionName] !== void 0 ? configOverrideOptions[optionName] : config2[configOptionName || optionName];
     };
     var findContainerIndex = function findContainerIndex2(element, event) {
       var composedPath = typeof (event === null || event === void 0 ? void 0 : event.composedPath) === "function" ? event.composedPath() : void 0;
@@ -7185,7 +7185,7 @@ Expression: "${expression}"
     };
     var getNodeForOption = function getNodeForOption2(optionName) {
       var _ref2 = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {}, _ref2$hasFallback = _ref2.hasFallback, hasFallback = _ref2$hasFallback === void 0 ? false : _ref2$hasFallback, _ref2$params = _ref2.params, params = _ref2$params === void 0 ? [] : _ref2$params;
-      var optionValue = config[optionName];
+      var optionValue = config2[optionName];
       if (typeof optionValue === "function") {
         optionValue = optionValue.apply(void 0, _toConsumableArray(params));
       }
@@ -7220,7 +7220,7 @@ Expression: "${expression}"
       if (node === false) {
         return false;
       }
-      if (node === void 0 || node && !isFocusable(node, config.tabbableOptions)) {
+      if (node === void 0 || node && !isFocusable(node, config2.tabbableOptions)) {
         if (findContainerIndex(doc.activeElement) >= 0) {
           node = doc.activeElement;
         } else {
@@ -7238,8 +7238,8 @@ Expression: "${expression}"
     };
     var updateTabbableNodes = function updateTabbableNodes2() {
       state.containerGroups = state.containers.map(function(container) {
-        var tabbableNodes = tabbable(container, config.tabbableOptions);
-        var focusableNodes = focusable(container, config.tabbableOptions);
+        var tabbableNodes = tabbable(container, config2.tabbableOptions);
+        var focusableNodes = focusable(container, config2.tabbableOptions);
         var firstTabbableNode = tabbableNodes.length > 0 ? tabbableNodes[0] : void 0;
         var lastTabbableNode = tabbableNodes.length > 0 ? tabbableNodes[tabbableNodes.length - 1] : void 0;
         var firstDomTabbableNode = focusableNodes.find(function(node) {
@@ -7331,7 +7331,7 @@ Expression: "${expression}"
         return;
       }
       node.focus({
-        preventScroll: !!config.preventScroll
+        preventScroll: !!config2.preventScroll
       });
       state.mostRecentlyFocusedNode = node;
       if (isSelectableInput(node)) {
@@ -7363,7 +7363,7 @@ Expression: "${expression}"
             var firstTabbableNode = _ref4.firstTabbableNode;
             return target === firstTabbableNode;
           });
-          if (startOfGroupIndex < 0 && (containerGroup.container === target || isFocusable(target, config.tabbableOptions) && !isTabbable(target, config.tabbableOptions) && !containerGroup.nextTabbableNode(target, false))) {
+          if (startOfGroupIndex < 0 && (containerGroup.container === target || isFocusable(target, config2.tabbableOptions) && !isTabbable(target, config2.tabbableOptions) && !containerGroup.nextTabbableNode(target, false))) {
             startOfGroupIndex = containerIndex;
           }
           if (startOfGroupIndex >= 0) {
@@ -7378,7 +7378,7 @@ Expression: "${expression}"
             var lastTabbableNode = _ref5.lastTabbableNode;
             return target === lastTabbableNode;
           });
-          if (lastOfGroupIndex < 0 && (containerGroup.container === target || isFocusable(target, config.tabbableOptions) && !isTabbable(target, config.tabbableOptions) && !containerGroup.nextTabbableNode(target))) {
+          if (lastOfGroupIndex < 0 && (containerGroup.container === target || isFocusable(target, config2.tabbableOptions) && !isTabbable(target, config2.tabbableOptions) && !containerGroup.nextTabbableNode(target))) {
             lastOfGroupIndex = containerIndex;
           }
           if (lastOfGroupIndex >= 0) {
@@ -7399,7 +7399,7 @@ Expression: "${expression}"
       if (findContainerIndex(target, e) >= 0) {
         return;
       }
-      if (valueOrHandler(config.clickOutsideDeactivates, e)) {
+      if (valueOrHandler(config2.clickOutsideDeactivates, e)) {
         trap.deactivate({
           // NOTE: by setting `returnFocus: false`, deactivate() will do nothing,
           //  which will result in the outside click setting focus to the node
@@ -7407,11 +7407,11 @@ Expression: "${expression}"
           //  `returnFocus: true`, we'll attempt to re-focus the node originally-focused
           //  on activation (or the configured `setReturnFocus` node), whether the
           //  outside click was on a focusable node or not
-          returnFocus: config.returnFocusOnDeactivate
+          returnFocus: config2.returnFocusOnDeactivate
         });
         return;
       }
-      if (valueOrHandler(config.allowOutsideClick, e)) {
+      if (valueOrHandler(config2.allowOutsideClick, e)) {
         return;
       }
       e.preventDefault();
@@ -7436,7 +7436,7 @@ Expression: "${expression}"
                 return node === state.mostRecentlyFocusedNode;
               });
               if (mruTabIdx >= 0) {
-                if (config.isKeyForward(state.recentNavEvent)) {
+                if (config2.isKeyForward(state.recentNavEvent)) {
                   if (mruTabIdx + 1 < tabbableNodes.length) {
                     nextNode = tabbableNodes[mruTabIdx + 1];
                     navAcrossContainers = false;
@@ -7466,7 +7466,7 @@ Expression: "${expression}"
             // move FROM the MRU node, not event-related node (which will be the node that is
             //  outside the trap causing the focus escape we're trying to fix)
             target: state.mostRecentlyFocusedNode,
-            isBackward: config.isKeyBackward(state.recentNavEvent)
+            isBackward: config2.isKeyBackward(state.recentNavEvent)
           });
         }
         if (nextNode) {
@@ -7492,12 +7492,12 @@ Expression: "${expression}"
       }
     };
     var checkTabKey = function checkTabKey2(event) {
-      if (config.isKeyForward(event) || config.isKeyBackward(event)) {
-        checkKeyNav(event, config.isKeyBackward(event));
+      if (config2.isKeyForward(event) || config2.isKeyBackward(event)) {
+        checkKeyNav(event, config2.isKeyBackward(event));
       }
     };
     var checkEscapeKey = function checkEscapeKey2(event) {
-      if (isEscapeEvent(event) && valueOrHandler(config.escapeDeactivates, event) !== false) {
+      if (isEscapeEvent(event) && valueOrHandler(config2.escapeDeactivates, event) !== false) {
         event.preventDefault();
         trap.deactivate();
       }
@@ -7507,10 +7507,10 @@ Expression: "${expression}"
       if (findContainerIndex(target, e) >= 0) {
         return;
       }
-      if (valueOrHandler(config.clickOutsideDeactivates, e)) {
+      if (valueOrHandler(config2.clickOutsideDeactivates, e)) {
         return;
       }
-      if (valueOrHandler(config.allowOutsideClick, e)) {
+      if (valueOrHandler(config2.allowOutsideClick, e)) {
         return;
       }
       e.preventDefault();
@@ -7522,7 +7522,7 @@ Expression: "${expression}"
       }
       activeFocusTraps.activateTrap(trapStack, trap);
       var promise;
-      if (config.delayInitialFocus) {
+      if (config2.delayInitialFocus) {
         promise = new Promise(function(resolve) {
           state.delayInitialFocusTimer = delay(function() {
             _tryFocus(getInitialFocusNode());
@@ -7713,9 +7713,9 @@ Expression: "${expression}"
           return this;
         }
         var options = _objectSpread2({
-          onDeactivate: config.onDeactivate,
-          onPostDeactivate: config.onPostDeactivate,
-          checkCanReturnFocus: config.checkCanReturnFocus
+          onDeactivate: config2.onDeactivate,
+          onPostDeactivate: config2.onPostDeactivate,
+          checkCanReturnFocus: config2.checkCanReturnFocus
         }, deactivateOptions);
         clearTimeout(state.delayInitialFocusTimer);
         state.delayInitialFocusTimer = void 0;
@@ -7770,7 +7770,7 @@ Expression: "${expression}"
         state.containers = elementsAsArray.map(function(element) {
           return typeof element === "string" ? doc.querySelector(element) : element;
         });
-        if (config.isolateSubtrees) {
+        if (config2.isolateSubtrees) {
           collectAdjacentElements(state.containers);
         }
         if (state.active) {
@@ -7836,11 +7836,11 @@ Expression: "${expression}"
       },
       _setSubtreeIsolation: {
         value: function value(isEnabled) {
-          if (config.isolateSubtrees) {
+          if (config2.isolateSubtrees) {
             state.adjacentElements.forEach(function(el) {
               var _el$getAttribute;
               if (isEnabled) {
-                switch (config.isolateSubtrees) {
+                switch (config2.isolateSubtrees) {
                   case "aria-hidden":
                     if (el.ariaHidden === "true" || ((_el$getAttribute = el.getAttribute("aria-hidden")) === null || _el$getAttribute === void 0 ? void 0 : _el$getAttribute.toLowerCase()) === "true") {
                       state.alreadySilent.add(el);
@@ -7858,7 +7858,7 @@ Expression: "${expression}"
                 if (state.alreadySilent.has(el))
                   ;
                 else {
-                  switch (config.isolateSubtrees) {
+                  switch (config2.isolateSubtrees) {
                     case "aria-hidden":
                       el.removeAttribute("aria-hidden");
                       break;
@@ -8339,13 +8339,13 @@ Expression: "${expression}"
     }
     return coords;
   }
-  var computePosition = async (reference, floating, config) => {
+  var computePosition = async (reference, floating, config2) => {
     const {
       placement = "bottom",
       strategy = "absolute",
       middleware = [],
       platform: platform2
-    } = config;
+    } = config2;
     const validMiddleware = middleware.filter(Boolean);
     const rtl = await (platform2.isRTL == null ? void 0 : platform2.isRTL(floating));
     let rects = await platform2.getElementRects({
@@ -11862,8 +11862,8 @@ Expression: "${expression}"
         group: getGroupName(el, modifiers)
       };
       let handleSort = generateSortHandler(expression, evaluate3);
-      let config = getConfigurationOverrides(el, modifiers, evaluate3);
-      let sortable = initSortable(el, config, preferences, (key, position) => {
+      let config2 = getConfigurationOverrides(el, modifiers, evaluate3);
+      let sortable = initSortable(el, config2, preferences, (key, position) => {
         handleSort(key, position);
       });
       cleanup(() => sortable.destroy());
@@ -11894,7 +11894,7 @@ Expression: "${expression}"
     }
     return {};
   }
-  function initSortable(el, config, preferences, handle) {
+  function initSortable(el, config2, preferences, handle) {
     let ghostRef;
     let options = {
       animation: 150,
@@ -11949,7 +11949,7 @@ Expression: "${expression}"
         keepElementsWithinMorphMarkers(el);
       }
     };
-    return new sortable_esm_default(el, { ...options, ...config });
+    return new sortable_esm_default(el, { ...options, ...config2 });
   }
   function keepElementsWithinMorphMarkers(el) {
     let cursor = el.firstChild;
@@ -12390,7 +12390,11 @@ Expression: "${expression}"
     "ref",
     "transition",
     "offline",
-    "confirm"
+    "confirm",
+    "navigate",
+    "current",
+    "persist",
+    "scroll"
   ];
   var BREW_ONLY_MODIFIERS = ["async", "renderless", "preserve-scroll", "prepend", "append", "island"];
   function registerWildcardDirective() {
@@ -13245,6 +13249,151 @@ Expression: "${expression}"
     });
   }
 
+  // src/features/navigate.js
+  var progressEl = null;
+  var prefetchCache = /* @__PURE__ */ new Map();
+  function config() {
+    return window.brewScriptConfig && window.brewScriptConfig.navigate || {};
+  }
+  function showProgress() {
+    if (config().show_progress_bar === false) return;
+    if (!progressEl) {
+      progressEl = document.createElement("div");
+      progressEl.setAttribute("data-brew-progress", "");
+      progressEl.style.cssText = `position:fixed;top:0;left:0;height:3px;width:0;background:${config().progress_bar_color || "#FF9A00"};z-index:9999;transition:width .2s`;
+      document.body.appendChild(progressEl);
+    }
+    requestAnimationFrame(() => {
+      progressEl.style.width = "70%";
+    });
+  }
+  function hideProgress() {
+    if (!progressEl) return;
+    progressEl.style.width = "100%";
+    setTimeout(() => {
+      if (progressEl) progressEl.remove();
+      progressEl = null;
+    }, 200);
+  }
+  function fire(name, detail = {}) {
+    document.dispatchEvent(new CustomEvent("brew:" + name, { detail, bubbles: true }));
+    document.dispatchEvent(new CustomEvent("livewire:" + name, { detail, bubbles: true }));
+  }
+  function persistSnapshot() {
+    document.querySelectorAll("[wire\\:persist]").forEach((el) => {
+      el._brewPersistKey = el.getAttribute("wire:persist") || "default";
+    });
+  }
+  function restorePersist(doc) {
+    document.querySelectorAll("[wire\\:persist]").forEach((el) => {
+      let next = doc.querySelector(`[wire\\:persist="${el._brewPersistKey}"]`);
+      if (next) next.replaceWith(el);
+    });
+  }
+  function applyScripts(doc) {
+    doc.querySelectorAll("script").forEach((script) => {
+      let skipOnce = script.hasAttribute("data-navigate-once") && script.src !== "" && document.querySelector(`script[src="${script.src}"][data-navigate-once]`);
+      let skipTrack = script.hasAttribute("data-navigate-track") && document.querySelector(`script[data-navigate-track="${script.getAttribute("data-navigate-track")}"]`);
+      if (skipOnce || skipTrack) return;
+      let clone3 = document.createElement("script");
+      [...script.attributes].forEach((attr) => clone3.setAttribute(attr.name, attr.value));
+      clone3.textContent = script.textContent;
+      document.body.appendChild(clone3);
+    });
+  }
+  async function fetchPage(url, { prefetch = false } = {}) {
+    if (prefetch && prefetchCache.has(url)) return prefetchCache.get(url);
+    let promise = fetch(url, { headers: { "X-Brew-Navigate": "1", Accept: "text/html" } }).then((r) => r.text());
+    if (prefetch) prefetchCache.set(url, promise);
+    return promise;
+  }
+  async function navigateTo(url, { replace = false } = {}) {
+    fire("navigate", { url });
+    fire("navigating", { url });
+    showProgress();
+    persistSnapshot();
+    let html = await fetchPage(url);
+    let doc = new DOMParser().parseFromString(html, "text/html");
+    let swap = () => {
+      restorePersist(doc);
+      document.title = doc.title;
+      document.body.replaceWith(doc.body);
+      applyScripts(doc);
+      history[replace ? "replaceState" : "pushState"]({}, "", url);
+      hideProgress();
+      fire("navigated", { url });
+      try {
+        window.Brew.start();
+      } catch (_) {
+      }
+    };
+    if (config().view_transitions && document.startViewTransition) document.startViewTransition(swap);
+    else swap();
+  }
+  function registerNavigate() {
+    document.addEventListener("click", (e) => {
+      let link = e.target.closest("[wire\\:navigate]");
+      if (!link || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return;
+      let href = link.getAttribute("href");
+      if (!href || href.startsWith("#") || href.startsWith("mailto:")) return;
+      e.preventDefault();
+      navigateTo(href);
+    });
+    document.addEventListener("mouseover", (e) => {
+      let link = e.target.closest("[wire\\:navigate\\.hover]");
+      let href = link && link.getAttribute("href");
+      if (href) fetchPage(href, { prefetch: true });
+    }, { capture: true });
+    window.addEventListener("popstate", () => navigateTo(location.href, { replace: true }));
+    on2("effect", ({ effects }) => {
+      if (effects.disableBackButtonCache) {
+        window.addEventListener("unload", () => {
+        });
+        history.scrollRestoration = "manual";
+      }
+      if (effects.url) {
+        let params = new URLSearchParams(location.search);
+        Object.entries(effects.url).forEach(([key, meta]) => {
+          let value = meta && Object.prototype.hasOwnProperty.call(meta, "value") ? meta.value : meta;
+          if (value == null || value === "") params.delete(key);
+          else params.set(key, String(value));
+        });
+        let qs = params.toString();
+        let next = location.pathname + (qs === "" ? "" : "?" + qs);
+        if (Object.values(effects.url).some((m) => m && m.history === true)) history.pushState({}, "", next);
+        else history.replaceState({}, "", next);
+      }
+      if (effects.title) document.title = effects.title;
+    });
+    window.Brew = window.Brew || {};
+    window.Brew.navigate = navigateTo;
+  }
+
+  // src/features/current.js
+  function resolveHref(el, dir) {
+    let href = el.getAttribute("href");
+    if (href) return href;
+    if (dir.expression) return dir.expression;
+    return "";
+  }
+  function registerCurrentDirective() {
+    directive2("current", ({ el, directive: dir }) => {
+      let href = resolveHref(el, dir);
+      let path = location.pathname;
+      let target = href.startsWith("http") ? new URL(href).pathname : href;
+      let exact = dir.modifiers.includes("exact") || dir.modifiers.includes("strict");
+      let matches3 = path === target;
+      if (!exact && !matches3 && target.length > 1) matches3 = path.startsWith(target);
+      el.toggleAttribute("data-current", matches3);
+    });
+  }
+
+  // src/directives/navigate.js
+  function registerNavigateDirective() {
+    directive2("navigate", () => {
+    });
+  }
+
   // src/index.js
   var Brew = {
     directive: directive2,
@@ -13262,7 +13411,8 @@ Expression: "${expression}"
     triggerAsync,
     dispatch: dispatchGlobal,
     dispatchTo,
-    on: on3
+    on: on3,
+    navigate: navigateTo
   };
   var warnAboutMultipleInstancesOf = (entity) => console.warn(`Detected multiple instances of ${entity} running`);
   if (window.Brew) warnAboutMultipleInstancesOf("Brew");
@@ -13297,6 +13447,9 @@ Expression: "${expression}"
   registerTeleport();
   registerIslands();
   registerLazy();
+  registerNavigate();
+  registerNavigateDirective();
+  registerCurrentDirective();
   registerWildcardDirective();
   queueMicrotask(coordinateNetworkInteractions);
   window.Brew = Brew;

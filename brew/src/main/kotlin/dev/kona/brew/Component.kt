@@ -291,6 +291,21 @@ abstract class Component {
     /** Default lazy placeholder HTML (`placeholder()`). */
     open fun placeholder(): String? = null
 
+    /** Disable bfcache for this full-page component (`disableBackButtonCache()`). */
+    fun disableBackButtonCache() {
+        state().store["disableBackButtonCache"] = true
+    }
+
+    /** Set layout for a full-page render (`$this->layout(...)`). */
+    fun layout(name: String) {
+        state().store["layout"] = name
+    }
+
+    /** Set document title (`$this->title(...)`). */
+    fun title(value: String) {
+        state().store["title"] = value
+    }
+
     private fun nameOrClass(): String {
         val s = state ?: return javaClass.simpleName
         return s.name

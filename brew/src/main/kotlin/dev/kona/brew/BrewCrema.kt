@@ -70,6 +70,13 @@ internal object BrewCrema {
             if (current != null) SupportSlots.put(current, name, html)
             html
         }
+        engine.blockDirective("persist") { call ->
+            val args = call.arguments()
+            val fromArgs = args.firstOrNull()?.toString().orEmpty()
+            val fromExpr = call.expression.trim().trim('\'', '"')
+            val name = listOf(fromArgs, fromExpr, "default").first { it.isNotBlank() }
+            """<div wire:persist="$name">${call.expand()}</div>"""
+        }
     }
 
     internal fun islandName(expression: String, args: List<Any?>): String {

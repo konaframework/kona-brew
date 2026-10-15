@@ -44,6 +44,28 @@ class Testable private constructor(
 
     fun commit(): Testable = call("\$commit")
 
+    /** Remount with query-string params (`->withQueryParams([...])`). */
+    fun withQueryParams(params: Map<String, Any?>): Testable {
+        result = manager.mountComponent(result.component.name(), params, null)
+        lastHtml = result.html!!
+        status = 200
+        return this
+    }
+
+    /** Assert the page HTML contains a mounted Brew component by name (`assertSeeLivewire`). */
+    fun assertSeeBrew(name: String): Testable {
+        check(html().contains("wire:name=\"$name\"") || html().contains("wire:name='$name'")) {
+            "Failed asserting that Brew component [$name] is visible"
+        }
+        return this
+    }
+
+    fun assertDontSeeBrew(name: String): Testable {
+        val seen = html().contains("wire:name=\"$name\"") || html().contains("wire:name='$name'")
+        check(!seen) { "Failed asserting that Brew component [$name] is not visible" }
+        return this
+    }
+
     private fun roundTrip(updates: Map<String, Any?>, calls: List<Map<String, Any?>>): Testable {
         @Suppress("UNCHECKED_CAST")
         val wire = Coercion.mapper.readValue(manager.json(result.snapshot), Map::class.java) as Map<String, Any?>

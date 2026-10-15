@@ -1,10 +1,12 @@
 package dev.kona.brew
 
+import dev.kona.brew.features.brewRoute
 import dev.kona.brew.hydration.Synth
 import dev.kona.brew.lifecycle.ComponentHook
 import dev.kona.brew.testing.Testable
 import dev.kona.http.Handler
 import dev.kona.http.Route
+import dev.kona.http.Router
 import java.util.function.Function
 import java.util.function.Supplier
 
@@ -84,6 +86,11 @@ object Brew {
 
     @JvmStatic
     fun setScriptRoute(registrar: Function<Handler, Route>): Route = manager().setScriptRoute(registrar)
+
+    /** Full-page component route (`Route::livewire` / `router.brew`). */
+    @JvmStatic
+    fun route(router: Router, uri: String, name: String): Route =
+        brewRoute(router, uri, name, manager())
 
     @JvmStatic
     fun styles(): String = manager().assets.styles()

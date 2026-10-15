@@ -146,3 +146,38 @@ annotation class Lazy(val bundle: Boolean = false)
 @Retention(AnnotationRetention.RUNTIME)
 @MustBeDocumented
 annotation class Defer(val bundle: Boolean = false)
+
+/** Layout view wrapping a full-page component (`#[Layout('layouts.app')]`). */
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+@MustBeDocumented
+annotation class Layout(val value: String)
+
+/** Document title for a full-page component (`#[Title('…')]`). */
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+@MustBeDocumented
+annotation class Title(val value: String)
+
+/**
+ * Sync a property with the query string (`#[Url]`).
+ * - [as]: query key (defaults to the property name)
+ * - [except]: omit from the URL when the value equals this sentinel (empty string = never omit by sentinel)
+ * - [keep]: keep the key even when empty
+ * - [history]: push a history entry on change
+ */
+@Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY)
+@Retention(AnnotationRetention.RUNTIME)
+@MustBeDocumented
+annotation class Url(
+    val `as`: String = "",
+    val except: String = "",
+    val keep: Boolean = false,
+    val history: Boolean = false,
+)
+
+/** Persist a property in the session (`#[Session]` / `#[Session(key: '…')]`). */
+@Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY)
+@Retention(AnnotationRetention.RUNTIME)
+@MustBeDocumented
+annotation class Session(val key: String = "")
