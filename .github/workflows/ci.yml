@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  governance:
+    name: Governance files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Require locked governance files
+        run: |
+          set -euo pipefail
+          test -f AGENTS.md
+          test -f MILESTONES.md
+          test -f README.md
+          test -f LICENSE
+          test -f docs/governance/livewire-v4-parity.md
+          test -f docs/governance/HANDOFF.md
+          test -f .cursor/rules/brew-milestones.mdc
+
+  jvm:
+    name: Kotlin + Java (100% Kover) and samples
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: konaframework/kona
+          ref: main
+          path: .kona
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Publish Kona artifacts to Maven local
+        working-directory: .kona
+        run: ./gradlew publishToMavenLocal -x test --no-configuration-cache
+      - name: Brew tests with 100% line + branch coverage
+        run: ./gradlew :kona-brew:test :kona-brew:koverVerify
+      - name: Kotlin + Java samples
+        run: ./gradlew :brew-sample-kotlin:test :brew-sample-java:test
+
+  js:
+    name: JS runtime (100% Vitest) and bundle freshness
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: js
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: js/package-lock.json
+      - run: npm ci
+      - name: Unit + DOM tests with 100% coverage
+        run: npm run coverage
+      - name: Committed bundles match sources
+        run: npm run check:bundle
