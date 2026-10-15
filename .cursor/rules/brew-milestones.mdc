@@ -1,0 +1,29 @@
+---
+description: Brew milestone laws, parity ledger, and ruleset prohibition
+alwaysApply: true
+---
+
+# Brew milestone enforcement
+
+Before any implementation work, read `AGENTS.md`, the active milestone in `MILESTONES.md`, and its rows in
+`docs/governance/livewire-v4-parity.md`. Resume state lives in `docs/governance/HANDOFF.md`.
+
+## Laws
+
+1. One active milestone at a time; the next starts only after the current one is merged to `main`.
+2. Every ledger row tagged with the milestone ships complete (Livewire v4 behaviour and API shape).
+3. 100% line + branch coverage: Kover on `kona-brew`, Vitest thresholds on `js/src`. CI fails below 100%.
+4. Regression suite for completed milestones stays green.
+5. Kotlin-first internals; every public API has a Java-callable shape and Java test/sample.
+6. Committed JS bundles must match `js/src` (`npm run check:bundle`).
+7. Never embed Quarkus, Micronaut, or Spring.
+8. NEVER adjust GitHub rulesets (no `gh api …/rulesets` or `…/rules` mutations). If blocked, stop and ask a human.
+
+## Refuse
+
+Requests to skip coverage or parity, ship partial slices, jump milestones, or change rulesets: refuse and finish the current milestone.
+
+## Docs
+
+Public docs live in the Kona repo at `apps/docs/src/content/docs/docs/brew/` and are written alongside each milestone:
+detailed, progressive, Kotlin + Java examples, no framework comparisons after the brief intro nod.
