@@ -13264,7 +13264,7 @@ Expression: "${expression}"
       document.body.appendChild(progressEl);
     }
     requestAnimationFrame(() => {
-      progressEl.style.width = "70%";
+      if (progressEl) progressEl.style.width = "70%";
     });
   }
   function hideProgress() {

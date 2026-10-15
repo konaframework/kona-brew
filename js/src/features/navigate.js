@@ -15,7 +15,7 @@ function showProgress() {
         progressEl.style.cssText = `position:fixed;top:0;left:0;height:3px;width:0;background:${config().progress_bar_color || '#FF9A00'};z-index:9999;transition:width .2s`
         document.body.appendChild(progressEl)
     }
-    requestAnimationFrame(() => { progressEl.style.width = '70%' })
+    requestAnimationFrame(() => { if (progressEl) progressEl.style.width = '70%' })
 }
 
 function hideProgress() {
