@@ -23,6 +23,8 @@ class BrewServiceProvider : ServiceProvider {
     override fun boot(app: Application) {
         val brew = app.resolve(BrewManager::class.java)
         Brew.setManager(brew)
+        // Capture the app classloader (set by AppLoader / the creating thread) before request VTs spawn.
+        Thread.currentThread().contextClassLoader?.let { brew.registry.classLoader = it }
         brew.config.classNamespaces.forEach { brew.registry.addLocation(it) }
         if (app.container.bound(Router::class.java)) routes(brew, app.resolve(Router::class.java))
         if (app.container.bound(HttpKernel::class.java)) app.resolve(HttpKernel::class.java).pushMiddleware(InjectAssets(brew))

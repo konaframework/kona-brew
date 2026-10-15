@@ -4,15 +4,12 @@ Resume point for the next agent session. Update this file whenever a milestone c
 
 ## State
 
-- **Active milestone:** M1 — Core runtime & protocol (`milestone/M1-core-runtime`).
-- **Ledger:** every M1 row is `done` except DX-7 (M1 docs) and DX-8 (starter kit). Both land through the Kona
-  cutover PR in `konaframework/kona`.
-- **Kona cutover PR** (separate repo, same milestone):
-  - remove legacy `modules/brew` (same `dev.kona:kona-brew` coordinates as this repo);
-  - point kits/BOM at this artifact;
-  - drop the `/brew/*` CSRF exception from samples (Brew posts `_token` in the JSON body, which
-    `VerifyCsrfToken` reads);
-  - add `apps/docs/src/content/docs/docs/brew/*` pages for the M1 slice.
+- **Active milestone:** M1 — Core runtime & protocol (`milestone/M1-core-runtime`) — DoD pending merges.
+- **Ledger:** every M1 row is `done`, including DX-7 (docs) and DX-8 (starter kit).
+- **Kona cutover** (`brew/cutover-kona-brew` in `konaframework/kona`):
+  - legacy `modules/brew` removed; kits/docs/CI consume external `dev.kona:kona-brew`;
+  - M1 Brew docs under `apps/docs/src/content/docs/docs/brew/*`.
+- **This repo PR:** https://github.com/konaframework/kona-brew/pull/1 — merge when CI green, then cutover.
 
 ## Layout
 
@@ -33,8 +30,7 @@ Resume point for the next agent session. Update this file whenever a milestone c
 cd js && npm ci && npm run coverage && npm run build && npm run check:bundle
 ```
 
-Browser check (Playwright, Chromium): start a sample on a port, then drive the counter, todos, and search
-components; every interaction must morph with no console errors. M7 turns this into the committed browser suite.
+After M1 merges: open `milestone/M2-forms-directives` and exhaust the M2 ledger rows.
 
 ## Runtime notes worth knowing
 

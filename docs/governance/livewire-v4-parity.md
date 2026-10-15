@@ -366,8 +366,8 @@ Status: `todo` · `done`.
 | DX-4b | Remaining config keys (layout, lazy placeholder, temp uploads, render_on_redirect, legacy_model_binding, navigate, smart_wire_keys, release_token, csp_safe) | `config/brew.*` | per feature (M4–M6) | todo |
 | DX-5 | Package development (register components/namespaces from packages) | `BrewServiceProvider` hooks | M6 | todo |
 | DX-6 | IDE support: Kona Idea / LSP completions for `<brew:…>`, `wire:*` | LSP contract notes | M7 | todo |
-| DX-7 | Docs for the M1 slice (`/docs/brew/*`: installation, components, properties, actions, templates, lifecycle, testing, JS runtime) | apps/docs in Kona | M1 | todo |
+| DX-7 | Docs for the M1 slice (`/docs/brew/*`: installation, components, properties, actions, templates, lifecycle, testing, JS runtime) | apps/docs in Kona | M1 | done |
 | DX-7b | Docs pages for every remaining topic in the Livewire v4 nav | apps/docs in Kona | each M (M2–M7) | todo |
-| DX-8 | Starter kit `kona new --kit=brew` uses kona-brew | Kona CLI | M1 cutover | todo |
+| DX-8 | Starter kit `kona new --kit=brew` uses kona-brew | Kona CLI | M1 cutover | done |
 | PERF-1 | Hot paths benchmarked (mount, update round-trip, morph), per-class metadata cached, no per-request reflection scans | `:kona-brew:bench`, `npm run bench`, [baseline](../performance/baseline.md) | M1 | done |
 | PERF-1b | Performance report (Chromium + concurrent load) | report | M7 | todo |

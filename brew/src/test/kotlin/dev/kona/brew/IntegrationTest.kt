@@ -241,6 +241,20 @@ class IntegrationTest {
     }
 
     @Test
+    fun `service provider boot without TCCL keeps default registry loader`(@TempDir dir: Path) {
+        val previous = Thread.currentThread().contextClassLoader
+        Thread.currentThread().contextClassLoader = null
+        try {
+            val app = Application(dir)
+            app.register(BrewServiceProvider()).boot()
+            val brew = app.resolve(BrewManager::class.java)
+            assertSame(ComponentRegistry::class.java.classLoader, brew.registry.classLoader)
+        } finally {
+            Thread.currentThread().contextClassLoader = previous
+        }
+    }
+
+    @Test
     fun `config from kona config`() {
         val config = dev.kona.core.Config()
         config.set("brew.class_namespace", "a.b, c.d,")

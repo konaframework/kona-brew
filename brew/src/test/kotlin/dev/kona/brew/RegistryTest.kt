@@ -105,4 +105,31 @@ class RegistryTest {
         val registry = ComponentRegistry(Container()).component("counter", Counter::class.java)
         assertTrue(registry.create("counter") is Counter)
     }
+
+    @Test
+    fun `load tries preferred classLoader and skips broken loaders`() {
+        val boom = object : ClassLoader(null) {
+            override fun loadClass(name: String, resolve: Boolean): Class<*> {
+                if (name.startsWith("dev.kona.brew.fixtures")) throw NoClassDefFoundError(name)
+                return super.loadClass(name, resolve)
+            }
+        }
+        val previous = Thread.currentThread().contextClassLoader
+        try {
+            val viaTccl = ComponentRegistry().addLocation("dev.kona.brew.fixtures")
+            viaTccl.classLoader = boom
+            Thread.currentThread().contextClassLoader = javaClass.classLoader
+            assertSame(Counter::class.java, viaTccl.classOf("counter"))
+
+            val viaOwn = ComponentRegistry().addLocation("dev.kona.brew.fixtures")
+            viaOwn.classLoader = boom
+            Thread.currentThread().contextClassLoader = null
+            assertSame(Counter::class.java, viaOwn.classOf("counter"))
+        } finally {
+            Thread.currentThread().contextClassLoader = previous
+        }
+        // Non-component class names are ignored by isAssignableFrom.
+        val scalars = ComponentRegistry().addLocation("java.lang")
+        assertNull(scalars.classOf("string"))
+    }
 }

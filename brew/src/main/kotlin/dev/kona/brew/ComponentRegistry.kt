@@ -20,6 +20,14 @@ class ComponentRegistry @JvmOverloads constructor(private val container: Contain
     private val locations = java.util.concurrent.CopyOnWriteArrayList<String>()
     private val misses = ConcurrentHashMap.newKeySet<String>()
 
+    /**
+     * Preferred loader for convention resolution (`app.brew.Counter`, …).
+     * Set during [BrewServiceProvider.boot] so `grind serve --in-process` (URLClassLoader apps)
+     * still resolves components when request threads do not inherit the app TCCL.
+     */
+    @Volatile
+    var classLoader: ClassLoader = ComponentRegistry::class.java.classLoader
+
     /** Register [type] under [name]. */
     fun component(name: String, type: Class<out Component>): ComponentRegistry {
         classes[name] = type
@@ -124,13 +132,21 @@ class ComponentRegistry @JvmOverloads constructor(private val container: Contain
     }
 
     private fun load(className: String): Class<out Component>? {
-        val type = try {
-            Class.forName(className, false, Thread.currentThread().contextClassLoader)
-        } catch (_: ClassNotFoundException) {
-            return null
+        val loaders = linkedSetOf(classLoader)
+        Thread.currentThread().contextClassLoader?.let { loaders += it }
+        loaders += ComponentRegistry::class.java.classLoader
+        for (loader in loaders) {
+            val type = try {
+                Class.forName(className, false, loader)
+            } catch (_: ClassNotFoundException) {
+                continue
+            } catch (_: NoClassDefFoundError) {
+                continue
+            }
+            @Suppress("UNCHECKED_CAST")
+            if (Component::class.java.isAssignableFrom(type)) return type as Class<out Component>
         }
-        @Suppress("UNCHECKED_CAST")
-        return if (Component::class.java.isAssignableFrom(type)) type as Class<out Component> else null
+        return null
     }
 
     companion object {

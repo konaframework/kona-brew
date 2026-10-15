@@ -2,7 +2,7 @@
 
 Single source of truth for milestone status. Rules: [AGENTS.md](AGENTS.md). Ledger: [docs/governance/livewire-v4-parity.md](docs/governance/livewire-v4-parity.md).
 
-**Active milestone:** M1 — Core runtime & protocol
+**Active milestone:** M1 — Core runtime & protocol (closeout)
 
 The program is complete when every ledger row is `done` (M1–M7). Each milestone closes **all** ledger rows tagged with it.
 
@@ -19,9 +19,9 @@ The program is complete when every ledger row is `done` (M1–M7). Each mileston
 
 ## M1 — Core runtime & protocol
 
-**Branch:** `milestone/M1-core-runtime` · **Status:** active
+**Branch:** `milestone/M1-core-runtime` · **Status:** active (DoD pending merge)
 
-- [x] Ledger rows: 90 of 92 M1 rows `done`; DX-7 (docs) and DX-8 (starter kit) close with the Kona cutover PR.
+- [x] Ledger rows: all M1 rows `done` (incl. DX-7 docs + DX-8 starter kit cutover).
 - [x] 100% Kover (`kona-brew`) and 100% Vitest (`js/src`, 123 tests); CI enforced.
 - [x] Kotlin + Java samples with smoke and round-trip tests; both pass a Chromium run.
 - [x] Performance baseline recorded ([docs/performance/baseline.md](docs/performance/baseline.md)).
