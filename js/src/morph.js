@@ -2,6 +2,7 @@ import Alpine from 'alpinejs'
 import { trigger } from './hooks.js'
 import { findComponentByEl } from './store.js'
 import { interceptMessage } from './request/index.js'
+import { transitionDomMutation } from './directives/transition.js'
 
 export async function morph(component, el, html) {
     let wrapper = document.createElement(tagNameOf(el.parentElement))
@@ -38,7 +39,15 @@ export async function morph(component, el, html) {
         if (live) child.replaceWith(live.cloneNode(true))
     })
 
-    Alpine.morph(el, to, morphConfig(component))
+    let transitionOptions = {}
+
+    if (Object.prototype.hasOwnProperty.call(component.effects, 'transition') && component.effects.transition) {
+        transitionOptions = component.effects.transition
+    }
+
+    await transitionDomMutation(el, to, () => {
+        Alpine.morph(el, to, morphConfig(component))
+    }, transitionOptions)
 
     trigger('morphed', { el, component })
 }

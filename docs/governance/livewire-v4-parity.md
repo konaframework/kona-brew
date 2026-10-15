@@ -92,9 +92,9 @@ Status: `todo` · `done`.
 | ACT-4 | Event listeners `wire:<event>` any DOM event + key modifiers (`.enter`, `.shift.enter`, `.ctrl`, `.cmd`, `.meta`, `.alt`, `.escape`, `.space`, `.tab`, `.up/.down/.left/.right`, `.page-up/down`, `.slash` …) | JS `wire:*` wildcard | M1 | done |
 | ACT-5 | Event modifiers `.prevent .stop .window .document .outside .once .debounce(.Xms) .throttle(.Xms) .self .camel .dot .passive .capture` | same | M1 | done |
 | ACT-6 | Third-party / custom events (`wire:custom-event`, `wire:trix-change`) | same | M1 | done |
-| ACT-7 | Disabling inputs during form submit (`SupportDisablingFormsDuringRequest`) | `wire:submit` disables submit buttons/inputs | M2 | todo |
+| ACT-7 | Disabling inputs during form submit (`SupportDisablingFormsDuringRequest`) | `wire:submit` disables submit buttons/inputs | M2 | done |
 | ACT-8 | `$refresh` / `$wire.$refresh()` | same | M1 | done |
-| ACT-9 | `wire:confirm` (+ `.prompt`) | same | M2 | todo |
+| ACT-9 | `wire:confirm` (+ `.prompt`) | same | M2 | done |
 | ACT-10 | Calling actions from Alpine (`$wire.save()`, params, return values) | same | M1 | done |
 | ACT-11 | JavaScript actions (`#[Js]` methods, `$js.name`, `$this->js()`) | `@Js`, `js()` | M3 | todo |
 | ACT-12 | Magic actions `$set`, `$refresh`, `$toggle`, `$event` | same | M1 | done |
@@ -116,16 +116,16 @@ Status: `todo` · `done`.
 | FRM-3 | `wire:model.live`, `.blur`, `.change`, `.lazy`, `.debounce.Xms`, `.throttle.Xms`, `.number`, `.boolean`, `.fill`, `.self`, `.deep` | same | M1 | done |
 | FRM-4 | Real-time validation on update (`#[Validate]` props validate on `updated`) | same | M2 | done |
 | FRM-5 | Real-time saving (`updated()` hook) | lifecycle hooks | M1 | done |
-| FRM-6 | Dirty indicators (`wire:dirty`, `.class`, `.attr`, `.remove`, targets) | same | M2 | todo |
-| FRM-7 | Custom form controls (`wire:model` on Blade components / `x-modelable`) | `x-modelable` + Crema components | M2 | todo |
+| FRM-6 | Dirty indicators (`wire:dirty`, `.class`, `.attr`, `.remove`, targets) | same | M2 | done |
+| FRM-7 | Custom form controls (`wire:model` on Blade components / `x-modelable`) | `x-modelable` + Crema components | M2 | done |
 | FRM-8 | Input types: text, textarea, checkbox (bool + array), radio, select (single/multiple), number, date | JS `wire:model` value adapters | M1 | done |
 | VAL-1 | `#[Validate('rules')]`, array syntax, custom `as:`, `message:`, `onUpdate: false`, `translate: false`, custom key | `@Validate(...)` | M2 | done |
 | VAL-2 | `rules()`, `messages()`, `validationAttributes()` methods | same | M2 | done |
 | VAL-3 | `$this->validate()`, `validate([...])`, `validateOnly()` | same, via Kona `Validator` | M2 | done |
-| VAL-4 | Rule objects (`Rule::unique(...)->ignore()`) | Kona rule strings/objects | M2 | todo |
+| VAL-4 | Rule objects (`Rule::unique(...)->ignore()`) | Kona rule strings/objects | M2 | done |
 | VAL-5 | `addError`, `resetErrorBag`, `resetValidation`, `getErrorBag`, `setErrorBag`, `withValidator` | same | M2 | done |
 | VAL-6 | `$errors` in views (`@error`), errors persisted in `memo.errors` | Crema `errors` + memo | M2 | done |
-| VAL-7 | `$wire.$errors` (JS: `has`, `first`, `get`, `all`, `clear`) / Alpine `$errors` magic | same | M2 | todo |
+| VAL-7 | `$wire.$errors` (JS: `has`, `first`, `get`, `all`, `clear`) / Alpine `$errors` magic | same | M2 | done |
 | VAL-8 | ValidationException thrown in action → errors bag, no exception | same | M2 | done |
 | VAL-9 | Testing: `assertHasErrors`, `assertHasNoErrors` with rule keys | Testable | M2 | done |
 
@@ -224,28 +224,28 @@ Status: `todo` · `done`.
 | DIR-1 | `wire:click` | same | M1 | done |
 | DIR-2 | `wire:submit` | same | M1 | done |
 | DIR-3 | `wire:model` (all modifiers, nested paths) | same | M1 | done |
-| DIR-4 | `wire:loading` (`.class`, `.attr`, `.remove`, `.delay.*`, `.flex/.grid/.inline…`, `wire:target` incl. params/props/`except`) | same | M2 | todo |
-| DIR-5 | `data-loading` attribute on request-triggering elements (`SupportDataLoading`) | same | M2 | todo |
+| DIR-4 | `wire:loading` (`.class`, `.attr`, `.remove`, `.delay.*`, `.flex/.grid/.inline…`, `wire:target` incl. params/props/`except`) | same | M2 | done |
+| DIR-5 | `data-loading` attribute on request-triggering elements (`SupportDataLoading`) | same | M2 | done |
 | DIR-6 | `wire:navigate` | same | M5 | todo |
 | DIR-7 | `wire:current` | same | M5 | todo |
-| DIR-8 | `wire:cloak` | same | M2 | todo |
-| DIR-9 | `wire:dirty` | same | M2 | todo |
-| DIR-10 | `wire:confirm` | same | M2 | todo |
-| DIR-11 | `wire:transition` + `#[Transition]` (`type:`, `skip`) | same | M2 | todo |
+| DIR-8 | `wire:cloak` | same | M2 | done |
+| DIR-9 | `wire:dirty` | same | M2 | done |
+| DIR-10 | `wire:confirm` | same | M2 | done |
+| DIR-11 | `wire:transition` + `#[Transition]` (`type:`, `skip`) | same | M2 | done |
 | DIR-12 | `wire:init` | same | M1 | done |
 | DIR-13 | `wire:intersect` (`.once`, `.half`, `.full`, `.margin`, `:enter`, `:leave`) | same | M6 | todo |
-| DIR-14 | `wire:poll` (`.Xs`, `.keep-alive`, `.visible`) | same | M2 | todo |
-| DIR-15 | `wire:offline` (`.class`, `.attr`, `.remove`) | same | M2 | todo |
+| DIR-14 | `wire:poll` (`.Xs`, `.keep-alive`, `.visible`) | same | M2 | done |
+| DIR-15 | `wire:offline` (`.class`, `.attr`, `.remove`) | same | M2 | done |
 | DIR-16 | `wire:ignore` (`.self`, `.children`) | same | M1 | done |
-| DIR-17 | `wire:ref` + `$refs` / `$wire.$refs` / `->ref()` targeting events & streams | same | M2 | todo |
+| DIR-17 | `wire:ref` + `$refs` / `$wire.$refs` / `->ref()` targeting events & streams | same | M2 | done |
 | DIR-18 | `wire:replace` (`.self`) | same (shipped with the M1 morph) | M2 | done |
-| DIR-19 | `wire:show` (+ `.transition`) | same | M2 | todo |
+| DIR-19 | `wire:show` (+ `.transition`) | same | M2 | done |
 | DIR-20 | `wire:sort` (`wire:sort:item`, `:handle`, `:group`, `:ignore`) | same | M6 | todo |
 | DIR-21 | `wire:stream` (`.replace`) + `$this->stream()` | same | M3 | todo |
-| DIR-22 | `wire:text` | same | M2 | todo |
-| DIR-23 | `wire:bind:attr` | same | M2 | todo |
+| DIR-22 | `wire:text` | same | M2 | done |
+| DIR-23 | `wire:bind:attr` | same | M2 | done |
 | DIR-24 | `wire:key` | same | M1 | done |
-| DIR-25 | `wire:model` on any element with `x-modelable` | same | M2 | todo |
+| DIR-25 | `wire:model` on any element with `x-modelable` | same | M2 | done |
 
 ## Attributes
 
@@ -266,7 +266,7 @@ Status: `todo` · `done`.
 | ATR-13 | `#[Renderless]` | `@Renderless` | M1 | done |
 | ATR-14 | `#[Session]` | `@Session` | M5 | todo |
 | ATR-15 | `#[Title]` | `@Title` | M5 | todo |
-| ATR-16 | `#[Transition]` | `@Transition` | M2 | todo |
+| ATR-16 | `#[Transition]` | `@Transition` | M2 | done |
 | ATR-17 | `#[Url]` | `@Url` | M5 | todo |
 | ATR-18 | `#[Validate]` (+ deprecated `#[Rule]`) | `@Validate`, `@Rule` alias | M2 | done |
 | ATR-19 | `#[Authorize]` | `@Authorize` | M6 | todo |
@@ -300,7 +300,7 @@ Status: `todo` · `done`.
 | JS-1 | Bundled Alpine (+ morph, intersect, collapse, focus, persist, anchor, mask, sort, resize), `window.Alpine`, `window.Livewire` | `window.Brew`, Alpine + plugins | M1 | done |
 | JS-2 | ESM build for manual bundling (`livewire.esm`, `Livewire.start()`) | `@konaframework/brew` ESM + `Brew.start()` | M1 | done |
 | JS-3 | `$wire` core: props, methods, `$get`, `$set(prop, value, live)` (deep paths), `$toggle`, `$call`, `$refresh`, `$commit`, `$el`, `$id`, `$watch`, `$hook` | `$wire` | M1 | done |
-| JS-3b | `$wire.$errors`, `$wire.$refs` | `$wire` | M2 | todo |
+| JS-3b | `$wire.$errors`, `$wire.$refs` | `$wire` | M2 | done |
 | JS-3c | `$wire.$entangle`, `$on`, `$dispatch*`, `$js`, `$intercept` | `$wire` | M3 | todo |
 | JS-3d | `$wire.$parent`, `$island` | `$wire` | M4 | todo |
 | JS-3e | `$wire.$upload*` | `$wire` | M6 | todo |
@@ -311,7 +311,7 @@ Status: `todo` · `done`.
 | JS-8 | Global events `livewire:init`, `livewire:initialized` | `brew:init`, `brew:initialized` | M1 | done |
 | JS-9 | Server-side JS evaluation `$this->js('...')` / `xjs` effect | `js()` | M3 | todo |
 | JS-10 | Error handling: 419 page-expired prompt, 500 modal (debug), `onError` | same | M1 | done |
-| JS-11 | Offline detection | see DIR-15 | M2 | todo |
+| JS-11 | Offline detection | see DIR-15 | M2 | done |
 | JS-12 | Morph algorithm: keyed (wire:key/id) Alpine morph, block markers, `wire:ignore`, `wire:replace`, lookahead | Alpine morph + Brew hooks | M1 | done |
 | JS-13 | File downloads effect | M3 | M3 | todo |
 | CSP-1 | CSP-safe build (`livewire.csp_safe`, Alpine CSP build, no `eval`) | `brew.csp.min.js` | M6 | todo |

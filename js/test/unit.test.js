@@ -28,6 +28,8 @@ describe('WeakBag', () => {
         bag.each(key, value => seen.push(value))
 
         expect(seen).toEqual([1, 2])
+        bag.remove(key)
+        expect(bag.get(key)).toEqual([])
     })
 })
 

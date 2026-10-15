@@ -63,6 +63,18 @@ abstract class Component {
         state().forceRender = true
     }
 
+    /** Hint a typed View Transition for this request (`$this->transition('forward')`). */
+    @JvmOverloads
+    fun transition(type: String? = null, skip: Boolean = false) {
+        if (type != null) state().store["transitionType"] = type
+        if (skip) state().store["transitionSkip"] = true
+    }
+
+    /** Skip View Transitions for this request (`$this->skipTransition()`). */
+    fun skipTransition() {
+        state().store["transitionSkip"] = true
+    }
+
     /** Assign several properties (`fill`). Unknown keys are ignored. */
     fun fill(values: Map<String, Any?>) {
         val meta = ComponentMeta.of(this)

@@ -4,8 +4,12 @@ import dev.kona.brew.fixtures.EmptyRulesForm
 import dev.kona.brew.fixtures.JavaProfileForm
 import dev.kona.brew.fixtures.ProfileForm
 import dev.kona.brew.fixtures.RuleOnlyComponent
+import dev.kona.brew.fixtures.TransitionedCounter
+import dev.kona.brew.fixtures.UniqueEmailComponent
 import dev.kona.brew.fixtures.ValidatedCounter
+import dev.kona.http.ExistenceChecker
 import dev.kona.http.ValidationException
+import dev.kona.http.Validator
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -18,6 +22,8 @@ class ValidationTest {
     private val manager = brew()
         .component("validated-counter", ValidatedCounter::class.java)
         .component("rule-only", RuleOnlyComponent::class.java)
+        .component("unique-email", UniqueEmailComponent::class.java)
+        .component("transitioned", TransitionedCounter::class.java)
 
     @AfterEach
     fun reset() {
@@ -241,5 +247,64 @@ class ValidationTest {
         val formValidated = form.javaClass.getMethod("validate").invoke(form) as Map<String, Any?>
         assertEquals("Ada", formValidated["name"])
         assertTrue(ErrorBag::class.java.getMethod("fromWire", Any::class.java).invoke(null, null).let { it as ErrorBag }.isEmpty())
+    }
+
+    @Test
+    fun `Rules unique ignore and exists builders`() {
+        assertEquals("unique:users", Rules.unique("users").toString())
+        assertEquals("unique:users,email", Rules.unique("users", "email").toString())
+        assertEquals("unique:users,email,7", Rules.unique("users", "email").ignore(7).toString())
+        assertEquals("unique:users,,9", Rules.unique("users").ignore(9).toString())
+        assertEquals("unique:t", Rules.unique("t").ignore(null).toString())
+        assertEquals("exists:posts", Rules.exists("posts").toString())
+        assertEquals("exists:posts,slug", Rules.exists("posts", "slug").toString())
+        assertEquals("in:a,b,", Rules.inList("a", "b", null))
+        assertEquals("not_in:1,2,", Rules.notIn(1, 2, null))
+        // Java @JvmOverloads bridges for unique/exists(table only)...
+        assertEquals("unique:users", Rules::class.java.getMethod("unique", String::class.java).invoke(null, "users").toString())
+        assertEquals("exists:posts", Rules::class.java.getMethod("exists", String::class.java).invoke(null, "posts").toString())
+
+        facade()
+        Validator.setExistenceChecker(ExistenceChecker { _, _, _, exceptId -> exceptId != "7" })
+        try {
+            val t = Brew.test(UniqueEmailComponent::class.java).call("save")
+            assertTrue(t.instance().errorBag().isEmpty())
+            assertEquals("unique:users,email,7", (t.instance() as UniqueEmailComponent).rules()["email"]!!.last())
+        } finally {
+            Validator.setExistenceChecker(null)
+        }
+    }
+
+    @Test
+    fun `Transition annotation and helpers emit effects`() {
+        facade()
+        val next = Brew.test(TransitionedCounter::class.java).call("next")
+        @Suppress("UNCHECKED_CAST")
+        val transition = next.effects()["transition"] as Map<String, Any?>
+        assertEquals("forward", transition["type"])
+
+        val quiet = Brew.test(TransitionedCounter::class.java).call("quiet")
+        @Suppress("UNCHECKED_CAST")
+        val skipped = quiet.effects()["transition"] as Map<String, Any?>
+        assertEquals(true, skipped["skip"])
+
+        val manual = Brew.test(TransitionedCounter::class.java).call("manualForward")
+        @Suppress("UNCHECKED_CAST")
+        assertEquals("forward", (manual.effects()["transition"] as Map<String, Any?>)["type"])
+
+        val skip = Brew.test(TransitionedCounter::class.java).call("manualSkip")
+        @Suppress("UNCHECKED_CAST")
+        assertEquals(true, (skip.effects()["transition"] as Map<String, Any?>)["skip"])
+
+        val c = Brew.test(TransitionedCounter::class.java).instance() as TransitionedCounter
+        c.transition()
+        c.transition(null, true)
+        c.transition("back", true)
+        c.javaClass.getMethod("transition").invoke(c)
+        c.javaClass.getMethod("transition", String::class.java).invoke(c, "sideways")
+        c.javaClass.getMethod("transition", String::class.java, Boolean::class.javaPrimitiveType)
+            .invoke(c, "both", true)
+        assertEquals("both", c.state().store["transitionType"])
+        assertEquals(true, c.state().store["transitionSkip"])
     }
 }

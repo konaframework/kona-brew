@@ -740,10 +740,10 @@ function deferHandlingDirectives(callback) {
   stopDeferring();
 }
 function getElementBoundUtilities(el) {
-  let cleanups = [];
-  let cleanup = (callback) => cleanups.push(callback);
+  let cleanups2 = [];
+  let cleanup = (callback) => cleanups2.push(callback);
   let [effect3, cleanupEffect2] = elementBoundEffect(el);
-  cleanups.push(cleanupEffect2);
+  cleanups2.push(cleanupEffect2);
   let utilities = {
     Alpine: alpine_default,
     effect: effect3,
@@ -751,7 +751,7 @@ function getElementBoundUtilities(el) {
     evaluateLater: evaluateLater.bind(evaluateLater, el),
     evaluate: evaluate.bind(evaluate, el)
   };
-  let doCleanup = () => cleanups.forEach((i) => i());
+  let doCleanup = () => cleanups2.forEach((i) => i());
   return [utilities, doCleanup];
 }
 function getDirectiveHandler(el, directive22) {
@@ -4256,6 +4256,9 @@ var WeakBag = class {
   each(key, callback) {
     this.get(key).forEach(callback);
   }
+  remove(key) {
+    this.map.delete(key);
+  }
 };
 function dispatch2(target, name, detail = {}, bubbles = true) {
   target.dispatchEvent(new CustomEvent(name, { detail, bubbles, composed: true, cancelable: true }));
@@ -4869,6 +4872,9 @@ var partitionInterceptors = [];
 var interceptors2 = new InterceptorRegistry();
 var bus = new MessageBus();
 var sessionExpired = false;
+function sessionIsExpired() {
+  return sessionExpired;
+}
 function messageBus() {
   return bus;
 }
@@ -5134,6 +5140,316 @@ function supersedeOlderMessages(message) {
   message.actions.forEach((action) => action.supersedes.forEach((older) => older.superseded = true));
 }
 
+// src/features/errors.js
+function getErrorsObject(component) {
+  let state = component.__errorsState ?? (component.__errorsState = module_default.reactive({ clientErrors: null }));
+  component.__lastErrorsSnapshot ?? (component.__lastErrorsSnapshot = component.snapshot);
+  return {
+    messages() {
+      if (component.__lastErrorsSnapshot !== component.snapshot) {
+        state.clientErrors = null;
+        component.__lastErrorsSnapshot = component.snapshot;
+      }
+      return state.clientErrors ?? (state.clientErrors = component.snapshot.memo.errors || {});
+    },
+    keys() {
+      return Object.keys(this.messages());
+    },
+    has(...keys) {
+      if (this.isEmpty()) return false;
+      if (keys.length === 0 || keys.length === 1 && keys[0] == null) return this.any();
+      if (keys.length === 1 && Array.isArray(keys[0])) keys = keys[0];
+      for (let key of keys) {
+        if (this.first(key) === "") return false;
+      }
+      return true;
+    },
+    hasAny(keys) {
+      if (this.isEmpty()) return false;
+      if (keys.length === 1 && Array.isArray(keys[0])) keys = keys[0];
+      for (let key of keys) {
+        if (this.has(key)) return true;
+      }
+      return false;
+    },
+    missing(...keys) {
+      if (keys.length === 1 && Array.isArray(keys[0])) keys = keys[0];
+      return !this.hasAny(keys);
+    },
+    first(key = null) {
+      let messages = key === null ? this.all() : this.get(key);
+      let firstMessage = messages.length > 0 ? messages[0] : "";
+      return Array.isArray(firstMessage) ? firstMessage[0] : firstMessage;
+    },
+    get(key) {
+      return this.messages()[key] || [];
+    },
+    all() {
+      return Object.values(this.messages()).flat();
+    },
+    isEmpty() {
+      return !this.any();
+    },
+    isNotEmpty() {
+      return this.any();
+    },
+    any() {
+      return Object.keys(this.messages()).length > 0;
+    },
+    count() {
+      return Object.values(this.messages()).reduce((total, array) => total + array.length, 0);
+    },
+    clear(field = null) {
+      if (field === null) {
+        state.clientErrors = {};
+      } else {
+        let errors = { ...state.clientErrors ?? (component.snapshot.memo.errors || {}) };
+        delete errors[field];
+        state.clientErrors = errors;
+      }
+    }
+  };
+}
+
+// src/features/refs.js
+function findRefEl(component, name) {
+  let refEl = component.el.querySelector(`[wire\\:ref="${name}"]`);
+  if (!refEl) {
+    console.error(`Ref "${name}" not found in component "${component.id}"`);
+    return;
+  }
+  return refEl;
+}
+
+// src/directives.js
+var customDirectiveNames = /* @__PURE__ */ new Set();
+function matchesForBrewDirective(attributeName) {
+  return attributeName.startsWith("wire:");
+}
+function extractDirective(el, name) {
+  let [value, ...modifiers] = name.slice("wire:".length).split(".");
+  return new Directive(value, modifiers, name, el);
+}
+function directive2(name, callback) {
+  if (customDirectiveNames.has(name)) return;
+  customDirectiveNames.add(name);
+  on2("directive.init", ({ el, component, directive: directive3, cleanup }) => {
+    if (directive3.value === name) callback({ el, directive: directive3, component, $wire: component.$wire, cleanup });
+  });
+}
+function customDirectiveHasBeenRegistered(name) {
+  return customDirectiveNames.has(name);
+}
+function getDirectives(el) {
+  return new DirectiveManager(el);
+}
+var DirectiveManager = class {
+  constructor(el) {
+    this.el = el;
+    this.directives = this.extractTypeModifiersAndValue();
+  }
+  all() {
+    return this.directives;
+  }
+  has(value) {
+    return this.directives.map((directive3) => directive3.value).includes(value);
+  }
+  missing(value) {
+    return !this.has(value);
+  }
+  get(value) {
+    return this.directives.find((directive3) => directive3.value === value);
+  }
+  extractTypeModifiersAndValue() {
+    return Array.from(this.el.getAttributeNames().filter((name) => matchesForBrewDirective(name)).map((name) => extractDirective(this.el, name)));
+  }
+};
+var Directive = class {
+  constructor(value, modifiers, rawName, el) {
+    this.rawName = this.raw = rawName;
+    this.el = el;
+    this.value = value;
+    this.modifiers = modifiers;
+    this.expression = el.getAttribute(rawName);
+  }
+  get method() {
+    return this.methods[0].method;
+  }
+  get params() {
+    return this.methods[0].params;
+  }
+  get methods() {
+    return splitMethods(this.expression).map(({ method, paramString }) => ({ method, params: evaluateParams(paramString) }));
+  }
+};
+function evaluateParams(paramString) {
+  if (paramString === "") return [];
+  try {
+    return module_default.evaluateRaw(document, `__brewArgs(${paramString})`, { scope: { __brewArgs: (...args) => args } });
+  } catch (error2) {
+    console.warn("Failed to parse parameters:", paramString, error2);
+    return [];
+  }
+}
+function splitMethods(expression) {
+  let methods = [];
+  let current = "";
+  let depth = 0;
+  let quote = null;
+  let source = expression.trim();
+  for (let i = 0; i < source.length; i++) {
+    let char = source[i];
+    if (quote) {
+      if (char === quote && source[i - 1] !== "\\") quote = null;
+    } else if (char === '"' || char === "'") {
+      quote = char;
+    } else if (char === "(") {
+      depth++;
+    } else if (char === ")") {
+      depth--;
+    } else if (char === "," && depth === 0) {
+      methods.push(parseCall(current.trim()));
+      current = "";
+      continue;
+    }
+    current += char;
+  }
+  if (current.trim() !== "") methods.push(parseCall(current.trim()));
+  return methods;
+}
+function parseCall(call) {
+  let match = call.match(/^([^(]+)\(/);
+  if (!match) return { method: call, paramString: "" };
+  return { method: match[1].trim(), paramString: call.slice(match[0].length, call.lastIndexOf(")")).trim() };
+}
+
+// src/directives/shared.js
+function toggleBooleanStateDirective(el, directive3, isTruthy, cachedDisplay = null) {
+  isTruthy = directive3.modifiers.includes("remove") ? !isTruthy : isTruthy;
+  if (directive3.modifiers.includes("class")) {
+    let classes = directive3.expression.split(" ").filter(String);
+    if (isTruthy) el.classList.add(...classes);
+    else el.classList.remove(...classes);
+  } else if (directive3.modifiers.includes("attr")) {
+    if (isTruthy) el.setAttribute(directive3.expression, true);
+    else el.removeAttribute(directive3.expression);
+  } else {
+    let cache = cachedDisplay ?? window.getComputedStyle(el, null).getPropertyValue("display");
+    let display = ["inline", "list-item", "block", "table", "flex", "grid", "inline-flex"].filter((i) => directive3.modifiers.includes(i))[0] || "inline-block";
+    display = directive3.modifiers.includes("remove") && !isTruthy ? cache : display;
+    el.style.display = isTruthy ? display : "none";
+  }
+}
+
+// src/directives/dirty.js
+var refreshDirtyStatesByComponent = new WeakBag();
+function checkDirty(component, targets) {
+  if (targets === void 0) return !deeplyEqual(component.canonical, component.reactive);
+  if (Array.isArray(targets)) {
+    return targets.some((target) => !deeplyEqual(dataGet(component.canonical, target), dataGet(component.reactive, target)));
+  }
+  return !deeplyEqual(dataGet(component.canonical, targets), dataGet(component.reactive, targets));
+}
+function registerDirtyDirective() {
+  on2("commit", ({ component, succeed }) => {
+    succeed(() => {
+      setTimeout(() => refreshDirtyStatesByComponent.each(component, (i) => i(false)));
+    });
+  });
+  directive2("dirty", ({ el, directive: directive3, component }) => {
+    let targets = dirtyTargets(el);
+    let oldIsDirty = false;
+    let initialDisplay = el.style.display;
+    let refreshDirtyState = (isDirty2) => {
+      toggleBooleanStateDirective(el, directive3, isDirty2, initialDisplay);
+      oldIsDirty = isDirty2;
+    };
+    refreshDirtyStatesByComponent.add(component, refreshDirtyState);
+    module_default.effect(() => {
+      let isDirty2 = checkDirty(component, targets.length === 0 ? void 0 : targets);
+      if (oldIsDirty !== isDirty2) refreshDirtyState(isDirty2);
+      oldIsDirty = isDirty2;
+    });
+  });
+}
+function dirtyTargets(el) {
+  let directives2 = getDirectives(el);
+  let targets = [];
+  if (directives2.has("model")) targets.push(directives2.get("model").expression);
+  if (directives2.has("target")) {
+    targets = targets.concat(
+      directives2.get("target").expression.split(",").map((s) => s.trim()).filter(Boolean)
+    );
+  }
+  return targets;
+}
+
+// src/evaluator.js
+var SKIP = ["JSON", "true", "false", "null", "undefined", "this", "$wire", "$event"];
+function alpineScopeKeys(el) {
+  let keys = [];
+  for (let current = el; current; current = current.parentElement) {
+    let own = current._x_dataStack?.[0] || {};
+    Object.keys(own).forEach((key) => {
+      if (!key.startsWith("$") && !keys.includes(key)) keys.push(key);
+    });
+    if (current.hasAttribute("wire:id")) break;
+  }
+  return keys;
+}
+function reportError(error2, expression, el) {
+  console.warn(`Brew Expression Error: ${error2.message}
+
+Expression: "${expression}"
+
+`, el);
+  console.error(error2);
+}
+var reactiveExpressionEvaluationDepth = 0;
+function isEvaluatingReactiveExpression() {
+  return reactiveExpressionEvaluationDepth > 0;
+}
+function evaluateReactiveExpression(el, expression, options = {}) {
+  reactiveExpressionEvaluationDepth++;
+  try {
+    return evaluateActionExpression(el, expression, options);
+  } finally {
+    reactiveExpressionEvaluationDepth--;
+  }
+}
+function evaluateActionExpression(el, expression, options = {}) {
+  if (!expression || expression.trim() === "") return;
+  try {
+    return module_default.evaluateRaw(el, contextualizeExpression(expression, el), options);
+  } catch (error2) {
+    reportError(error2, expression, el);
+  }
+}
+function contextualizeExpression(expression, el) {
+  let scopeKeys = alpineScopeKeys(el);
+  let skip = [...SKIP, ...scopeKeys];
+  let protectedParts = [];
+  let target = actionTargetOffset(expression);
+  let result = expression.replace(/(["'`])(?:(?!\1)[^\\]|\\.)*\1|\/\*[\s\S]*?\*\/|\/\/[^\n]*/g, (match) => {
+    protectedParts.push(match);
+    return `___${protectedParts.length - 1}___`;
+  });
+  result = result.replace(/(^|[^.\w$])(\$?[a-zA-Z_]\w*)/g, (match, pre, ident, offset2) => {
+    let isActionTarget = scopeKeys.includes(ident) && offset2 + pre.length === target;
+    if (skip.includes(ident) && !isActionTarget || /^___\d+___$/.test(ident)) return pre + ident;
+    if (result[offset2 + match.length] === ":") return pre + ident;
+    return pre + "$wire." + ident;
+  });
+  return result.replace(/___(\d+)___/g, (match, i) => protectedParts[i]);
+}
+function actionTargetOffset(expression) {
+  let match = expression.match(/^(\s*)([a-zA-Z_]\w*)/);
+  if (!match) return null;
+  let rest = expression.slice(match[0].length).replace(/^(?:\s+|\/\*[\s\S]*?\*\/|\/\/[^\n]*(?:\n|$))*/, "");
+  if (rest !== "" && !rest.startsWith("(") && !rest.startsWith(";")) return null;
+  return match[1].length;
+}
+
 // src/wire.js
 var properties = {};
 var aliases = {
@@ -5144,7 +5460,10 @@ var aliases = {
   call: "$call",
   hook: "$hook",
   watch: "$watch",
+  dirty: "$dirty",
   commit: "$commit",
+  errors: "$errors",
+  refs: "$refs",
   intercept: "$intercept",
   interceptAction: "$interceptAction",
   interceptMessage: "$interceptMessage",
@@ -5155,6 +5474,10 @@ function wireProperty(name, callback) {
 }
 function callServer(component, method, params) {
   if (params.length === 1 && params[0] instanceof Event) params = [];
+  if (isEvaluatingReactiveExpression()) {
+    console.warn(`Brew: Cannot call server method "${method}" from a reactive binding like wire:text, wire:show, or wire:bind.`, component.el);
+    return Promise.resolve();
+  }
   return fireAction(component, method, params);
 }
 function generateWireObject(component, state) {
@@ -5221,6 +5544,30 @@ wireProperty("$intercept", (component) => (name, callback) => interceptComponent
 wireProperty("$interceptAction", (component) => (name, callback) => interceptComponentAction(component, name, callback));
 wireProperty("$interceptMessage", (component) => (name, callback) => interceptComponentMessage(component, name, callback));
 wireProperty("$interceptRequest", (component) => (name, callback) => interceptComponentRequest(component, name, callback));
+wireProperty("$errors", (component) => getErrorsObject(component));
+wireProperty("$refs", (component) => {
+  let fn = (name) => findRefEl(component, name);
+  return new Proxy(fn, {
+    get(target, property) {
+      if (property in target) return target[property];
+      return fn(property);
+    }
+  });
+});
+wireProperty("$dirty", (component) => (property) => {
+  let reactive3 = module_default.reactive({ dirty: false });
+  interceptComponentMessage(component, ({ onFinish }) => {
+    onFinish(() => {
+      queueMicrotask(() => {
+        reactive3.dirty = checkDirty(component, property);
+      });
+    });
+  });
+  module_default.effect(() => {
+    reactive3.dirty = checkDirty(component, property);
+  });
+  return reactive3.dirty;
+});
 function registerWireMagic() {
   module_default.magic("wire", (el, { cleanup }) => {
     let component;
@@ -11594,84 +11941,6 @@ function dimensions(entries) {
 }
 var module_default10 = src_default10;
 
-// src/directives.js
-var customDirectiveNames = /* @__PURE__ */ new Set();
-function matchesForBrewDirective(attributeName) {
-  return attributeName.startsWith("wire:");
-}
-function extractDirective(el, name) {
-  let [value, ...modifiers] = name.slice("wire:".length).split(".");
-  return new Directive(value, modifiers, name, el);
-}
-function directive2(name, callback) {
-  if (customDirectiveNames.has(name)) return;
-  customDirectiveNames.add(name);
-  on2("directive.init", ({ el, component, directive: directive3, cleanup }) => {
-    if (directive3.value === name) callback({ el, directive: directive3, component, $wire: component.$wire, cleanup });
-  });
-}
-function customDirectiveHasBeenRegistered(name) {
-  return customDirectiveNames.has(name);
-}
-var Directive = class {
-  constructor(value, modifiers, rawName, el) {
-    this.rawName = this.raw = rawName;
-    this.el = el;
-    this.value = value;
-    this.modifiers = modifiers;
-    this.expression = el.getAttribute(rawName);
-  }
-  get method() {
-    return this.methods[0].method;
-  }
-  get params() {
-    return this.methods[0].params;
-  }
-  get methods() {
-    return splitMethods(this.expression).map(({ method, paramString }) => ({ method, params: evaluateParams(paramString) }));
-  }
-};
-function evaluateParams(paramString) {
-  if (paramString === "") return [];
-  try {
-    return module_default.evaluateRaw(document, `__brewArgs(${paramString})`, { scope: { __brewArgs: (...args) => args } });
-  } catch (error2) {
-    console.warn("Failed to parse parameters:", paramString, error2);
-    return [];
-  }
-}
-function splitMethods(expression) {
-  let methods = [];
-  let current = "";
-  let depth = 0;
-  let quote = null;
-  let source = expression.trim();
-  for (let i = 0; i < source.length; i++) {
-    let char = source[i];
-    if (quote) {
-      if (char === quote && source[i - 1] !== "\\") quote = null;
-    } else if (char === '"' || char === "'") {
-      quote = char;
-    } else if (char === "(") {
-      depth++;
-    } else if (char === ")") {
-      depth--;
-    } else if (char === "," && depth === 0) {
-      methods.push(parseCall(current.trim()));
-      current = "";
-      continue;
-    }
-    current += char;
-  }
-  if (current.trim() !== "") methods.push(parseCall(current.trim()));
-  return methods;
-}
-function parseCall(call) {
-  let match = call.match(/^([^(]+)\(/);
-  if (!match) return { method: call, paramString: "" };
-  return { method: match[1].trim(), paramString: call.slice(match[0].length, call.lastIndexOf(")")).trim() };
-}
-
 // src/lifecycle.js
 function initDirectives(el, component, names) {
   names.map((name) => extractDirective(el, name)).forEach((directive3) => {
@@ -11796,6 +12065,127 @@ function registerLegacyHooks() {
   });
 }
 
+// src/directives/transition.js
+var defaultName = "match-element";
+var assignedTransitionNames = /* @__PURE__ */ new WeakSet();
+function registerTransitionDirective() {
+  directive2("transition", () => {
+  });
+}
+function setTransitionNames(root, options = {}) {
+  let attribute = options.attribute ?? "wire:transition";
+  let hasUsedDefaultName = false;
+  elementsForAttribute(root, attribute, options.includeRoot).forEach((el) => {
+    if (el.style.viewTransitionName) return;
+    let name = el.getAttribute(attribute);
+    if (!name && options.defaultName) {
+      if (hasUsedDefaultName) {
+        console.warn(`Brew: Only one unnamed [${attribute}] element can be transitioned per page. Give additional elements unique names.`);
+        return;
+      }
+      name = options.defaultName;
+      hasUsedDefaultName = true;
+    }
+    if (!name && options.type) return;
+    el.style.viewTransitionName = name || defaultName;
+    assignedTransitionNames.add(el);
+  });
+}
+function clearTransitionNames(root, options = {}) {
+  let attribute = options.attribute ?? "wire:transition";
+  elementsForAttribute(root, attribute, options.includeRoot).forEach((el) => {
+    if (!assignedTransitionNames.has(el)) return;
+    el.style.viewTransitionName = "";
+    assignedTransitionNames.delete(el);
+  });
+}
+function selectorForAttribute(attribute) {
+  return `[${attribute.replace(/[:.]/g, "\\$&")}]`;
+}
+function elementsForAttribute(root, attribute, includeRoot = false) {
+  let selector = selectorForAttribute(attribute);
+  let elements = Array.from(root.querySelectorAll(selector));
+  if (includeRoot && root.matches?.(selector)) elements.unshift(root);
+  return elements;
+}
+function startViewTransition(update, options = {}) {
+  let transitionConfig = { update };
+  if (options.type) transitionConfig.types = [options.type];
+  try {
+    return document.startViewTransition(transitionConfig);
+  } catch (e) {
+    return document.startViewTransition(update);
+  }
+}
+function skipTransitionWhenTopLayerOpens(transition2) {
+  transition2.ready.catch(() => {
+  });
+  let onBeforeToggle = (event) => {
+    if (event.newState === "open" && event.target.matches?.("dialog, [popover]")) {
+      transition2.skipTransition();
+    }
+  };
+  document.addEventListener("beforetoggle", onBeforeToggle, true);
+  let observer2 = new MutationObserver(() => {
+    if (document.querySelector("dialog:modal")) {
+      transition2.skipTransition();
+      observer2.disconnect();
+    }
+  });
+  observer2.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["open"],
+    subtree: true
+  });
+  transition2.finished.finally(() => {
+    observer2.disconnect();
+    document.removeEventListener("beforetoggle", onBeforeToggle, true);
+  }).catch(() => {
+  });
+}
+function topLayerBlocksTransitions() {
+  if (document.querySelector("dialog:modal")) return true;
+  for (let popover of document.querySelectorAll(":popover-open")) {
+    for (let el of popover.querySelectorAll("*")) {
+      if (typeof el.checkVisibility === "function" ? el.checkVisibility() : false) return true;
+    }
+  }
+  return false;
+}
+async function transitionDomMutation(fromEl, toEl, callback, options = {}) {
+  if (options.skip) return callback();
+  if (!fromEl.querySelector?.("[wire\\:transition]") && !toEl.querySelector?.("[wire\\:transition]")) {
+    return callback();
+  }
+  if (typeof document.startViewTransition !== "function") return callback();
+  if (topLayerBlocksTransitions()) return callback();
+  setTransitionNames(fromEl, options);
+  let style = document.createElement("style");
+  style.textContent = `
+        @media (prefers-reduced-motion: reduce) {
+            ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) {
+                animation: none !important;
+            }
+        }
+        ::view-transition-old(root) { animation: none !important; opacity: 0 !important; }
+        ::view-transition-new(root) { animation: none !important; opacity: 1 !important; }
+    `;
+  document.head.appendChild(style);
+  let update = () => {
+    callback();
+    setTransitionNames(fromEl, options);
+  };
+  let cleanup = () => {
+    style.remove();
+    clearTransitionNames(fromEl);
+  };
+  let transition2 = startViewTransition(update, { type: options.type });
+  skipTransitionWhenTopLayerOpens(transition2);
+  transition2.finished.finally(cleanup).catch(() => {
+  });
+  await transition2.updateCallbackDone;
+}
+
 // src/morph.js
 async function morph2(component, el, html) {
   let wrapper = document.createElement(tagNameOf(el.parentElement));
@@ -11815,7 +12205,13 @@ async function morph2(component, el, html) {
     let live = existing[child.getAttribute("wire:id")];
     if (live) child.replaceWith(live.cloneNode(true));
   });
-  module_default.morph(el, to, morphConfig(component));
+  let transitionOptions = {};
+  if (Object.prototype.hasOwnProperty.call(component.effects, "transition") && component.effects.transition) {
+    transitionOptions = component.effects.transition;
+  }
+  await transitionDomMutation(el, to, () => {
+    module_default.morph(el, to, morphConfig(component));
+  }, transitionOptions);
   trigger2("morphed", { el, component });
 }
 function isElement2(el) {
@@ -11877,62 +12273,31 @@ function registerMorphEffect() {
   });
 }
 
-// src/evaluator.js
-var SKIP = ["JSON", "true", "false", "null", "undefined", "this", "$wire", "$event"];
-function alpineScopeKeys(el) {
-  let keys = [];
-  for (let current = el; current; current = current.parentElement) {
-    let own = current._x_dataStack?.[0] || {};
-    Object.keys(own).forEach((key) => {
-      if (!key.startsWith("$") && !keys.includes(key)) keys.push(key);
-    });
-    if (current.hasAttribute("wire:id")) break;
-  }
-  return keys;
-}
-function reportError(error2, expression, el) {
-  console.warn(`Brew Expression Error: ${error2.message}
-
-Expression: "${expression}"
-
-`, el);
-  console.error(error2);
-}
-function evaluateActionExpression(el, expression, options = {}) {
-  if (!expression || expression.trim() === "") return;
-  try {
-    return module_default.evaluateRaw(el, contextualizeExpression(expression, el), options);
-  } catch (error2) {
-    reportError(error2, expression, el);
-  }
-}
-function contextualizeExpression(expression, el) {
-  let scopeKeys = alpineScopeKeys(el);
-  let skip = [...SKIP, ...scopeKeys];
-  let protectedParts = [];
-  let target = actionTargetOffset(expression);
-  let result = expression.replace(/(["'`])(?:(?!\1)[^\\]|\\.)*\1|\/\*[\s\S]*?\*\/|\/\/[^\n]*/g, (match) => {
-    protectedParts.push(match);
-    return `___${protectedParts.length - 1}___`;
-  });
-  result = result.replace(/(^|[^.\w$])(\$?[a-zA-Z_]\w*)/g, (match, pre, ident, offset2) => {
-    let isActionTarget = scopeKeys.includes(ident) && offset2 + pre.length === target;
-    if (skip.includes(ident) && !isActionTarget || /^___\d+___$/.test(ident)) return pre + ident;
-    if (result[offset2 + match.length] === ":") return pre + ident;
-    return pre + "$wire." + ident;
-  });
-  return result.replace(/___(\d+)___/g, (match, i) => protectedParts[i]);
-}
-function actionTargetOffset(expression) {
-  let match = expression.match(/^(\s*)([a-zA-Z_]\w*)/);
-  if (!match) return null;
-  let rest = expression.slice(match[0].length).replace(/^(?:\s+|\/\*[\s\S]*?\*\/|\/\/[^\n]*(?:\n|$))*/, "");
-  if (rest !== "" && !rest.startsWith("(") && !rest.startsWith(";")) return null;
-  return match[1].length;
-}
-
 // src/directives/wildcard.js
-var RESERVED = ["snapshot", "effects", "model", "init", "loading", "poll", "ignore", "id", "data", "key", "target", "dirty", "sort", "name"];
+var RESERVED = [
+  "snapshot",
+  "effects",
+  "model",
+  "init",
+  "loading",
+  "poll",
+  "ignore",
+  "id",
+  "data",
+  "key",
+  "target",
+  "dirty",
+  "sort",
+  "name",
+  "cloak",
+  "show",
+  "text",
+  "bind",
+  "ref",
+  "transition",
+  "offline",
+  "confirm"
+];
 var BREW_ONLY_MODIFIERS = ["async", "renderless", "prepend", "append"];
 function registerWildcardDirective() {
   on2("directive.init", ({ el, directive: directive3, cleanup, component }) => {
@@ -11944,16 +12309,23 @@ function registerWildcardDirective() {
       [attribute](event) {
         directive3.eventContext = event;
         directive3.wire = component.$wire;
-        let targetEl = directive3.value === "submit" ? event.submitter || el.querySelector('button[type="submit"], input[type="submit"]') : void 0;
-        setNextActionOrigin(targetEl === void 0 ? { el, directive: directive3 } : { el, directive: directive3, targetEl });
-        let options = event.detail?.brew;
-        if (options?.interceptAction) setNextActionInterceptor(options.interceptAction);
-        let expression = directive3.expression;
-        if (options?.defaultParams !== void 0 && !expression.includes("(")) {
-          let params = Array.isArray(options.defaultParams) ? options.defaultParams : [options.defaultParams];
-          expression += "(" + params.map((param) => JSON.stringify(param)).join(", ") + ")";
+        let execute = () => {
+          let targetEl = directive3.value === "submit" ? event.submitter || el.querySelector('button[type="submit"], input[type="submit"]') : void 0;
+          setNextActionOrigin(targetEl === void 0 ? { el, directive: directive3 } : { el, directive: directive3, targetEl });
+          let options = event.detail?.brew;
+          if (options?.interceptAction) setNextActionInterceptor(options.interceptAction);
+          let expression = directive3.expression;
+          if (options?.defaultParams !== void 0 && !expression.includes("(")) {
+            let params = Array.isArray(options.defaultParams) ? options.defaultParams : [options.defaultParams];
+            expression += "(" + params.map((param) => JSON.stringify(param)).join(", ") + ")";
+          }
+          evaluateActionExpression(el, expression, { scope: { $event: event } });
+        };
+        if (el.__brew_confirm) {
+          el.__brew_confirm(execute, () => event.stopImmediatePropagation());
+        } else {
+          execute();
         }
-        evaluateActionExpression(el, expression, { scope: { $event: event } });
       }
     });
     cleanup(unbind);
@@ -12072,6 +12444,430 @@ function registerSimpleDirectives() {
   });
 }
 
+// src/directives/loading.js
+function registerLoadingDirective() {
+  directive2("loading", ({ el, directive: directive3, component, cleanup }) => {
+    let { targets, inverted } = getTargets(el);
+    let [delay3, abortDelay] = applyDelay(directive3);
+    let restoreLoadingState = () => toggleBooleanStateDirective(el, directive3, false);
+    let activeLoadingCount = 0;
+    let startLoading = () => {
+      if (activeLoadingCount === 0) {
+        if (directive3.modifiers.includes("class")) {
+          let classes = directive3.expression.split(" ").filter(String);
+          let classStates = classes.map((className) => [className, el.classList.contains(className)]);
+          restoreLoadingState = () => classStates.forEach(([className, wasPresent]) => {
+            el.classList.toggle(className, wasPresent);
+          });
+        } else if (directive3.modifiers.includes("attr")) {
+          let attribute = directive3.expression;
+          let value = el.getAttribute(attribute);
+          restoreLoadingState = value === null ? () => el.removeAttribute(attribute) : () => el.setAttribute(attribute, value);
+        }
+        delay3(() => toggleBooleanStateDirective(el, directive3, true));
+      }
+      activeLoadingCount++;
+    };
+    let endLoading = () => {
+      activeLoadingCount--;
+      if (activeLoadingCount === 0) abortDelay(restoreLoadingState);
+    };
+    cleanup(whenTargetsArePartOfRequest(component, targets, inverted, [startLoading, endLoading]));
+  });
+}
+function applyDelay(directive3) {
+  if (!directive3.modifiers.includes("delay") || directive3.modifiers.includes("none")) {
+    return [(i) => i(), (i) => i()];
+  }
+  let duration2 = 200;
+  let delayModifiers = {
+    shortest: 50,
+    shorter: 100,
+    short: 150,
+    default: 200,
+    long: 300,
+    longer: 500,
+    longest: 1e3
+  };
+  Object.keys(delayModifiers).some((key) => {
+    if (directive3.modifiers.includes(key)) {
+      duration2 = delayModifiers[key];
+      return true;
+    }
+  });
+  let timeout;
+  let started2 = false;
+  return [
+    (callback) => {
+      timeout = setTimeout(() => {
+        callback();
+        started2 = true;
+      }, duration2);
+    },
+    async (callback) => {
+      if (started2) {
+        await callback();
+        started2 = false;
+      } else {
+        clearTimeout(timeout);
+      }
+    }
+  ];
+}
+function whenTargetsArePartOfRequest(component, targets, inverted, [startLoading, endLoading]) {
+  return interceptMessage(({ message, onSend, onSuccess, onFinish }) => {
+    if (component !== message.component) return;
+    if (targets.length === 0 && ![...message.actions].some((action) => action.metadata.island === void 0)) return;
+    let matches3 = true;
+    let cleared = false;
+    let finishLoading = () => {
+      if (!matches3 || cleared) return;
+      endLoading();
+      cleared = true;
+    };
+    onSend(({ payload }) => {
+      if (targets.length > 0 && containsTargets(payload, targets) === inverted) {
+        matches3 = false;
+      }
+      if (!matches3) return;
+      startLoading();
+    });
+    onSuccess(({ onEffect }) => onEffect(() => finishLoading()));
+    onFinish(() => finishLoading());
+  });
+}
+function containsTargets(payload, targets) {
+  let { updates, calls } = payload;
+  return targets.some(({ target, params }) => {
+    if (params) {
+      return calls.some(({ method, params: methodParams }) => target === method && params === quickHash(JSON.stringify(methodParams)));
+    }
+    let hasMatchingUpdate = Object.keys(updates).some((property) => {
+      if (property.includes(".")) {
+        if (property.split(".")[0] === target) return true;
+      }
+      return property === target;
+    });
+    if (hasMatchingUpdate) return true;
+    return calls.map((i) => i.method).includes(target);
+  });
+}
+function getTargets(el) {
+  let directives2 = getDirectives(el);
+  let targets = [];
+  let inverted = false;
+  if (directives2.has("target")) {
+    let directive3 = directives2.get("target");
+    if (directive3.modifiers.includes("except")) inverted = true;
+    directive3.methods.forEach(({ method, params }) => {
+      targets.push({
+        target: method,
+        params: params && params.length > 0 ? quickHash(JSON.stringify(params)) : void 0
+      });
+    });
+  } else {
+    let nonAction = ["init", "dirty", "offline", "navigate", "target", "loading", "poll", "ignore", "key", "id", "cloak", "show", "text", "bind", "ref", "transition", "confirm"];
+    directives2.all().filter((i) => !nonAction.includes(i.value)).map((i) => i.expression.split("(")[0]).forEach((target) => targets.push({ target }));
+  }
+  return { targets, inverted };
+}
+function quickHash(subject) {
+  return btoa(encodeURIComponent(subject));
+}
+
+// src/directives/offline.js
+var offlineHandlers = /* @__PURE__ */ new Set();
+var onlineHandlers = /* @__PURE__ */ new Set();
+var isOffline = !navigator.onLine;
+window.addEventListener("offline", () => {
+  isOffline = true;
+  offlineHandlers.forEach((i) => i());
+});
+window.addEventListener("online", () => {
+  isOffline = false;
+  onlineHandlers.forEach((i) => i());
+});
+function brewIsOffline() {
+  return isOffline;
+}
+function registerOfflineDirective() {
+  directive2("offline", ({ el, directive: directive3, cleanup }) => {
+    let setOffline = () => toggleBooleanStateDirective(el, directive3, true);
+    let setOnline = () => toggleBooleanStateDirective(el, directive3, false);
+    offlineHandlers.add(setOffline);
+    onlineHandlers.add(setOnline);
+    if (isOffline) setOffline();
+    cleanup(() => {
+      offlineHandlers.delete(setOffline);
+      onlineHandlers.delete(setOnline);
+    });
+  });
+}
+
+// src/directives/poll.js
+function registerPollDirective() {
+  directive2("poll", ({ el, directive: directive3 }) => {
+    let interval = extractDurationFrom(directive3.modifiers, 2e3);
+    let { start: start3, pauseWhile, throttleWhile, stopWhen } = poll(() => {
+      triggerComponentRequest(el, directive3);
+    }, interval);
+    start3();
+    throttleWhile(() => theTabIsInTheBackground() && theDirectiveIsMissingKeepAlive(directive3));
+    pauseWhile(() => theDirectiveHasVisible(directive3) && theElementIsNotInTheViewport(el));
+    pauseWhile(() => theDirectiveIsOffTheElement(el));
+    pauseWhile(() => brewIsOffline());
+    pauseWhile(() => sessionIsExpired());
+    stopWhen(() => theElementIsDisconnected(el));
+  });
+}
+function triggerComponentRequest(el, directive3) {
+  setNextActionOrigin({ el, directive: directive3, targetEl: null });
+  setNextActionMetadata({ type: "poll" });
+  evaluateActionExpression(el, directive3.expression || "$refresh");
+}
+function poll(callback, interval = 2e3) {
+  let pauseConditions = [];
+  let throttleConditions = [];
+  let stopConditions = [];
+  return {
+    start() {
+      let clear = synchronizedInterval(interval, () => {
+        if (stopConditions.some((i) => i())) return clear();
+        if (pauseConditions.some((i) => i())) return;
+        if (throttleConditions.some((i) => i()) && shouldThrottlePoll()) return;
+        callback();
+      });
+    },
+    pauseWhile(condition) {
+      pauseConditions.push(condition);
+    },
+    throttleWhile(condition) {
+      throttleConditions.push(condition);
+    },
+    stopWhen(condition) {
+      stopConditions.push(condition);
+    }
+  };
+}
+var clocks = {};
+function synchronizedInterval(ms, callback) {
+  if (!clocks[ms]) {
+    clocks[ms] = {
+      timer: setInterval(() => clocks[ms].callbacks.forEach((i) => i()), ms),
+      callbacks: /* @__PURE__ */ new Set()
+    };
+  }
+  clocks[ms].callbacks.add(callback);
+  return () => {
+    clocks[ms].callbacks.delete(callback);
+    if (clocks[ms].callbacks.size === 0) {
+      clearInterval(clocks[ms].timer);
+      delete clocks[ms];
+    }
+  };
+}
+var inBackground = false;
+document.addEventListener("visibilitychange", () => {
+  inBackground = document.hidden;
+}, false);
+function theTabIsInTheBackground() {
+  return inBackground;
+}
+function theDirectiveIsOffTheElement(el) {
+  return !getDirectives(el).has("poll");
+}
+function theDirectiveIsMissingKeepAlive(directive3) {
+  return !directive3.modifiers.includes("keep-alive");
+}
+function theDirectiveHasVisible(directive3) {
+  return directive3.modifiers.includes("visible");
+}
+function theElementIsNotInTheViewport(el) {
+  let bounding = el.getBoundingClientRect();
+  return !(bounding.top < (window.innerHeight || document.documentElement.clientHeight) && bounding.left < (window.innerWidth || document.documentElement.clientWidth) && bounding.bottom > 0 && bounding.right > 0);
+}
+function theElementIsDisconnected(el) {
+  return el.isConnected === false;
+}
+function shouldThrottlePoll(random = Math.random) {
+  return random() < 0.95;
+}
+function extractDurationFrom(modifiers, defaultDuration) {
+  let ms = modifiers.find((mod) => mod.match(/([0-9]+)ms/));
+  let s = modifiers.find((mod) => mod.match(/([0-9]+)s/));
+  let m = modifiers.find((mod) => mod.match(/([0-9]+)m/));
+  if (ms) return Number(ms.replace("ms", ""));
+  if (s) return Number(s.replace("s", "")) * 1e3;
+  if (m) return Number(m.replace("m", "")) * 60 * 1e3;
+  return defaultDuration;
+}
+
+// src/directives/confirm.js
+function registerConfirmDirective() {
+  directive2("confirm", ({ el, directive: directive3 }) => {
+    let message = (directive3.expression || "").replaceAll("\\n", "\n");
+    let shouldPrompt = directive3.modifiers.includes("prompt");
+    if (message === "") message = "Are you sure?";
+    el.__brew_confirm = (action, instead) => {
+      if (shouldPrompt) {
+        let [question, expected] = message.split("|");
+        if (!expected) {
+          console.warn("Brew: Must provide expectation with wire:confirm.prompt");
+        } else {
+          let input = prompt(question);
+          if (input === expected) action();
+          else instead();
+        }
+      } else if (confirm(message)) {
+        action();
+      } else {
+        instead();
+      }
+    };
+  });
+}
+
+// src/directives/cloak.js
+function registerCloakDirective() {
+  module_default.interceptInit((el) => {
+    if (el.hasAttribute("wire:cloak")) {
+      module_default.mutateDom(() => el.removeAttribute("wire:cloak"));
+    }
+  });
+}
+
+// src/directives/showTextBind.js
+function registerShowDirective() {
+  module_default.interceptInit((el) => {
+    for (let i = 0; i < el.attributes.length; i++) {
+      if (!el.attributes[i].name.startsWith("wire:show")) continue;
+      let { name, value } = el.attributes[i];
+      let modifierString = name.split("wire:show")[1];
+      let expression = value.trim();
+      module_default.bind(el, {
+        ["x-show" + modifierString]() {
+          return evaluateReactiveExpression(el, expression);
+        }
+      });
+    }
+  });
+}
+function registerTextDirective() {
+  module_default.interceptInit((el) => {
+    for (let i = 0; i < el.attributes.length; i++) {
+      if (!el.attributes[i].name.startsWith("wire:text")) continue;
+      let { name, value } = el.attributes[i];
+      let modifierString = name.split("wire:text")[1];
+      let expression = value.trim();
+      module_default.bind(el, {
+        ["x-text" + modifierString]() {
+          return evaluateReactiveExpression(el, expression);
+        }
+      });
+    }
+  });
+}
+function registerBindDirective() {
+  module_default.interceptInit((el) => {
+    for (let i = 0; i < el.attributes.length; i++) {
+      if (!el.attributes[i].name.startsWith("wire:bind:")) continue;
+      let { name, value } = el.attributes[i];
+      let remainder = name.split("wire:bind")[1];
+      let expression = value.trim();
+      module_default.bind(el, {
+        ["x-bind" + remainder]() {
+          return evaluateReactiveExpression(el, expression);
+        }
+      });
+    }
+  });
+}
+
+// src/features/dataLoading.js
+function registerDataLoading() {
+  interceptMessage(({ message, onSend, onFinish }) => {
+    let undos = [];
+    onSend(() => {
+      message.actions.forEach((action) => {
+        let origin = action.origin;
+        if (!origin) return;
+        let el = Object.prototype.hasOwnProperty.call(origin, "targetEl") ? origin.targetEl : origin.el;
+        if (!el) return;
+        el.setAttribute("data-loading", "true");
+        undos.push(() => el.removeAttribute("data-loading"));
+      });
+    });
+    onFinish(() => undos.forEach((undo) => undo()));
+  });
+}
+
+// src/features/disableForms.js
+var cleanups = new WeakBag();
+function registerDisableFormsDuringRequest() {
+  on2("directive.init", ({ el, directive: directive3, component }) => setTimeout(() => {
+    if (directive3.value !== "submit") return;
+    el.addEventListener("submit", () => {
+      let cleanup = disableForm(el);
+      cleanups.add(component, cleanup);
+    });
+  }));
+  interceptMessage(({ message, onFinish }) => {
+    onFinish(() => {
+      cleanups.each(message.component, (cleanup) => cleanup());
+      cleanups.remove(message.component);
+    });
+  });
+}
+function disableForm(formEl) {
+  let undos = [];
+  module_default.walk(formEl, (el, skip) => {
+    if (el.hasAttribute("wire:ignore")) return skip();
+    if (shouldMarkDisabled(el)) undos.push(markDisabled(el));
+    else if (shouldMarkReadOnly(el)) undos.push(markReadOnly(el));
+  });
+  return () => {
+    while (undos.length > 0) undos.shift()();
+  };
+}
+function shouldMarkDisabled(el) {
+  let tag = el.tagName.toLowerCase();
+  let inputTypesThatDontSupportReadonly = [
+    "hidden",
+    "range",
+    "color",
+    "checkbox",
+    "radio",
+    "file",
+    "submit",
+    "image",
+    "reset",
+    "button"
+  ];
+  if (tag === "select") return true;
+  if (tag === "button" && el.type === "submit") return true;
+  if (tag === "input" && inputTypesThatDontSupportReadonly.includes(el.type)) return true;
+  return false;
+}
+function shouldMarkReadOnly(el) {
+  return ["input", "textarea"].includes(el.tagName.toLowerCase());
+}
+function markDisabled(el) {
+  let undo = el.disabled ? () => {
+  } : () => {
+    el.disabled = false;
+  };
+  el.disabled = true;
+  return undo;
+}
+function markReadOnly(el) {
+  let undo = el.readOnly ? () => {
+  } : () => {
+    el.readOnly = false;
+  };
+  el.readOnly = true;
+  return undo;
+}
+
 // src/index.js
 var Brew = {
   directive: directive2,
@@ -12096,6 +12892,18 @@ registerLegacyHooks();
 registerMorphEffect();
 registerModelDirective();
 registerSimpleDirectives();
+registerLoadingDirective();
+registerDirtyDirective();
+registerOfflineDirective();
+registerPollDirective();
+registerConfirmDirective();
+registerCloakDirective();
+registerShowDirective();
+registerTextDirective();
+registerBindDirective();
+registerTransitionDirective();
+registerDataLoading();
+registerDisableFormsDuringRequest();
 registerWildcardDirective();
 queueMicrotask(coordinateNetworkInteractions);
 window.Brew = Brew;

@@ -11,6 +11,16 @@ import { registerMorphEffect } from './morph.js'
 import { registerWildcardDirective } from './directives/wildcard.js'
 import { registerModelDirective } from './directives/model.js'
 import { registerSimpleDirectives } from './directives/simple.js'
+import { registerLoadingDirective } from './directives/loading.js'
+import { registerDirtyDirective } from './directives/dirty.js'
+import { registerOfflineDirective } from './directives/offline.js'
+import { registerPollDirective } from './directives/poll.js'
+import { registerConfirmDirective } from './directives/confirm.js'
+import { registerCloakDirective } from './directives/cloak.js'
+import { registerShowDirective, registerTextDirective, registerBindDirective } from './directives/showTextBind.js'
+import { registerTransitionDirective } from './directives/transition.js'
+import { registerDataLoading } from './features/dataLoading.js'
+import { registerDisableFormsDuringRequest } from './features/disableForms.js'
 
 let Brew = {
     directive,
@@ -38,6 +48,18 @@ registerLegacyHooks()
 registerMorphEffect()
 registerModelDirective()
 registerSimpleDirectives()
+registerLoadingDirective()
+registerDirtyDirective()
+registerOfflineDirective()
+registerPollDirective()
+registerConfirmDirective()
+registerCloakDirective()
+registerShowDirective()
+registerTextDirective()
+registerBindDirective()
+registerTransitionDirective()
+registerDataLoading()
+registerDisableFormsDuringRequest()
 registerWildcardDirective()
 
 // Deferred so feature code can register action interceptors ahead of the built-in coordination...

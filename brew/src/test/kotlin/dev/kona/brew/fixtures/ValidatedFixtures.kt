@@ -3,6 +3,8 @@ package dev.kona.brew.fixtures
 import dev.kona.brew.Component
 import dev.kona.brew.Form
 import dev.kona.brew.Rule
+import dev.kona.brew.Rules
+import dev.kona.brew.Transition
 import dev.kona.brew.Validate
 
 class ProfileForm : Form() {
@@ -64,4 +66,49 @@ class RuleOnlyComponent : Component() {
     }
 
     override fun template() = "<div>{{ title }}</div>"
+}
+
+class UniqueEmailComponent : Component() {
+    var email: String = "ada@example.com"
+    var id: Int = 7
+
+    override fun rules(): Map<String, List<String>> = mapOf(
+        "email" to listOf(
+            "required",
+            "email",
+            Rules.unique("users", "email").ignore(id).toString(),
+        ),
+    )
+
+    fun save() {
+        validate()
+    }
+
+    override fun template() = "<div>{{ email }}</div>"
+}
+
+class TransitionedCounter : Component() {
+    var count = 0
+
+    @Transition(type = "forward")
+    fun next() {
+        count++
+    }
+
+    @Transition(skip = true)
+    fun quiet() {
+        count++
+    }
+
+    fun manualForward() {
+        transition("forward")
+        count++
+    }
+
+    fun manualSkip() {
+        skipTransition()
+        count++
+    }
+
+    override fun template() = """<div wire:transition="panel">{{ count }}</div>"""
 }

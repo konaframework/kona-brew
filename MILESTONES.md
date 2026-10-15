@@ -2,7 +2,7 @@
 
 Single source of truth for milestone status. Rules: [AGENTS.md](AGENTS.md). Ledger: [docs/governance/livewire-v4-parity.md](docs/governance/livewire-v4-parity.md).
 
-**Active milestone:** M2 — Forms, validation & directive suite
+**Active milestone:** M2 — Forms, validation & directive suite (closing)
 
 The program is complete when every ledger row is `done` (M1–M7). Each milestone closes **all** ledger rows tagged with it.
 
@@ -39,7 +39,15 @@ block markers, request bus, hooks, custom directives, error modals), testing API
 
 ## M2 — Forms, validation & directive suite
 
-**Branch:** `milestone/M2-forms-directives` · **Status:** active
+**Branch:** `milestone/M2-forms-directives` · **Status:** done (pending merge)
+
+- [x] Ledger rows: all M2 rows `done` (35/35).
+- [x] 100% Kover (`kona-brew`) and 100% Vitest (`js/src`).
+- [x] `Form` / `@Validate` / `@Rule` / `Rules.unique().ignore()` / error bag / Testable assertions.
+- [x] JS: `wire:loading`, `data-loading`, `wire:dirty`, `wire:confirm`, `wire:offline`, `wire:poll`, `wire:cloak`,
+      `wire:show`, `wire:text`, `wire:bind`, `wire:transition` + `@Transition`, `wire:ref` + `$refs` / `$errors`,
+      `x-modelable`, form disable-during-submit.
+- [x] Bundles rebuilt into `brew/src/main/resources/dev/kona/brew/`.
 
 `Form` objects, `@Validate`/`rules()`/messages/attributes, `validate`/`validateOnly`, error bag API, `$errors` (Crema + JS), real-time
 validation, form hooks; `wire:loading` (+ targets/delays), `data-loading`, `wire:dirty`, `wire:confirm`, `wire:offline`, `wire:poll`,

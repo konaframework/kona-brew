@@ -10,6 +10,8 @@ export class WeakBag {
     get(key) { return this.map.get(key) || [] }
 
     each(key, callback) { this.get(key).forEach(callback) }
+
+    remove(key) { this.map.delete(key) }
 }
 
 export function dispatch(target, name, detail = {}, bubbles = true) {
