@@ -13,6 +13,9 @@ beforeEach(() => {
     window.brewScriptConfig = {
         navigate: { show_progress_bar: true, progress_bar_color: '#f00', view_transitions: false },
     }
+    vi.stubGlobal('fetch', vi.fn(async () => ({
+        text: async () => '<html><head><title>T</title></head><body><div>ok</div></body></html>',
+    })))
 })
 afterEach(cleanPage)
 
@@ -103,6 +106,7 @@ describe('M5 navigate current url', () => {
             <a href="/elsewhere" wire:current>Else</a>
             <a href="/x" wire:current.strict>X</a>
             <a href="http://localhost/abs" wire:current>Abs</a>
+            <a href="http://localhost" wire:current>HostOnly</a>
         `))
         expect(document.querySelectorAll('[data-current]').length).toBeGreaterThan(0)
 

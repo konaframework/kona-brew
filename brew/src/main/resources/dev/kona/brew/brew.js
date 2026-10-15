@@ -13376,11 +13376,16 @@ Expression: "${expression}"
     if (dir.expression) return dir.expression;
     return "";
   }
+  function pathOf(href) {
+    if (!href.includes("://")) return href;
+    let afterHost = href.indexOf("/", href.indexOf("://") + 3);
+    return afterHost < 0 ? "/" : href.slice(afterHost);
+  }
   function registerCurrentDirective() {
     directive2("current", ({ el, directive: dir }) => {
       let href = resolveHref(el, dir);
       let path = location.pathname;
-      let target = href.startsWith("http") ? new URL(href).pathname : href;
+      let target = pathOf(href);
       let exact = dir.modifiers.includes("exact") || dir.modifiers.includes("strict");
       let matches3 = path === target;
       if (!exact && !matches3 && target.length > 1) matches3 = path.startsWith(target);
