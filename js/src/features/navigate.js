@@ -92,9 +92,9 @@ export function registerNavigate() {
     document.addEventListener('click', e => {
         let link = e.target.closest('[wire\\:navigate]')
         if (! link || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return
+        e.preventDefault()
         let href = link.getAttribute('href')
         if (! href || href.startsWith('#') || href.startsWith('mailto:')) return
-        e.preventDefault()
         navigateTo(href)
     })
 
