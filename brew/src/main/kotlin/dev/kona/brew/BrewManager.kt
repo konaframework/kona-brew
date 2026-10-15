@@ -6,6 +6,13 @@ import dev.kona.brew.features.SupportComputed
 import dev.kona.brew.features.SupportLifecycleHooks
 import dev.kona.brew.features.SupportLockedProperties
 import dev.kona.brew.features.SupportMagicActions
+import dev.kona.brew.features.SupportDownloads
+import dev.kona.brew.features.SupportEcho
+import dev.kona.brew.features.SupportEvents
+import dev.kona.brew.features.SupportJsEvaluation
+import dev.kona.brew.features.SupportRedirects
+import dev.kona.brew.features.SupportScripts
+import dev.kona.brew.features.SupportStreaming
 import dev.kona.brew.features.SupportTransitions
 import dev.kona.brew.features.SupportValidation
 import dev.kona.brew.hydration.Checksum
@@ -73,6 +80,13 @@ class BrewManager @JvmOverloads constructor(
         componentHook { SupportMagicActions() }
         componentHook { SupportValidation() }
         componentHook { SupportTransitions() }
+        componentHook { SupportEvents() }
+        componentHook { SupportJsEvaluation() }
+        componentHook { SupportRedirects() }
+        componentHook { SupportStreaming() }
+        componentHook { SupportDownloads() }
+        componentHook { SupportScripts() }
+        componentHook { SupportEcho() }
         views?.let { BrewCrema.install(it, this) }
     }
 
@@ -251,6 +265,8 @@ class BrewManager @JvmOverloads constructor(
         memo["assets"] = emptyList<Any?>()
         memo["errors"] = emptyList<Any?>()
         memo["locale"] = java.util.Locale.getDefault().language
+        val async = ComponentMeta.of(component).async
+        if (async.isNotEmpty()) memo["async"] = async.toList()
         memo.putAll(context.memo)
         val snapshot = linkedMapOf<String, Any?>("data" to data, "memo" to memo)
         snapshot["checksum"] = checksum.generate(snapshot)

@@ -26,6 +26,9 @@ class PublicPropertyNotFoundException(property: String, component: String) :
 class CannotUpdateLockedPropertyException(property: String) :
     BrewException("Cannot update locked property: [$property]")
 
+class EventHandlerDoesNotExistException(event: String) :
+    BrewException("Unable to handle event [$event]: no matching listener on the component")
+
 class MultipleRootElementsException(component: String) :
     BrewException(
         "Brew only supports one HTML element per component. Multiple root elements detected for component: [$component]",

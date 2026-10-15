@@ -229,6 +229,54 @@ class Testable private constructor(
         return this
     }
 
+    @JvmOverloads
+    @Suppress("UNCHECKED_CAST")
+    fun assertDispatched(name: String, params: Map<String, Any?>? = null): Testable {
+        val dispatches = dispatchRows(result.effects["dispatches"])
+        val match = dispatches.firstOrNull { it["name"] == name }
+            ?: throw AssertionError("Failed asserting that [$name] was dispatched; got $dispatches")
+        if (params != null) {
+            val rawParams = match["params"]
+            val actual: Map<Any?, Any?> = if (rawParams is Map<*, *>) {
+                rawParams.entries.associate { (k, v) -> k to v }
+            } else {
+                emptyMap()
+            }
+            for ((k, v) in params) {
+                check(looseEquals(actual[k], v)) { "Failed asserting dispatch [$name] param [$k]=[$v]; got $actual" }
+            }
+        }
+        return this
+    }
+
+    fun assertNotDispatched(name: String): Testable {
+        val dispatches = dispatchRows(result.effects["dispatches"])
+        check(dispatches.none { it["name"] == name }) { "Failed asserting that [$name] was not dispatched" }
+        return this
+    }
+
+    /** Assert a download effect was queued (`assertFileDownloaded`). */
+    @JvmOverloads
+    fun assertFileDownloaded(name: String? = null, content: String? = null): Testable {
+        @Suppress("UNCHECKED_CAST")
+        val download = result.effects["download"] as? Map<*, *>
+            ?: throw AssertionError("Failed asserting that a file was downloaded; no download effect")
+        if (name != null) {
+            check(download["name"] == name) { "Failed asserting download name [$name]; got [${download["name"]}]" }
+        }
+        if (content != null) {
+            val encoded = download["content"].toString()
+            val decoded = String(java.util.Base64.getDecoder().decode(encoded), Charsets.UTF_8)
+            check(decoded == content) { "Failed asserting download content; got [$decoded]" }
+        }
+        return this
+    }
+
+    private fun dispatchRows(raw: Any?): List<Map<*, *>> {
+        if (raw !is List<*>) return emptyList()
+        return raw.mapNotNull { row -> if (row is Map<*, *>) row else null }
+    }
+
     private fun values(value: Any): List<String> = when (value) {
         is Collection<*> -> value.map { it.toString() }
         is Array<*> -> value.map { it.toString() }

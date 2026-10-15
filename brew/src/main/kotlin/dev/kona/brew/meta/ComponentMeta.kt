@@ -1,7 +1,9 @@
 package dev.kona.brew.meta
 
+import dev.kona.brew.Async
 import dev.kona.brew.Component
 import dev.kona.brew.Computed
+import dev.kona.brew.Json
 import dev.kona.brew.Locked
 import dev.kona.brew.Renderless
 import java.lang.reflect.Field
@@ -47,6 +49,7 @@ class ComponentMeta private constructor(val type: Class<*>) {
     val actions: Map<String, List<Method>>
     val computed: Map<String, ComputedMeta>
     val renderless: Set<String>
+    val async: Set<String>
     val mixins: List<String>
     private val methodsByName: Map<String, List<Method>>
 
@@ -68,7 +71,12 @@ class ComponentMeta private constructor(val type: Class<*>) {
         actions = publicMethods
             .filter { it.name !in accessorNames && !isLifecycle(it.name) && it.name !in NON_ACTIONS && !DATA_CLASS.matches(it.name) }
             .groupBy { it.name }
-        renderless = actions.filterValues { ms -> ms.any { it.isAnnotationPresent(Renderless::class.java) } }.keys
+        renderless = actions.filterValues { ms ->
+            ms.any {
+                it.isAnnotationPresent(Renderless::class.java) || it.isAnnotationPresent(Json::class.java)
+            }
+        }.keys
+        async = actions.filterValues { ms -> ms.any { it.isAnnotationPresent(Async::class.java) } }.keys
     }
 
     /** Hook method by exact name (lifecycle / mixin hooks), preferring the most specific declaration. */

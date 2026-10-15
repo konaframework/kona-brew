@@ -28,6 +28,17 @@ class SupportMagicActions : ComponentHook() {
                 manager.updateProperty(component, path, current != true, context)()
                 returnEarly()
             }
+            "\$dispatch" -> {
+                val name = params[0].toString()
+                @Suppress("UNCHECKED_CAST")
+                val payload = when (val raw = params.getOrNull(1)) {
+                    is Map<*, *> -> raw.entries.associate { (k, v) -> k.toString() to v }
+                    null -> emptyMap()
+                    else -> mapOf("value" to raw)
+                }
+                component.dispatch(name, payload)
+                returnEarly()
+            }
         }
         return null
     }

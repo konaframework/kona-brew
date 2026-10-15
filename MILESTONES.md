@@ -2,7 +2,7 @@
 
 Single source of truth for milestone status. Rules: [AGENTS.md](AGENTS.md). Ledger: [docs/governance/livewire-v4-parity.md](docs/governance/livewire-v4-parity.md).
 
-**Active milestone:** M2 — Forms, validation & directive suite (closing)
+**Active milestone:** M3 — Events, JavaScript API & effects (closing)
 
 The program is complete when every ledger row is `done` (M1–M7). Each milestone closes **all** ledger rows tagged with it.
 
@@ -39,7 +39,7 @@ block markers, request bus, hooks, custom directives, error modals), testing API
 
 ## M2 — Forms, validation & directive suite
 
-**Branch:** `milestone/M2-forms-directives` · **Status:** done (pending merge)
+**Branch:** `milestone/M2-forms-directives` · **Status:** done (merged #2)
 
 - [x] Ledger rows: all M2 rows `done` (35/35).
 - [x] 100% Kover (`kona-brew`) and 100% Vitest (`js/src`).
@@ -56,7 +56,7 @@ validation, form hooks; `wire:loading` (+ targets/delays), `data-loading`, `wire
 
 ## M3 — Events, JavaScript API & effects
 
-**Branch:** `milestone/M3-events-js` · **Status:** planned
+**Branch:** `milestone/M3-events-js` · **Status:** done (PR pending)
 
 `dispatch` (+ `to`/`self`), `@On` (dynamic names), JS `Brew.on/dispatch*`, `$wire.$on/$dispatch*`, Alpine events, Echo/broadcasting
 events, `@script`/`@assets`/`@entangle`/`@this`, `js()` + `@Js`, `@Json`, `@Async`/`.async`, interceptors, redirects + flash,

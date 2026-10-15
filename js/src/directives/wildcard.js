@@ -9,7 +9,7 @@ const RESERVED = [
     'key', 'target', 'dirty', 'sort', 'name', 'cloak', 'show', 'text', 'bind', 'ref',
     'transition', 'offline', 'confirm',
 ]
-const BREW_ONLY_MODIFIERS = ['async', 'renderless', 'prepend', 'append']
+const BREW_ONLY_MODIFIERS = ['async', 'renderless', 'preserve-scroll', 'prepend', 'append']
 
 /**
  * Any other `wire:<event>` becomes an Alpine `x-on` listener (keeping every
