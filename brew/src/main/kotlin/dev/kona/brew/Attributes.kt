@@ -42,3 +42,49 @@ annotation class Renderless
 @Retention(AnnotationRetention.RUNTIME)
 @MustBeDocumented
 annotation class BrewComponent(val value: String)
+
+/**
+ * Validation rules for a property (`#[Validate]`). Pipe-joined or array [value] uses Kona [dev.kona.http.Validator] syntax.
+ *
+ * - [as]: attribute display name
+ * - [message]: single custom message (applies to the first rule)
+ * - [attribute]: alternate attribute key
+ * - [onUpdate]: when false, skip real-time validation on `updated`
+ * - [translate]: reserved for locales (M6); currently informational
+ */
+@Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY)
+@Retention(AnnotationRetention.RUNTIME)
+@MustBeDocumented
+annotation class Validate(
+    vararg val value: String = [],
+    val `as`: String = "",
+    val message: String = "",
+    val attribute: String = "",
+    val onUpdate: Boolean = true,
+    val translate: Boolean = true,
+)
+
+/** Alias of [Validate] (`#[Rule]`). */
+@Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY)
+@Retention(AnnotationRetention.RUNTIME)
+@MustBeDocumented
+annotation class Rule(
+    vararg val value: String = [],
+    val `as`: String = "",
+    val message: String = "",
+    val attribute: String = "",
+    val onUpdate: Boolean = true,
+    val translate: Boolean = true,
+)
+
+/**
+ * CSS transition hints for morph updates (`#[Transition]`).
+ * Client `wire:transition` reads [type]; [skip] opts out.
+ */
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.RUNTIME)
+@MustBeDocumented
+annotation class Transition(
+    val type: String = "",
+    val skip: Boolean = false,
+)

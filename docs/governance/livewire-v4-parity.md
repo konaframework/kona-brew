@@ -23,7 +23,7 @@ Status: `todo` · `done`.
 | PRO-8 | Custom update route (`Livewire::setUpdateRoute`) / script route (`setScriptRoute`) | `Brew.setUpdateRoute` / `setScriptRoute` | M1 | done |
 | PRO-9 | Multiple root element detection error | `MultipleRootElementsException` | M1 | done |
 | PRO-10 | Effects `html`, `returns` | `Effects` map | M1 | done |
-| PRO-10b | Effect `errors` | `Effects` map | M2 | todo |
+| PRO-10b | Effect `errors` | `Effects` map | M2 | done |
 | PRO-10c | Effects `dispatches`, `redirect`, `xjs`, `download`, `streams`, `scripts`, `assets` | `Effects` map | M3 | todo |
 | PRO-10d | Effects `url`, `title` | `Effects` map | M5 | todo |
 | PRO-11 | Locale memo (`SupportLocales`) — request locale restored on update | `memo.locale` → `Lang.setLocale` | M6 | todo |
@@ -112,22 +112,22 @@ Status: `todo` · `done`.
 | ID | Livewire v4 surface | Brew | M | Status |
 |----|--------------------|------|---|--------|
 | FRM-1 | `wire:submit` (+ `.prevent` implicit) | same | M1 | done |
-| FRM-2 | Form objects (`Livewire\Form`, `public PostForm $form`, `$this->form->validate()`, `->all()`, `->reset()`, `->pull()`, `->only()`, `->except()`, `->fill()`) | `Form` base class | M2 | todo |
+| FRM-2 | Form objects (`Livewire\Form`, `public PostForm $form`, `$this->form->validate()`, `->all()`, `->reset()`, `->pull()`, `->only()`, `->except()`, `->fill()`) | `Form` base class | M2 | done |
 | FRM-3 | `wire:model.live`, `.blur`, `.change`, `.lazy`, `.debounce.Xms`, `.throttle.Xms`, `.number`, `.boolean`, `.fill`, `.self`, `.deep` | same | M1 | done |
-| FRM-4 | Real-time validation on update (`#[Validate]` props validate on `updated`) | same | M2 | todo |
+| FRM-4 | Real-time validation on update (`#[Validate]` props validate on `updated`) | same | M2 | done |
 | FRM-5 | Real-time saving (`updated()` hook) | lifecycle hooks | M1 | done |
 | FRM-6 | Dirty indicators (`wire:dirty`, `.class`, `.attr`, `.remove`, targets) | same | M2 | todo |
 | FRM-7 | Custom form controls (`wire:model` on Blade components / `x-modelable`) | `x-modelable` + Crema components | M2 | todo |
 | FRM-8 | Input types: text, textarea, checkbox (bool + array), radio, select (single/multiple), number, date | JS `wire:model` value adapters | M1 | done |
-| VAL-1 | `#[Validate('rules')]`, array syntax, custom `as:`, `message:`, `onUpdate: false`, `translate: false`, custom key | `@Validate(...)` | M2 | todo |
-| VAL-2 | `rules()`, `messages()`, `validationAttributes()` methods | same | M2 | todo |
-| VAL-3 | `$this->validate()`, `validate([...])`, `validateOnly()` | same, via Kona `Validator` | M2 | todo |
+| VAL-1 | `#[Validate('rules')]`, array syntax, custom `as:`, `message:`, `onUpdate: false`, `translate: false`, custom key | `@Validate(...)` | M2 | done |
+| VAL-2 | `rules()`, `messages()`, `validationAttributes()` methods | same | M2 | done |
+| VAL-3 | `$this->validate()`, `validate([...])`, `validateOnly()` | same, via Kona `Validator` | M2 | done |
 | VAL-4 | Rule objects (`Rule::unique(...)->ignore()`) | Kona rule strings/objects | M2 | todo |
-| VAL-5 | `addError`, `resetErrorBag`, `resetValidation`, `getErrorBag`, `setErrorBag`, `withValidator` | same | M2 | todo |
-| VAL-6 | `$errors` in views (`@error`), errors persisted in `memo.errors` | Crema `errors` + memo | M2 | todo |
+| VAL-5 | `addError`, `resetErrorBag`, `resetValidation`, `getErrorBag`, `setErrorBag`, `withValidator` | same | M2 | done |
+| VAL-6 | `$errors` in views (`@error`), errors persisted in `memo.errors` | Crema `errors` + memo | M2 | done |
 | VAL-7 | `$wire.$errors` (JS: `has`, `first`, `get`, `all`, `clear`) / Alpine `$errors` magic | same | M2 | todo |
-| VAL-8 | ValidationException thrown in action → errors bag, no exception | same | M2 | todo |
-| VAL-9 | Testing: `assertHasErrors`, `assertHasNoErrors` with rule keys | Testable | M2 | todo |
+| VAL-8 | ValidationException thrown in action → errors bag, no exception | same | M2 | done |
+| VAL-9 | Testing: `assertHasErrors`, `assertHasNoErrors` with rule keys | Testable | M2 | done |
 
 ## Events
 
@@ -155,7 +155,7 @@ Status: `todo` · `done`.
 | LCH-5 | `rendering($view, $data)`, `rendered($view, $html)` | same | M1 | done |
 | LCH-6 | `exception($e, $stopPropagation)` | same | M1 | done |
 | LCH-7 | Trait hooks (`bootWithX`, `mountWithX`, `hydrateWithX`, `updatingWithX` …) | interface-mixin hooks (`boot<Interface>`) | M1 | done |
-| LCH-8 | Hooks inside form objects | `Form` hooks | M2 | todo |
+| LCH-8 | Hooks inside form objects | `Form` hooks | M2 | done |
 
 ## Nesting
 
@@ -268,7 +268,7 @@ Status: `todo` · `done`.
 | ATR-15 | `#[Title]` | `@Title` | M5 | todo |
 | ATR-16 | `#[Transition]` | `@Transition` | M2 | todo |
 | ATR-17 | `#[Url]` | `@Url` | M5 | todo |
-| ATR-18 | `#[Validate]` (+ deprecated `#[Rule]`) | `@Validate`, `@Rule` alias | M2 | todo |
+| ATR-18 | `#[Validate]` (+ deprecated `#[Rule]`) | `@Validate`, `@Rule` alias | M2 | done |
 | ATR-19 | `#[Authorize]` | `@Authorize` | M6 | todo |
 
 ## Crema (Blade) directives & assets
