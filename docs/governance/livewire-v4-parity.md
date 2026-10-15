@@ -25,7 +25,7 @@ Status: `todo` · `done`.
 | PRO-10 | Effects `html`, `returns` | `Effects` map | M1 | done |
 | PRO-10b | Effect `errors` | `Effects` map | M2 | done |
 | PRO-10c | Effects `dispatches`, `redirect`, `xjs`, `download`, `streams`, `scripts`, `assets` | `Effects` map | M3 | done |
-| PRO-10d | Effects `url`, `title` | `Effects` map | M5 | todo |
+| PRO-10d | Effects `url`, `title` | `Effects` map | M5 | done |
 | PRO-11 | Locale memo (`SupportLocales`) — request locale restored on update | `memo.locale` → `Lang.setLocale` | M6 | todo |
 | PRO-12 | Release tokens (`SupportReleaseTokens`) — invalidate snapshots after deploy | `memo.release` + `Brew.releaseToken` | M6 | todo |
 | PRO-13 | Large payload handling (`SupportLargePayloads`) | payload limits + chunked snapshot errors | M6 | todo |
@@ -46,7 +46,7 @@ Status: `todo` · `done`.
 | SEC-7 | `#[Authorize('ability', arg)]` on actions → 403 | `@Authorize` via Kona Gate | M6 | todo |
 | SEC-8 | `$this->authorize()` inside actions (AuthorizesRequests) | `Component.authorize(...)` | M6 | todo |
 | SEC-9 | Security policy: denied classes for synth hydration | `SecurityPolicy` allow-list | M1 | done |
-| SEC-10 | Disable back-button cache (`SupportDisablingBackButtonCache`) | `Component.disableBackButtonCache()` | M5 | todo |
+| SEC-10 | Disable back-button cache (`SupportDisablingBackButtonCache`) | `Component.disableBackButtonCache()` | M5 | done |
 
 ## Components
 
@@ -63,7 +63,7 @@ Status: `todo` · `done`.
 | CMP-9 | Passing props (static, `:prop="$expr"`, `:$prop` shorthand, kebab → camel) | tag attributes → mount params/props | M1 | done |
 | CMP-10 | Non-prop params become HTML attributes on root | `HtmlAttributeForwarding` | M4 | done |
 | CMP-11 | `render()` returning view with data (`->with()`), string templates, `view()` helpers | `view(name, data)`, `template(src)` | M1 | done |
-| CMP-11b | `->title()` / `->layout()` on the rendered view | `View.title/layout` | M5 | todo |
+| CMP-11b | `->title()` / `->layout()` on the rendered view | `View.title/layout` | M5 | done |
 | CMP-12 | Component stubs customization (`livewire:stubs`) | `./grind brew:stubs` | M7 | todo |
 | CMP-13 | Default component type config (`make_command.type`) | `brew.make.type` config | M7 | todo |
 | CMP-14 | `$this->getId()`, `getName()`, `$this->id()` | `id()`, `name()` | M1 | done |
@@ -181,7 +181,7 @@ Status: `todo` · `done`.
 | LZY-2 | `placeholder()` method, `@placeholder` directive, default placeholder view config | same | M4 | done |
 | LZY-3 | Bundling lazy loads (`lazy.bundle`, `#[Lazy(bundle: true)]`) | same | M4 | done |
 | LZY-4 | Lazy/defer props passing | same | M4 | done |
-| LZY-5 | Full-page lazy/defer, `lazy: false` to disable | same | M5 | todo |
+| LZY-5 | Full-page lazy/defer, `lazy: false` to disable | same | M5 | done |
 | LZY-6 | `Livewire::withoutLazyLoading()` in tests | `Brew.withoutLazyLoading()` | M4 | done |
 | ISL-1 | `@island … @endisland` (anonymous + `name:`) | `@island` Crema block | M4 | done |
 | ISL-2 | `lazy: true`, `defer: true`, `@placeholder` within island | same | M4 | done |
@@ -195,27 +195,27 @@ Status: `todo` · `done`.
 
 | ID | Livewire v4 surface | Brew | M | Status |
 |----|--------------------|------|---|--------|
-| PAG-1 | `Route::livewire('/path', 'name')` full-page components | `router.brew("/path", "name")` / `Brew.route` | M5 | todo |
-| PAG-2 | Layouts: default `layouts::app`, `#[Layout]`, `->layout()`, `{{ $slot }}` | `@Layout`, layout view with `slot` | M5 | todo |
-| PAG-3 | `#[Title]`, `->title()` | `@Title` | M5 | todo |
-| PAG-4 | Additional layout slots (`->slot('x')` / `<x-slot>` from page) | `View.slot(name)` | M5 | todo |
-| PAG-5 | Route params → mount params, route model binding | route params; Extract binding | M5 | todo |
-| NAV-1 | `wire:navigate` SPA visits, `.hover` prefetch, redirects with `navigate: true` | same | M5 | todo |
-| NAV-2 | `@persist('key')` elements across visits | same | M5 | todo |
-| NAV-3 | `wire:current` (`.exact`, `.strict`) + `data-current` | same | M5 | todo |
-| NAV-4 | Scroll preservation `wire:navigate:scroll`, `wire:scroll` | same | M5 | todo |
-| NAV-5 | JS hooks `livewire:navigate`, `navigating`, `navigated`; `Livewire.navigate(url)` | `brew:*` events, `Brew.navigate` | M5 | todo |
-| NAV-6 | View transitions (`wire:transition` on navigate, `livewire.navigate.view_transitions`) | same | M5 | todo |
-| NAV-7 | Script evaluation rules (head scripts once, `data-navigate-track`, `data-navigate-once`, body scripts re-run) | same | M5 | todo |
-| NAV-8 | Progress bar (`navigate.show_progress_bar`, `progress_bar_color`) | built-in bar | M5 | todo |
-| URL-1 | `#[Url]` (`as:`, `except:`, `keep:`, `history:`, nullable init) | `@Url` | M5 | todo |
-| URL-2 | `queryString()` method + trait hooks (`queryStringWithX`) | same | M5 | todo |
-| URL-3 | Testing `withQueryParams` | Testable | M5 | todo |
-| SES-1 | `#[Session]` props (+ `key:` with dynamic segments) | `@Session` | M5 | todo |
-| PGN-1 | `WithPagination` (`page` in URL, `previousPage`, `nextPage`, `gotoPage`, `resetPage`, `setPage`) | `WithPagination` interface | M5 | todo |
-| PGN-2 | `WithoutUrlPagination`, multiple paginators (`pageName`), scroll behaviour (`scrollTo`) | same | M5 | todo |
-| PGN-3 | Hooks `updatingPage`, `updatedPage`, `updatingPaginators` … | same | M5 | todo |
-| PGN-4 | Simple + cursor pagination, Tailwind/Bootstrap themes, custom pagination views (`paginationView()`) | Extract paginators + Crema views | M5 | todo |
+| PAG-1 | `Route::livewire('/path', 'name')` full-page components | `router.brew("/path", "name")` / `Brew.route` | M5 | done |
+| PAG-2 | Layouts: default `layouts::app`, `#[Layout]`, `->layout()`, `{{ $slot }}` | `@Layout`, layout view with `slot` | M5 | done |
+| PAG-3 | `#[Title]`, `->title()` | `@Title` | M5 | done |
+| PAG-4 | Additional layout slots (`->slot('x')` / `<x-slot>` from page) | `View.slot(name)` | M5 | done |
+| PAG-5 | Route params → mount params, route model binding | route params; Extract binding | M5 | done |
+| NAV-1 | `wire:navigate` SPA visits, `.hover` prefetch, redirects with `navigate: true` | same | M5 | done |
+| NAV-2 | `@persist('key')` elements across visits | same | M5 | done |
+| NAV-3 | `wire:current` (`.exact`, `.strict`) + `data-current` | same | M5 | done |
+| NAV-4 | Scroll preservation `wire:navigate:scroll`, `wire:scroll` | same | M5 | done |
+| NAV-5 | JS hooks `livewire:navigate`, `navigating`, `navigated`; `Livewire.navigate(url)` | `brew:*` events, `Brew.navigate` | M5 | done |
+| NAV-6 | View transitions (`wire:transition` on navigate, `livewire.navigate.view_transitions`) | same | M5 | done |
+| NAV-7 | Script evaluation rules (head scripts once, `data-navigate-track`, `data-navigate-once`, body scripts re-run) | same | M5 | done |
+| NAV-8 | Progress bar (`navigate.show_progress_bar`, `progress_bar_color`) | built-in bar | M5 | done |
+| URL-1 | `#[Url]` (`as:`, `except:`, `keep:`, `history:`, nullable init) | `@Url` | M5 | done |
+| URL-2 | `queryString()` method + trait hooks (`queryStringWithX`) | same | M5 | done |
+| URL-3 | Testing `withQueryParams` | Testable | M5 | done |
+| SES-1 | `#[Session]` props (+ `key:` with dynamic segments) | `@Session` | M5 | done |
+| PGN-1 | `WithPagination` (`page` in URL, `previousPage`, `nextPage`, `gotoPage`, `resetPage`, `setPage`) | `WithPagination` interface | M5 | done |
+| PGN-2 | `WithoutUrlPagination`, multiple paginators (`pageName`), scroll behaviour (`scrollTo`) | same | M5 | done |
+| PGN-3 | Hooks `updatingPage`, `updatedPage`, `updatingPaginators` … | same | M5 | done |
+| PGN-4 | Simple + cursor pagination, Tailwind/Bootstrap themes, custom pagination views (`paginationView()`) | Extract paginators + Crema views | M5 | done |
 
 ## Directives (`wire:*`)
 
@@ -226,8 +226,8 @@ Status: `todo` · `done`.
 | DIR-3 | `wire:model` (all modifiers, nested paths) | same | M1 | done |
 | DIR-4 | `wire:loading` (`.class`, `.attr`, `.remove`, `.delay.*`, `.flex/.grid/.inline…`, `wire:target` incl. params/props/`except`) | same | M2 | done |
 | DIR-5 | `data-loading` attribute on request-triggering elements (`SupportDataLoading`) | same | M2 | done |
-| DIR-6 | `wire:navigate` | same | M5 | todo |
-| DIR-7 | `wire:current` | same | M5 | todo |
+| DIR-6 | `wire:navigate` | same | M5 | done |
+| DIR-7 | `wire:current` | same | M5 | done |
 | DIR-8 | `wire:cloak` | same | M2 | done |
 | DIR-9 | `wire:dirty` | same | M2 | done |
 | DIR-10 | `wire:confirm` | same | M2 | done |
@@ -257,17 +257,17 @@ Status: `todo` · `done`.
 | ATR-4 | `#[Isolate]` | `@Isolate` | M4 | done |
 | ATR-5 | `#[Js]` | `@Js` | M3 | done |
 | ATR-6 | `#[Json]` — method returns JSON to JS, renderless, rejects on validation error | `@Json` | M3 | done |
-| ATR-7 | `#[Layout]` | `@Layout` | M5 | todo |
+| ATR-7 | `#[Layout]` | `@Layout` | M5 | done |
 | ATR-8 | `#[Lazy]` | `@Lazy` | M4 | done |
 | ATR-9 | `#[Locked]` | `@Locked` | M1 | done |
 | ATR-10 | `#[Modelable]` | `@Modelable` | M4 | done |
 | ATR-11 | `#[On]` | `@On` | M3 | done |
 | ATR-12 | `#[Reactive]` | `@Reactive` | M4 | done |
 | ATR-13 | `#[Renderless]` | `@Renderless` | M1 | done |
-| ATR-14 | `#[Session]` | `@Session` | M5 | todo |
-| ATR-15 | `#[Title]` | `@Title` | M5 | todo |
+| ATR-14 | `#[Session]` | `@Session` | M5 | done |
+| ATR-15 | `#[Title]` | `@Title` | M5 | done |
 | ATR-16 | `#[Transition]` | `@Transition` | M2 | done |
-| ATR-17 | `#[Url]` | `@Url` | M5 | todo |
+| ATR-17 | `#[Url]` | `@Url` | M5 | done |
 | ATR-18 | `#[Validate]` (+ deprecated `#[Rule]`) | `@Validate`, `@Rule` alias | M2 | done |
 | ATR-19 | `#[Authorize]` | `@Authorize` | M6 | todo |
 
@@ -278,7 +278,7 @@ Status: `todo` · `done`.
 | BLD-1 | `@livewireStyles`, `@livewireScripts`, `@livewireScriptConfig`, auto-injection when absent (`inject_assets`) | `@brewStyles`, `@brewScripts`, `@brewScriptConfig`, auto-inject | M1 | done |
 | BLD-2 | `@island` | see ISL-* | M4 | done |
 | BLD-3 | `@placeholder` | see LZY-2 | M4 | done |
-| BLD-4 | `@persist` | see NAV-2 | M5 | todo |
+| BLD-4 | `@persist` | see NAV-2 | M5 | done |
 | BLD-5 | `@teleport` | see TLP-1 | M4 | done |
 | BLD-6 | `@script … @endscript` component scripts (run once per component init, `$wire` available, `this.$js`, `$intercept`) | same | M3 | done |
 | BLD-7 | `@assets … @endassets` (loaded once per page) | same | M3 | done |
@@ -335,7 +335,7 @@ Status: `todo` · `done`.
 | ID | Livewire v4 surface | Brew | M | Status |
 |----|--------------------|------|---|--------|
 | RDR-1 | `$this->redirect(url, navigate:)`, `redirectRoute`, `redirectIntended`, `redirectAction` | same | M3 | done |
-| RDR-2 | Redirect to full-page component (`redirect(Component::class)`) | same | M5 | todo |
+| RDR-2 | Redirect to full-page component (`redirect(Component::class)`) | same | M5 | done |
 | RDR-3 | Flash messages persist across redirect | Kona session flash | M3 | done |
 | DWN-1 | Return download response from action (`response()->download`, `streamDownload`) | `Response` download effect | M3 | done |
 | DWN-2 | `assertFileDownloaded` | Testable | M3 | done |
@@ -351,7 +351,7 @@ Status: `todo` · `done`.
 | TST-3b | Status assertions driven by `#[Authorize]` / `authorize()` failures | same | M6 | todo |
 | TST-4 | `actingAs`, `withQueryParams`, `withCookie(s)`, `withHeaders`, `withoutLazyLoading` | same | M5/M6 | todo |
 | TST-5 | `assertJs`, `assertNoJs`, `assertRedirect*`, `assertNoRedirect`, `assertDispatched*`, `assertHasErrors*`, `assertFileDownloaded` | same | M2/M3 | todo |
-| TST-6 | Page contains component (`assertSeeLivewire`, `assertDontSeeLivewire`) | `assertSeeBrew` on Kona `HttpTestClient` | M5 | todo |
+| TST-6 | Page contains component (`assertSeeLivewire`, `assertDontSeeLivewire`) | `assertSeeBrew` on Kona `HttpTestClient` | M5 | done |
 | TST-7 | Browser testing (Pest browser) | Playwright smoke suite for JS runtime | M7 | todo |
 
 ## Developer experience

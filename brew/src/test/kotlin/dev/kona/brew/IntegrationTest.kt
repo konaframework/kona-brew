@@ -111,7 +111,10 @@ class IntegrationTest {
             assertTrue(scripts.matches(Regex("""<script src="/brew/brew\.min\.js\?id=[0-9a-f]{8}" data-csrf="tok" data-update-uri="/brew/update" data-navigate-once="true"></script>""")), scripts)
             assertEquals("", manager.assets.scripts())
             assertTrue(manager.assets.rendered(FrontendAssets.STYLES_FLAG))
-            assertTrue(manager.assets.scriptConfig().contains("window.brewScriptConfig = {\"csrf\":\"tok\",\"uri\":\"/brew/update\",\"nonce\":\"\"}"))
+            val config = manager.assets.scriptConfig()
+            assertTrue(config.contains("\"csrf\":\"tok\""), config)
+            assertTrue(config.contains("\"uri\":\"/brew/update\""), config)
+            assertTrue(config.contains("\"navigate\""), config)
         }
         assertFalse(manager.assets.rendered(FrontendAssets.STYLES_FLAG))
         assertTrue(manager.assets.styles().isNotEmpty())

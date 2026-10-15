@@ -7,7 +7,7 @@ import { evaluateActionExpression } from '../evaluator.js'
 const RESERVED = [
     'snapshot', 'effects', 'model', 'init', 'loading', 'poll', 'ignore', 'id', 'data',
     'key', 'target', 'dirty', 'sort', 'name', 'cloak', 'show', 'text', 'bind', 'ref',
-    'transition', 'offline', 'confirm',
+    'transition', 'offline', 'confirm', 'navigate', 'current', 'persist', 'scroll',
 ]
 const BREW_ONLY_MODIFIERS = ['async', 'renderless', 'preserve-scroll', 'prepend', 'append', 'island']
 

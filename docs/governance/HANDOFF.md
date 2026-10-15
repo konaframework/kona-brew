@@ -4,15 +4,13 @@ Resume point for the next agent session. Update this file whenever a milestone c
 
 ## State
 
-- **Active milestone:** M4 closing — PR → green CI → automerge, then immediately start M5.
-- **M1:** done — [kona-brew #1](https://github.com/konaframework/kona-brew/pull/1) + Kona cutover [#79](https://github.com/konaframework/kona/pull/79).
-- **M2:** done — [kona-brew #2](https://github.com/konaframework/kona-brew/pull/2).
-- **M3:** done — [kona-brew #3](https://github.com/konaframework/kona-brew/pull/3).
-- **M4:** all 33 ledger rows `done`; 100% Kover + 100% Vitest; bundles rebuilt. Awaiting PR → green CI → automerge.
+- **Active milestone:** M5 closing — PR → green CI → merge, then immediately start M6.
+- **M1–M4:** done — PRs #1–#4 merged.
+- **M5:** all ledger rows `done`; 100% Kover + 100% Vitest; bundles rebuilt. Awaiting PR → green CI → merge.
 
 ## Next
 
-After M4 merges: branch `milestone/M5-pages-navigate` and exhaust M5→M7 the same way until the livewire-v4-parity ledger is 100%.
+After M5 merges: branch `milestone/M6-uploads-platform` and exhaust M6→M7 until the livewire-v4-parity ledger is 100%.
 
 ## Commands
 

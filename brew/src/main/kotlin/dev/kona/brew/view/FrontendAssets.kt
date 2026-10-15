@@ -56,7 +56,16 @@ class FrontendAssets(private val manager: BrewManager) {
     fun scriptConfig(): String {
         markRendered(SCRIPTS_FLAG)
         val nonce = manager.config.scriptNonce
-        val config = linkedMapOf("csrf" to (manager.csrfToken() ?: ""), "uri" to manager.updateUri, "nonce" to (nonce ?: ""))
+        val config = linkedMapOf(
+            "csrf" to (manager.csrfToken() ?: ""),
+            "uri" to manager.updateUri,
+            "nonce" to (nonce ?: ""),
+            "navigate" to linkedMapOf(
+                "show_progress_bar" to manager.config.navigateShowProgressBar,
+                "progress_bar_color" to manager.config.navigateProgressBarColor,
+                "view_transitions" to manager.config.navigateViewTransitions,
+            ),
+        )
         val attr = nonceAttribute().orEmpty()
         return "<script$attr data-navigate-once=\"true\">window.brewScriptConfig = ${manager.json(config)};</script>"
     }

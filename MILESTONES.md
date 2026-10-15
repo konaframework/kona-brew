@@ -2,7 +2,7 @@
 
 Single source of truth for milestone status. Rules: [AGENTS.md](AGENTS.md). Ledger: [docs/governance/livewire-v4-parity.md](docs/governance/livewire-v4-parity.md).
 
-**Active milestone:** M4 — Nesting, slots, lazy/defer, islands, teleport (closing)
+**Active milestone:** M5 — Pages, navigation, URL & pagination (closing)
 
 The program is complete when every ledger row is `done` (M1–M7). Each milestone closes **all** ledger rows tagged with it.
 
@@ -64,7 +64,7 @@ downloads, `wire:stream` + `stream()`, `.preserve-scroll`, event/js/redirect/dow
 
 ## M4 — Nesting, slots, lazy/defer, islands, teleport
 
-**Branch:** `milestone/M4-nesting-islands` · **Status:** done (PR pending)
+**Branch:** `milestone/M4-nesting-islands` · **Status:** done (merged #4)
 
 - [x] Ledger rows: all M4 rows `done` (33/33).
 - [x] 100% Kover (`kona-brew`) and 100% Vitest (`js/src`).
@@ -80,7 +80,12 @@ recursive components, child event listeners, `@Isolate`, `@Lazy`/`@Defer` + plac
 
 ## M5 — Pages, navigation, URL & pagination
 
-**Branch:** `milestone/M5-pages-navigate` · **Status:** planned
+**Branch:** `milestone/M5-pages-navigate` · **Status:** done (PR pending)
+
+- [x] Ledger rows: all M5 rows `done`.
+- [x] 100% Kover + 100% Vitest.
+- [x] Full-page routes, layouts/titles/slots, `@Url`/`queryString`, `@Session`, `WithPagination`, `wire:navigate`/`wire:current`/`@persist`.
+
 
 Full-page routing, layouts/`@Layout`/`@Title`/slots, route params & Extract binding, `wire:navigate` (prefetch, persist, scroll,
 progress bar, view transitions, script rules, hooks), `wire:current`, `@Url` + `queryString()`, `@Session`, `WithPagination`
