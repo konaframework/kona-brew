@@ -6,6 +6,8 @@ import dev.kona.brew.features.SupportComputed
 import dev.kona.brew.features.SupportLifecycleHooks
 import dev.kona.brew.features.SupportLockedProperties
 import dev.kona.brew.features.SupportMagicActions
+import dev.kona.brew.features.SupportTransitions
+import dev.kona.brew.features.SupportValidation
 import dev.kona.brew.hydration.Checksum
 import dev.kona.brew.hydration.Coercion
 import dev.kona.brew.hydration.Synth
@@ -69,6 +71,8 @@ class BrewManager @JvmOverloads constructor(
         componentHook { SupportLockedProperties() }
         componentHook { SupportComputed() }
         componentHook { SupportMagicActions() }
+        componentHook { SupportValidation() }
+        componentHook { SupportTransitions() }
         views?.let { BrewCrema.install(it, this) }
     }
 

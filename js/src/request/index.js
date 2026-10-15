@@ -18,6 +18,8 @@ let interceptors = new InterceptorRegistry()
 let bus = new MessageBus()
 let sessionExpired = false
 
+export function sessionIsExpired() { return sessionExpired }
+
 export function messageBus() { return bus }
 
 export function setNextActionOrigin(origin) { nextOrigin = origin }

@@ -209,6 +209,26 @@ class Testable private constructor(
 
     fun assertNotFound(): Testable = assertStatus(404)
 
+    fun assertHasErrors(vararg keys: String): Testable {
+        val bag = result.component.errorBag()
+        if (keys.isEmpty()) {
+            check(bag.isNotEmpty()) { "Failed asserting that the component has errors" }
+        } else {
+            for (key in keys) check(bag.has(key)) { "Failed asserting that [$key] has errors" }
+        }
+        return this
+    }
+
+    fun assertHasNoErrors(vararg keys: String): Testable {
+        val bag = result.component.errorBag()
+        if (keys.isEmpty()) {
+            check(bag.isEmpty()) { "Failed asserting that the component has no errors; got ${bag.all()}" }
+        } else {
+            for (key in keys) check(!bag.has(key)) { "Failed asserting that [$key] has no errors" }
+        }
+        return this
+    }
+
     private fun values(value: Any): List<String> = when (value) {
         is Collection<*> -> value.map { it.toString() }
         is Array<*> -> value.map { it.toString() }

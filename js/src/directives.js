@@ -31,6 +31,32 @@ export function customDirectiveHasBeenRegistered(name) {
     return customDirectiveNames.has(name)
 }
 
+/** All `wire:*` directives on an element. */
+export function getDirectives(el) {
+    return new DirectiveManager(el)
+}
+
+class DirectiveManager {
+    constructor(el) {
+        this.el = el
+        this.directives = this.extractTypeModifiersAndValue()
+    }
+
+    all() { return this.directives }
+
+    has(value) { return this.directives.map(directive => directive.value).includes(value) }
+
+    missing(value) { return ! this.has(value) }
+
+    get(value) { return this.directives.find(directive => directive.value === value) }
+
+    extractTypeModifiersAndValue() {
+        return Array.from(this.el.getAttributeNames()
+            .filter(name => matchesForBrewDirective(name))
+            .map(name => extractDirective(this.el, name)))
+    }
+}
+
 export class Directive {
     constructor(value, modifiers, rawName, el) {
         this.rawName = this.raw = rawName

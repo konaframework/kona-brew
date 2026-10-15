@@ -4,7 +4,11 @@ import { customDirectiveHasBeenRegistered } from '../directives.js'
 import { setNextActionInterceptor, setNextActionOrigin } from '../request/index.js'
 import { evaluateActionExpression } from '../evaluator.js'
 
-const RESERVED = ['snapshot', 'effects', 'model', 'init', 'loading', 'poll', 'ignore', 'id', 'data', 'key', 'target', 'dirty', 'sort', 'name']
+const RESERVED = [
+    'snapshot', 'effects', 'model', 'init', 'loading', 'poll', 'ignore', 'id', 'data',
+    'key', 'target', 'dirty', 'sort', 'name', 'cloak', 'show', 'text', 'bind', 'ref',
+    'transition', 'offline', 'confirm',
+]
 const BREW_ONLY_MODIFIERS = ['async', 'renderless', 'prepend', 'append']
 
 /**
@@ -26,26 +30,34 @@ export function registerWildcardDirective() {
                 directive.eventContext = event
                 directive.wire = component.$wire
 
-                let targetEl = directive.value === 'submit'
-                    ? event.submitter || el.querySelector('button[type="submit"], input[type="submit"]')
-                    : undefined
+                let execute = () => {
+                    let targetEl = directive.value === 'submit'
+                        ? event.submitter || el.querySelector('button[type="submit"], input[type="submit"]')
+                        : undefined
 
-                setNextActionOrigin(targetEl === undefined ? { el, directive } : { el, directive, targetEl })
+                    setNextActionOrigin(targetEl === undefined ? { el, directive } : { el, directive, targetEl })
 
-                let options = event.detail?.brew
+                    let options = event.detail?.brew
 
-                if (options?.interceptAction) setNextActionInterceptor(options.interceptAction)
+                    if (options?.interceptAction) setNextActionInterceptor(options.interceptAction)
 
-                let expression = directive.expression
+                    let expression = directive.expression
 
-                // A bare method name receives the event's default params, if the dispatcher supplied any...
-                if (options?.defaultParams !== undefined && ! expression.includes('(')) {
-                    let params = Array.isArray(options.defaultParams) ? options.defaultParams : [options.defaultParams]
+                    // A bare method name receives the event's default params, if the dispatcher supplied any...
+                    if (options?.defaultParams !== undefined && ! expression.includes('(')) {
+                        let params = Array.isArray(options.defaultParams) ? options.defaultParams : [options.defaultParams]
 
-                    expression += '(' + params.map(param => JSON.stringify(param)).join(', ') + ')'
+                        expression += '(' + params.map(param => JSON.stringify(param)).join(', ') + ')'
+                    }
+
+                    evaluateActionExpression(el, expression, { scope: { $event: event } })
                 }
 
-                evaluateActionExpression(el, expression, { scope: { $event: event } })
+                if (el.__brew_confirm) {
+                    el.__brew_confirm(execute, () => event.stopImmediatePropagation())
+                } else {
+                    execute()
+                }
             },
         })
 

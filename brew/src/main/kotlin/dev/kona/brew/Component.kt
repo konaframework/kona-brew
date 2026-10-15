@@ -3,6 +3,8 @@ package dev.kona.brew
 import dev.kona.brew.hydration.Coercion
 import dev.kona.brew.lifecycle.HookSet
 import dev.kona.brew.meta.ComponentMeta
+import dev.kona.http.ValidationException
+import dev.kona.http.Validator
 
 /**
  * A Brew component (`Livewire\Component`).
@@ -59,6 +61,18 @@ abstract class Component {
     /** Make later [skipRender] calls (including renderless actions) no-ops for this request (`$this->forceRender()`). */
     fun forceRender() {
         state().forceRender = true
+    }
+
+    /** Hint a typed View Transition for this request (`$this->transition('forward')`). */
+    @JvmOverloads
+    fun transition(type: String? = null, skip: Boolean = false) {
+        if (type != null) state().store["transitionType"] = type
+        if (skip) state().store["transitionSkip"] = true
+    }
+
+    /** Skip View Transitions for this request (`$this->skipTransition()`). */
+    fun skipTransition() {
+        state().store["transitionSkip"] = true
     }
 
     /** Assign several properties (`fill`). Unknown keys are ignored. */
@@ -124,6 +138,60 @@ abstract class Component {
         state().manager.forgetComputed(this, name)
     }
 
+    /** Validation error bag (`getErrorBag()`). */
+    fun errorBag(): ErrorBag = state().errorBag
+
+    fun getErrorBag(): ErrorBag = errorBag()
+
+    fun setErrorBag(bag: ErrorBag) {
+        state().errorBag = bag
+    }
+
+    fun addError(key: String, message: String) {
+        errorBag().add(key, message)
+    }
+
+    fun resetErrorBag() {
+        errorBag().clear()
+    }
+
+    fun resetValidation(vararg fields: String) {
+        if (fields.isEmpty()) errorBag().clear() else fields.forEach { errorBag().clear(it) }
+    }
+
+    /** Validate public properties (`$this->validate()`). */
+    fun validate(): Map<String, Any?> = validate(null)
+
+    /**
+     * Validate public properties (`$this->validate([...])`).
+     * [rules] overrides annotation / `rules()` maps when non-null.
+     */
+    fun validate(rules: Map<String, List<String>>?): Map<String, Any?> {
+        val resolved = rules ?: ValidationRules.forComponent(this)
+        val data = all()
+        val validator = Validator(data, resolved)
+        try {
+            val validated = validator.validate()
+            errorBag().clear()
+            return validated
+        } catch (e: ValidationException) {
+            errorBag().clear().merge(e.errors)
+            throw e
+        }
+    }
+
+    fun validateOnly(field: String): Map<String, Any?> {
+        val rules = ValidationRules.forComponent(this).filterKeys { it == field || it.startsWith("$field.") }
+        return validate(rules)
+    }
+
+    /** Optional component-level rules map (`rules()`). */
+    open fun rules(): Map<String, List<String>> = emptyMap()
+
+    open fun messages(): Map<String, String> = emptyMap()
+
+    open fun validationAttributes(): Map<String, String> = emptyMap()
+
     private fun nameOrClass(): String {
         val s = state ?: return javaClass.simpleName
         return s.name
@@ -149,6 +217,7 @@ internal class ComponentState(
     var skipRenderHtml: String? = null
     val computedMemo: MutableMap<String, Any?> = HashMap()
     val store: MutableMap<String, Any?> = HashMap()
+    var errorBag: ErrorBag = ErrorBag()
     var renderedView: BrewView? = null
     var renderedData: Map<String, Any?>? = null
 }

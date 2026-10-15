@@ -3,6 +3,10 @@ import { dataGet, dataSet } from './utils.js'
 import { on } from './hooks.js'
 import { findComponentByEl } from './store.js'
 import { fireAction, interceptComponentAction, interceptComponentMessage, interceptComponentRequest } from './request/index.js'
+import { getErrorsObject } from './features/errors.js'
+import { findRefEl } from './features/refs.js'
+import { checkDirty } from './directives/dirty.js'
+import { isEvaluatingReactiveExpression } from './evaluator.js'
 
 let properties = {}
 
@@ -14,7 +18,10 @@ const aliases = {
     call: '$call',
     hook: '$hook',
     watch: '$watch',
+    dirty: '$dirty',
     commit: '$commit',
+    errors: '$errors',
+    refs: '$refs',
     intercept: '$intercept',
     interceptAction: '$interceptAction',
     interceptMessage: '$interceptMessage',
@@ -32,6 +39,12 @@ export function wireProperty(name, callback) {
 function callServer(component, method, params) {
     // `@click="save"` passes the DOM event as the only argument; it is not a server parameter...
     if (params.length === 1 && params[0] instanceof Event) params = []
+
+    if (isEvaluatingReactiveExpression()) {
+        console.warn(`Brew: Cannot call server method "${method}" from a reactive binding like wire:text, wire:show, or wire:bind.`, component.el)
+
+        return Promise.resolve()
+    }
 
     return fireAction(component, method, params)
 }
@@ -129,6 +142,34 @@ wireProperty('$intercept', component => (name, callback) => interceptComponentAc
 wireProperty('$interceptAction', component => (name, callback) => interceptComponentAction(component, name, callback))
 wireProperty('$interceptMessage', component => (name, callback) => interceptComponentMessage(component, name, callback))
 wireProperty('$interceptRequest', component => (name, callback) => interceptComponentRequest(component, name, callback))
+
+wireProperty('$errors', component => getErrorsObject(component))
+
+wireProperty('$refs', component => {
+    let fn = name => findRefEl(component, name)
+
+    return new Proxy(fn, {
+        get(target, property) {
+            if (property in target) return target[property]
+
+            return fn(property)
+        },
+    })
+})
+
+wireProperty('$dirty', component => property => {
+    let reactive = Alpine.reactive({ dirty: false })
+
+    interceptComponentMessage(component, ({ onFinish }) => {
+        onFinish(() => {
+            queueMicrotask(() => { reactive.dirty = checkDirty(component, property) })
+        })
+    })
+
+    Alpine.effect(() => { reactive.dirty = checkDirty(component, property) })
+
+    return reactive.dirty
+})
 
 /**
  * `$wire` inside Alpine expressions resolves its component lazily, and
