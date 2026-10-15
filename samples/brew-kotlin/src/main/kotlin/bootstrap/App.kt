@@ -24,8 +24,6 @@ object App {
                 it.set("app.key", Env.getOrDefault("APP_KEY", "brew-sample-kotlin-key"))
                 it.set("app.debug", true)
                 it.set("session.driver", "cookie")
-                // Component classes live here; `<brew:todos />` resolves to app.brew.Todos.
-                it.set("brew.class_namespace", "app.brew")
             }
             .providers(HttpServiceProvider(), SessionServiceProvider(), CremaServiceProvider(), BrewServiceProvider())
             .afterBoot(::middleware)

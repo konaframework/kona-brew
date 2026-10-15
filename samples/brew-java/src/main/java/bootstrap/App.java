@@ -28,8 +28,6 @@ public final class App {
                 config.set("app.key", Env.getOrDefault("APP_KEY", "brew-sample-java-key"));
                 config.set("app.debug", true);
                 config.set("session.driver", "cookie");
-                // Component classes live here; <brew:todos /> resolves to app.brew.Todos.
-                config.set("brew.class_namespace", "app.brew");
             })
             .providers(new HttpServiceProvider(), new SessionServiceProvider(), new CremaServiceProvider(), new BrewServiceProvider())
             .afterBoot(App::middleware)

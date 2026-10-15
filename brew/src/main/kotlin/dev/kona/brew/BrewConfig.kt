@@ -10,7 +10,7 @@ class BrewConfig @JvmOverloads constructor(
     val key: String = "",
     /** Base path for Brew endpoints. */
     val path: String = "/brew",
-    /** Package roots scanned by discovery (`brew.class_namespace`). */
+    /** Package roots that `<brew:name />` resolves classes from (`brew.class_namespace`, default `app.brew` in apps). */
     val classNamespaces: List<String> = emptyList(),
     /** View prefix for convention views (`brew.view_path` → `brew.<name>`). */
     val viewPrefix: String = "brew",
@@ -38,11 +38,14 @@ class BrewConfig @JvmOverloads constructor(
     val updateUri: String get() = "$path/update"
 
     companion object {
+        /** Livewire's `App\Livewire` default: `<brew:counter />` resolves `app.brew.Counter`. */
+        const val DEFAULT_CLASS_NAMESPACE = "app.brew"
+
         @JvmStatic
         fun from(config: Config): BrewConfig {
             val namespaces = when (val ns = config.get<Any>("brew.class_namespace")) {
                 is Collection<*> -> ns.map { it.toString() }
-                null -> emptyList()
+                null -> listOf(DEFAULT_CLASS_NAMESPACE)
                 else -> ns.toString().split(',').map { it.trim() }.filter { it.isNotEmpty() }
             }
             return BrewConfig(

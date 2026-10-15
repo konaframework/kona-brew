@@ -253,7 +253,7 @@ class IntegrationTest {
         assertEquals(5, parsed.maxCalls)
         assertEquals(20, parsed.maxComponents)
         assertTrue(parsed.debug)
-        assertEquals(emptyList<String>(), BrewConfig.from(dev.kona.core.Config()).classNamespaces)
+        assertEquals(listOf("app.brew"), BrewConfig.from(dev.kona.core.Config()).classNamespaces)
     }
 
     @Test
