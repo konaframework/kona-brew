@@ -10,7 +10,7 @@ const site = process.env.PUBLIC_SITE_URL || 'https://konaframework.github.io';
 const origin = site.replace(/\/$/, '');
 const normalizedBase = base === '/' ? '/' : `/${base.replace(/^\/|\/$/g, '')}/`;
 const ogImage = `${origin}${normalizedBase}og.svg`;
-const ogImageAlt = 'Brew — reactive server components for Kona';
+const ogImageAlt = 'Brew for Kona — reactive server components';
 const sidebar = await buildSidebar();
 
 export default defineConfig({
@@ -21,7 +21,7 @@ export default defineConfig({
     starlight({
       title: 'Brew',
       description:
-        'Reactive server components for Kona. Kotlin-first, Java first-class — write state and actions on the server, keep the browser in sync.',
+        'Brew for Kona — reactive server components. Kotlin-first, Java first-class — write state and actions on the server, keep the browser in sync.',
       favicon: '/favicon.svg',
       logo: {
         light: './src/assets/brew-mark.svg',
@@ -45,6 +45,18 @@ export default defineConfig({
       customCss: ['./src/styles/custom.css'],
       components: {
         SiteTitle: './src/components/SiteTitle.astro',
+      },
+      // Site-wide Monokai Dark for every code snippet (overrides Almasix gruvbox default).
+      expressiveCode: {
+        themes: ['monokai'],
+        styleOverrides: {
+          codeBackground: '#272822',
+          codeForeground: '#f8f8f2',
+          frames: {
+            editorBackground: '#272822',
+            terminalBackground: '#272822',
+          },
+        },
       },
       editLink: {
         baseUrl: 'https://github.com/konaframework/kona-brew/edit/main/apps/docs/',

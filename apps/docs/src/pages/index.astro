@@ -7,9 +7,11 @@ const base = import.meta.env.BASE_URL.endsWith('/')
 
 const brandLight = `${base}branding/brew-banner.svg`;
 const brandDark = `${base}branding/brew-banner-dark.svg`;
-const mark = `${base}branding/brew-mark.svg`;
+const markLight = `${base}branding/brew-mark.svg`;
+const markDark = `${base}branding/brew-mark-dark.svg`;
 const docsHub = `${base}guides/introduction/`;
 const install = `${base}guides/installation/`;
+const components = `${base}essentials/components/`;
 const github = 'https://github.com/konaframework/kona-brew';
 const konaDocs = 'https://konaframework.github.io/kona/';
 ---
@@ -19,10 +21,10 @@ const konaDocs = 'https://konaframework.github.io/kona/';
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Brew — Reactive server components for Kona</title>
+    <title>Brew for Kona — Reactive server components</title>
     <meta
       name="description"
-      content="Brew is Kona’s reactive server-component layer. Write Kotlin or Java components with state and actions; Brew keeps the browser in sync."
+      content="Brew is the reactive server-component layer for the Kona framework. Write Kotlin or Java components with state and actions; Brew keeps the browser in sync."
     />
     <meta name="theme-color" content="#E11D48" />
     <meta name="color-scheme" content="light dark" />
@@ -30,7 +32,7 @@ const konaDocs = 'https://konaframework.github.io/kona/';
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Outfit:wght@600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
     <script is:inline>
@@ -50,12 +52,12 @@ const konaDocs = 'https://konaframework.github.io/kona/';
   <body class="landing">
     <header class="landing-top">
       <a class="landing-top__home" href={base} aria-label="Brew home">
-        <img class="landing-brand landing-brand--for-dark" src={brandDark} width="140" height="39" alt="" />
-        <img class="landing-brand landing-brand--for-light" src={brandLight} width="140" height="39" alt="" />
+        <img class="landing-brand landing-brand--for-dark" src={brandDark} width="168" height="58" alt="" />
+        <img class="landing-brand landing-brand--for-light" src={brandLight} width="168" height="58" alt="" />
       </a>
       <div class="landing-top__actions">
         <a class="landing-top__link" href={docsHub}>Docs</a>
-        <a class="landing-top__link" href={github}>GitHub</a>
+        <a class="landing-top__link" href={github} rel="noopener noreferrer">GitHub</a>
         <button
           type="button"
           class="landing-theme"
@@ -78,32 +80,141 @@ const konaDocs = 'https://konaframework.github.io/kona/';
       </div>
     </header>
 
-    <main>
-      <section class="landing-hero">
-        <h1 class="landing-hero__brand">Brew</h1>
-        <p class="landing-hero__lede">
-          Reactive server components for Kona. Write state and actions in Kotlin or Java; Brew keeps the
-          browser in sync over a small JSON protocol—powered by a bundled Alpine.js runtime.
-        </p>
-        <div class="landing-cta">
-          <a class="landing-cta__primary" href={install}>Install Brew</a>
-          <a class="landing-cta__ghost" href={docsHub}>Read the docs</a>
+    <main class="landing-main">
+      <section class="landing-hero" aria-label="Brew for Kona">
+        <div class="landing-hero__frame">
+          <div class="landing-hero__copy">
+            <img
+              class="landing-hero__brand landing-brand--for-dark"
+              src={brandDark}
+              width="224"
+              height="77"
+              alt="Brew"
+            />
+            <img
+              class="landing-hero__brand landing-brand--for-light"
+              src={brandLight}
+              width="224"
+              height="77"
+              alt="Brew"
+            />
+            <p class="landing-hero__eyebrow">For the Kona framework</p>
+            <h1 class="landing-hero__title">Brew for Kona — reactive server components.</h1>
+            <p class="landing-hero__lede">
+              Write state and actions in Kotlin or Java; Brew keeps the browser in sync over a small
+              JSON protocol—powered by a bundled Alpine.js runtime.
+            </p>
+            <div class="landing-cta">
+              <a class="landing-cta__primary" href={install}>Install Brew</a>
+              <a class="landing-cta__secondary" href={docsHub}>Read the docs</a>
+              <a class="landing-cta__ghost" href={konaDocs} rel="noopener noreferrer">Kona docs</a>
+            </div>
+          </div>
+          <div class="landing-hero__visual" aria-hidden="true">
+            <img class="landing-hero__mark landing-brand--for-light" src={markLight} width="220" height="220" alt="" />
+            <img class="landing-hero__mark landing-brand--for-dark" src={markDark} width="220" height="220" alt="" />
+          </div>
         </div>
       </section>
-      <img class="landing-mark" src={mark} width="280" height="280" alt="" />
+
+      <section class="landing-features" aria-labelledby="landing-features-title">
+        <div class="landing-features__inner">
+          <h2 id="landing-features-title" class="landing-features__title">What you get</h2>
+          <p class="landing-features__lede">
+            Server-owned UI that stays in sync—built for Kona apps, not a separate stack.
+          </p>
+          <ul class="landing-feature-list">
+            <li class="landing-feature">
+              <h3>Components</h3>
+              <p>
+                Public fields are state; public methods are actions. Render with Crema.
+                <a href={components}>Components guide</a>
+              </p>
+            </li>
+            <li class="landing-feature">
+              <h3>Wire protocol</h3>
+              <p>
+                Snapshots, checksums, and a small JSON update round-trip keep the DOM honest.
+                <a href={docsHub}>Introduction</a>
+              </p>
+            </li>
+            <li class="landing-feature">
+              <h3>Kotlin &amp; Java</h3>
+              <p>
+                First-class APIs for both languages on the same artifact: <code>dev.kona:kona-brew</code>.
+              </p>
+            </li>
+            <li class="landing-feature">
+              <h3>Alpine runtime</h3>
+              <p>
+                Bundled client script with <code>$wire</code>, hooks, and morph—no SPA rewrite required.
+              </p>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="landing-close" aria-labelledby="landing-close-title">
+        <div class="landing-close__inner">
+          <h2 id="landing-close-title" class="landing-close__title">Open the Brew docs</h2>
+          <p class="landing-close__lede">
+            Install the dependency, register Brew, and ship your first reactive component on Kona.
+          </p>
+          <div class="landing-cta">
+            <a class="landing-cta__primary" href={install}>Installation</a>
+            <a class="landing-cta__secondary" href={docsHub}>Documentation</a>
+          </div>
+        </div>
+      </section>
     </main>
 
-    <footer class="landing-foot">
-      Part of the <a href={konaDocs}>Kona</a> ecosystem ·
-      <a href={github}>konaframework/kona-brew</a>
+    <footer class="landing-footer">
+      <p>
+        Part of the <a href={konaDocs}>Kona</a> ecosystem ·
+        <a href={github} rel="noopener noreferrer">konaframework/kona-brew</a>
+      </p>
     </footer>
 
     <script is:inline>
-      document.getElementById('landing-theme-toggle')?.addEventListener('click', () => {
-        const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-        document.documentElement.dataset.theme = next;
-        localStorage.setItem('starlight-theme', next);
-      });
+      (() => {
+        const storageKey = 'starlight-theme';
+        const root = document.documentElement;
+        const btn = document.getElementById('landing-theme-toggle');
+
+        function preferred() {
+          return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        }
+
+        function loadStored() {
+          const v = localStorage.getItem(storageKey);
+          return v === 'light' || v === 'dark' ? v : null;
+        }
+
+        function apply(theme) {
+          root.dataset.theme = theme;
+          const meta = document.querySelector('meta[name="theme-color"]');
+          if (meta) meta.setAttribute('content', theme === 'light' ? '#FFF1F2' : '#1C1214');
+          if (btn) {
+            btn.setAttribute(
+              'aria-label',
+              theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme',
+            );
+            btn.title = theme === 'light' ? 'Dark mode' : 'Light mode';
+          }
+        }
+
+        apply(loadStored() || preferred());
+
+        btn?.addEventListener('click', () => {
+          const next = root.dataset.theme === 'light' ? 'dark' : 'light';
+          localStorage.setItem(storageKey, next);
+          apply(next);
+        });
+
+        window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
+          if (!loadStored()) apply(preferred());
+        });
+      })();
     </script>
   </body>
 </html>
