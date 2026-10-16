@@ -69,3 +69,7 @@ jobs:
         run: npm run coverage
       - name: Committed bundles match sources
         run: npm run check:bundle
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Playwright smoke
+        run: npm run playwright
