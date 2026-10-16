@@ -49,8 +49,8 @@ Kona monorepo keeps only a **brief link-out** page (kona PR #94); do not re-expa
 
 **In-flight / local only:**
 
-- Further **banner/logo refinement** may still be running as a parallel agent, or uncommitted copies may sit in sibling Kona (`apps/docs/public/branding/brew-*.svg`). Check `git status` here and `gh pr list` before starting a new branding pass.
-- Working tree on `main` should be clean after this handoff PR; stale local branches (`docs/brew-*`, `milestone/*`) can be pruned when convenient.
+- **Banner/logo refinement is actively in progress** on branch `docs/brew-cup-b-lockup` (dirty branding SVGs / favicon; not part of the handoff PR). Also watch for untracked `brew-*.svg` copies under sibling Kona `apps/docs/public/branding/`. Check `git status` / `gh pr list` before starting another branding pass.
+- Stale local branches (`docs/brew-*`, `milestone/*`) can be pruned when convenient after branding lands.
 
 ## How to continue
 
