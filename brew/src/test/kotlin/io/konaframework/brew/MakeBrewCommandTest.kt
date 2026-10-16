@@ -80,6 +80,15 @@ class MakeBrewCommandTest {
         assertTrue(java.contains("remaining()"), java)
         assertTrue(Files.exists(dir.resolve("src/main/resources/views/brew/todo-list.crema.html")))
         assertTrue(Files.exists(dir.resolve("src/test/java/app/brew/TodoListTest.java")))
+
+        assertEquals(0, run(dir, "todo", "--lang=kotlin", "--force"))
+        assertTrue(Files.readString(dir.resolve("src/main/kotlin/app/brew/Todo.kt")).contains("var draft"))
+        assertEquals(0, run(dir, "todolist", "--lang=kotlin", "--force"))
+        assertTrue(Files.exists(dir.resolve("src/main/resources/views/brew/todolist.crema.html")))
+
+        // --mfc keeps MFC type even for todos-shaped names (skips the forced class path).
+        assertEquals(0, run(dir, "Todos", "--lang=kotlin", "--mfc", "--force"))
+        assertTrue(Files.isDirectory(dir.resolve("src/main/kotlin/app/brew/todos")))
     }
 
     @Test
@@ -87,5 +96,40 @@ class MakeBrewCommandTest {
         assertEquals(0, run(dir, "posts/create-post", "--class"))
         assertTrue(Files.exists(dir.resolve("src/main/kotlin/app/brew/posts/CreatePost.kt")))
         assertTrue(Files.exists(dir.resolve("src/main/resources/views/brew/posts/create-post.crema.html")))
+    }
+
+    @Test
+    fun `mismatched custom stub falls back to generated default`(@TempDir dir: Path) {
+        val stubs = dir.resolve("stubs/brew")
+        Files.createDirectories(stubs)
+        Files.writeString(stubs.resolve("component.kt.stub"), "package {{package}}\n\nclass {{class}}\n")
+        assertEquals(0, run(dir, "counter"))
+        val source = Files.readString(dir.resolve("src/main/kotlin/app/brew/Counter.kt"))
+        assertTrue(source.contains("override fun template()"), source)
+        assertTrue(source.contains("var count"), source)
+    }
+
+    @Test
+    fun `todos custom stub without render still accepted via Todo marker`(@TempDir dir: Path) {
+        val stubs = dir.resolve("stubs/brew")
+        Files.createDirectories(stubs)
+        Files.writeString(
+            stubs.resolve("todos.component.kt.stub"),
+            """
+            package {{package}}
+
+            import io.konaframework.brew.Component
+
+            class Todo
+            class {{class}} : Component() {
+                override fun template() = "<div></div>"
+            }
+            """.trimIndent() + "\n",
+        )
+        assertEquals(0, run(dir, "Todos", "--lang=kotlin"))
+        val source = Files.readString(dir.resolve("src/main/kotlin/app/brew/Todos.kt"))
+        assertTrue(source.contains("class Todo"), source)
+        assertTrue(source.contains("override fun template()"), source)
+        assertFalse(source.contains("override fun render()"), source)
     }
 }

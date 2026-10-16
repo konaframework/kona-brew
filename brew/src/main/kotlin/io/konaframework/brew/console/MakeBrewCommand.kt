@@ -400,23 +400,13 @@ class MakeBrewCommand : ConsoleCommand() {
 
 private enum class StubShape { COUNTER, TODOS }
 
-private fun stubShape(className: String, normalizedName: String): StubShape {
+private fun stubShape(@Suppress("UNUSED_PARAMETER") className: String, normalizedName: String): StubShape {
+    // Normalized leaf only — PascalCase names are kebab'd before this runs (`Todos` → `todos`).
     val leaf = normalizedName.substringAfterLast('.').substringAfterLast("::").lowercase().replace('-', '_')
-    val studly = className.lowercase()
-    return if (
-        leaf == "todos" ||
-        leaf == "todo" ||
-        leaf == "todo_list" ||
-        leaf == "todolist" ||
-        studly == "todos" ||
-        studly == "todo" ||
-        studly == "todolist"
-    ) {
-        StubShape.TODOS
-    } else {
-        StubShape.COUNTER
-    }
+    return if (leaf in TODOS_LEAVES) StubShape.TODOS else StubShape.COUNTER
 }
+
+private val TODOS_LEAVES = setOf("todos", "todo", "todo_list", "todolist")
 
 private val NAME = Regex("^([a-z][a-z0-9-]*::)?[A-Za-z][A-Za-z0-9-]*(\\.[A-Za-z][A-Za-z0-9-]*)*$")
 
