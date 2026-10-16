@@ -1,75 +1,75 @@
 /*
  * Brew marketing landing at `/` — full-viewport boxed composition.
- * Brand: primary #E11D48, accent #0D9488. Font: Outfit site-wide.
+ * Brand: espresso / copper / cream. Font: Outfit site-wide.
  * Syncs theme via html[data-theme] + starlight-theme localStorage key.
  */
 
 :root {
-  --brew-primary: #e11d48;
-  --brew-primary-soft: #fb7185;
-  --brew-primary-deep: #be123c;
-  --brew-accent: #0d9488;
-  --brew-accent-soft: #2dd4bf;
-  --brew-accent-deep: #0f766e;
-  --brew-glow: rgba(225, 29, 72, 0.28);
+  --brew-primary: #d48c46;
+  --brew-primary-soft: #e5a869;
+  --brew-primary-deep: #ba622a;
+  --brew-accent: #faedcd;
+  --brew-accent-soft: #e5a869;
+  --brew-accent-deep: #9a4e22;
+  --brew-glow: rgba(212, 140, 70, 0.32);
   --landing-font: 'Outfit', ui-sans-serif, system-ui, sans-serif;
   --landing-ease: cubic-bezier(0.22, 1, 0.36, 1);
 
-  /* Dark default */
-  --landing-ink: #faf7f5;
-  --landing-ink-soft: rgba(250, 247, 245, 0.78);
-  --landing-ink-muted: rgba(250, 247, 245, 0.55);
-  --landing-surface: #140f11;
-  --landing-surface-raised: #1c1214;
-  --landing-hero-fg: #faf7f5;
-  --landing-hero-muted: rgba(250, 247, 245, 0.82);
+  /* Dark default — espresso */
+  --landing-ink: #faf6eb;
+  --landing-ink-soft: rgba(250, 246, 235, 0.78);
+  --landing-ink-muted: rgba(250, 246, 235, 0.55);
+  --landing-surface: #100c09;
+  --landing-surface-raised: #1e1612;
+  --landing-hero-fg: #faf6eb;
+  --landing-hero-muted: rgba(250, 246, 235, 0.82);
   --landing-hero-bg:
-    radial-gradient(ellipse 90% 70% at 12% 18%, rgba(225, 29, 72, 0.32), transparent 55%),
-    radial-gradient(ellipse 70% 60% at 88% 72%, rgba(13, 148, 136, 0.28), transparent 50%),
-    linear-gradient(155deg, #1c1214 0%, #2a1519 42%, #141018 100%);
+    radial-gradient(ellipse 90% 70% at 12% 18%, rgba(212, 140, 70, 0.34), transparent 55%),
+    radial-gradient(ellipse 70% 60% at 88% 72%, rgba(250, 237, 205, 0.1), transparent 50%),
+    linear-gradient(155deg, #1e1612 0%, #2a1c14 42%, #100c09 100%);
   --landing-hero-stripe: rgba(255, 255, 255, 0.02);
   --landing-cta-secondary-border: rgba(255, 255, 255, 0.35);
   --landing-cta-secondary-hover: rgba(255, 255, 255, 0.06);
   --landing-cta-secondary-fg: #fff;
   --landing-feature-heading: var(--brew-primary-soft);
   --landing-close-bg:
-    linear-gradient(135deg, var(--brew-primary-deep) 0%, var(--brew-primary) 55%, #9f1239 100%);
+    linear-gradient(135deg, var(--brew-primary-deep) 0%, var(--brew-primary) 55%, #e5a869 100%);
   --landing-link: var(--brew-accent-soft);
-  --landing-link-hover: var(--brew-primary-soft);
-  --landing-top-bg: rgba(28, 18, 20, 0.72);
+  --landing-link-hover: var(--brew-accent);
+  --landing-top-bg: rgba(30, 22, 18, 0.78);
   --landing-top-border: rgba(255, 255, 255, 0.08);
   --landing-theme-btn-bg: rgba(255, 255, 255, 0.08);
   --landing-theme-btn-border: rgba(255, 255, 255, 0.18);
-  --landing-frame-border: rgba(251, 113, 133, 0.28);
-  --landing-frame-bg: rgba(20, 12, 14, 0.45);
+  --landing-frame-border: rgba(229, 168, 105, 0.32);
+  --landing-frame-bg: rgba(16, 12, 9, 0.48);
 }
 
 :root[data-theme='light'] {
-  --landing-ink: #1c1214;
-  --landing-ink-soft: #57534e;
-  --landing-ink-muted: #78716c;
-  --landing-surface: #fff1f2;
+  --landing-ink: #1e1612;
+  --landing-ink-soft: #5c4c3e;
+  --landing-ink-muted: #8f7a62;
+  --landing-surface: #faf6eb;
   --landing-surface-raised: #ffffff;
-  --landing-hero-fg: #1c1214;
-  --landing-hero-muted: #57534e;
+  --landing-hero-fg: #1e1612;
+  --landing-hero-muted: #5c4c3e;
   --landing-hero-bg:
-    radial-gradient(ellipse 85% 65% at 12% 18%, rgba(225, 29, 72, 0.16), transparent 55%),
-    radial-gradient(ellipse 75% 55% at 88% 70%, rgba(13, 148, 136, 0.12), transparent 52%),
-    linear-gradient(160deg, #fff1f2 0%, #ffe4e6 48%, #fce7f3 100%);
-  --landing-hero-stripe: rgba(190, 18, 60, 0.045);
-  --landing-cta-secondary-border: rgba(190, 18, 60, 0.28);
-  --landing-cta-secondary-hover: rgba(225, 29, 72, 0.08);
+    radial-gradient(ellipse 85% 65% at 12% 18%, rgba(212, 140, 70, 0.2), transparent 55%),
+    radial-gradient(ellipse 75% 55% at 88% 70%, rgba(186, 98, 42, 0.1), transparent 52%),
+    linear-gradient(160deg, #faf6eb 0%, #faedcd 48%, #f3e2b8 100%);
+  --landing-hero-stripe: rgba(186, 98, 42, 0.05);
+  --landing-cta-secondary-border: rgba(186, 98, 42, 0.3);
+  --landing-cta-secondary-hover: rgba(212, 140, 70, 0.1);
   --landing-cta-secondary-fg: var(--brew-primary-deep);
   --landing-feature-heading: var(--brew-primary-deep);
   --landing-close-bg:
-    linear-gradient(135deg, #9f1239 0%, #e11d48 50%, #fb7185 100%);
+    linear-gradient(135deg, #9a4e22 0%, #ba622a 45%, #d48c46 100%);
   --landing-link: var(--brew-accent-deep);
   --landing-link-hover: var(--brew-primary-deep);
-  --landing-top-bg: rgba(255, 241, 242, 0.82);
-  --landing-top-border: rgba(28, 18, 20, 0.08);
-  --landing-theme-btn-bg: rgba(28, 18, 20, 0.05);
-  --landing-theme-btn-border: rgba(28, 18, 20, 0.14);
-  --landing-frame-border: rgba(225, 29, 72, 0.22);
+  --landing-top-bg: rgba(250, 246, 235, 0.86);
+  --landing-top-border: rgba(30, 22, 18, 0.08);
+  --landing-theme-btn-bg: rgba(30, 22, 18, 0.05);
+  --landing-theme-btn-border: rgba(30, 22, 18, 0.14);
+  --landing-frame-border: rgba(186, 98, 42, 0.24);
   --landing-frame-bg: rgba(255, 255, 255, 0.55);
 }
 
@@ -248,8 +248,8 @@ html[data-theme='light'] .landing-theme__icon--sun {
   inset: 0;
   z-index: 0;
   background:
-    radial-gradient(circle at 72% 28%, rgba(225, 29, 72, 0.14), transparent 42%),
-    radial-gradient(circle at 28% 78%, rgba(45, 212, 191, 0.12), transparent 45%);
+    radial-gradient(circle at 72% 28%, rgba(212, 140, 70, 0.16), transparent 42%),
+    radial-gradient(circle at 28% 78%, rgba(250, 237, 205, 0.1), transparent 45%);
   animation: landing-glow 12s var(--landing-ease) infinite alternate;
   pointer-events: none;
 }
@@ -268,7 +268,7 @@ html[data-theme='light'] .landing-theme__icon--sun {
   background: var(--landing-frame-bg);
   backdrop-filter: blur(8px);
   box-shadow:
-    0 24px 60px rgba(28, 18, 20, 0.18),
+    0 24px 60px rgba(16, 12, 9, 0.22),
     inset 0 1px 0 rgba(255, 255, 255, 0.06);
   animation: landing-rise 0.9s var(--landing-ease) both;
 }
@@ -368,13 +368,13 @@ html[data-theme='dark'] .landing-hero__eyebrow {
 
 .landing-cta__primary {
   background: var(--brew-primary);
-  color: #fff !important;
+  color: #100c09 !important;
   box-shadow: 0 0 0 0 transparent;
 }
 
 .landing-cta__primary:hover {
-  background: var(--brew-primary-deep);
-  color: #fff !important;
+  background: var(--brew-primary-soft);
+  color: #100c09 !important;
   transform: translateY(-2px);
   box-shadow: 0 10px 28px var(--brew-glow);
 }
@@ -500,6 +500,16 @@ html[data-theme='dark'] .landing-hero__eyebrow {
   justify-content: center;
 }
 
+.landing-close .landing-cta__primary {
+  background: #faedcd;
+  color: #100c09 !important;
+}
+
+.landing-close .landing-cta__primary:hover {
+  background: #fff;
+  color: #100c09 !important;
+}
+
 .landing-close .landing-cta__secondary {
   color: #fff !important;
   border-color: rgba(255, 255, 255, 0.45);
@@ -531,7 +541,7 @@ html[data-theme='dark'] .landing-hero__eyebrow {
 
 html[data-theme='dark'] .landing-footer,
 :root:not([data-theme='light']) .landing-footer {
-  background: #0f0a0c;
+  background: #0a0806;
 }
 
 /* ——— Motion ——— */

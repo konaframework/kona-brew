@@ -1,12 +1,37 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="Brew">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none" role="img" aria-label="Brew">
   <title>Brew</title>
-  <rect width="64" height="64" rx="14" fill="#3F0A16"/>
-  <g transform="translate(10,6)">
-    <path fill="#E11D48" d="M10 10c0-2.5 2-4.5 4.5-4.5h15c2.5 0 4.5 2 4.5 4.5V13H10v-3z"/>
-    <path fill="#E11D48" d="M8 15h28l-3 7H11L8 15z"/>
-    <path fill="#BE123C" d="M12 24h20l-1.5 16c-.3 2.8-2.6 5-5.4 5h-6.2c-2.8 0-5.1-2.2-5.4-5L12 24z"/>
-    <path fill="#FB7185" d="M20 45h4v7h-4z"/>
-    <ellipse cx="22" cy="54" rx="12" ry="3.5" fill="#E11D48"/>
-    <path stroke="#FB7185" stroke-width="2" stroke-linecap="round" fill="none" d="M14 3c1.4 1.8 1.4 3.5 0 5.2M22 1.5c1.4 1.8 1.4 3.5 0 5.2M30 3c1.4 1.8 1.4 3.5 0 5.2"/>
+  <!-- Espresso app mark: cup + steam framing { } code. Tuned for mid/large sizes. -->
+  <defs>
+    <radialGradient id="brewBg" cx="50%" cy="40%" r="72%">
+      <stop offset="0%" stop-color="#1E1612"/>
+      <stop offset="100%" stop-color="#100C09"/>
+    </radialGradient>
+    <linearGradient id="brewCopper" x1="18%" y1="100%" x2="82%" y2="8%">
+      <stop offset="0%" stop-color="#BA622A"/>
+      <stop offset="52%" stop-color="#D48C46"/>
+      <stop offset="100%" stop-color="#E5A869"/>
+    </linearGradient>
+    <linearGradient id="brewCream" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#E5A869"/>
+      <stop offset="100%" stop-color="#FAEDCD"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="52" fill="url(#brewBg)"/>
+  <!-- Cup optically centered (~x=124 body); handle balances right. -->
+  <g stroke="url(#brewCopper)" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path stroke-width="8" d="M70 130 L78 186 Q80 200 96 200 L156 200 Q172 200 174 186 L182 130 Z"/>
+    <path stroke-width="7" d="M70 130 H182"/>
+    <path stroke-width="8" d="M182 140 C208 142 212 176 176 184"/>
+    <path stroke-width="7" opacity="0.82" d="M64 214 H188"/>
+  </g>
+  <!-- Steam wisps frame the braces -->
+  <g stroke="url(#brewCopper)" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.9">
+    <path d="M94 120 C86 100 100 84 92 64"/>
+    <path d="M162 120 C170 100 156 84 164 64"/>
+  </g>
+  <!-- Curly braces = reactive code rising from the brew -->
+  <g stroke="url(#brewCream)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M116 74 C108 74 106 68 106 62 C106 52 98 50 94 50 C98 50 106 48 106 38 C106 32 108 26 116 26"/>
+    <path d="M140 74 C148 74 150 68 150 62 C150 52 158 50 162 50 C158 50 150 48 150 38 C150 32 148 26 140 26"/>
   </g>
 </svg>

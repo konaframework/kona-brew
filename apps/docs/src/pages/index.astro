@@ -26,7 +26,7 @@ const konaDocs = 'https://konaframework.github.io/kona/';
       name="description"
       content="Brew is the reactive server-component layer for the Kona framework. Write Kotlin or Java components with state and actions; Brew keeps the browser in sync."
     />
-    <meta name="theme-color" content="#E11D48" />
+    <meta name="theme-color" content="#D48C46" />
     <meta name="color-scheme" content="light dark" />
     <link rel="icon" href={`${base}favicon.svg`} type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -193,7 +193,7 @@ const konaDocs = 'https://konaframework.github.io/kona/';
         function apply(theme) {
           root.dataset.theme = theme;
           const meta = document.querySelector('meta[name="theme-color"]');
-          if (meta) meta.setAttribute('content', theme === 'light' ? '#FFF1F2' : '#1C1214');
+          if (meta) meta.setAttribute('content', theme === 'light' ? '#FAF6EB' : '#100C09');
           if (btn) {
             btn.setAttribute(
               'aria-label',
