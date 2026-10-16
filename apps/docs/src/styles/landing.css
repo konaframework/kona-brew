@@ -323,12 +323,11 @@ html[data-theme='dark'] .landing-hero__eyebrow {
   align-items: center;
 }
 
-.landing-hero__mark {
+.landing-hero__logo {
   width: min(14rem, 55vw);
   height: auto;
-  border-radius: 1.25rem;
   animation: brew-steam 4.5s ease-in-out infinite;
-  box-shadow: 0 18px 40px var(--brew-glow);
+  filter: drop-shadow(0 14px 28px var(--brew-glow));
 }
 
 @media (max-width: 51.99rem) {
@@ -595,7 +594,7 @@ html[data-theme='dark'] .landing-footer,
   .landing-hero::before,
   .landing-hero::after,
   .landing-hero__frame,
-  .landing-hero__mark {
+  .landing-hero__logo {
     animation: none;
   }
 
