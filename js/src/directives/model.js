@@ -15,6 +15,16 @@ export function registerModelDirective() {
 
         if (! expression) return console.warn('Brew: [wire:model] is missing a value.', el)
 
+        if (el.type === 'file') {
+            el.addEventListener('change', () => {
+                let files = el.files
+                if (! files || files.length === 0) return
+                if (el.multiple) component.$wire.$uploadMultiple(expression, files)
+                else component.$wire.$upload(expression, files[0])
+            })
+            return
+        }
+
         if (! Object.hasOwn(component.canonical, baseProperty(expression))) {
             return console.warn(`Brew: [wire:model="${expression}"] property does not exist on component: [${component.name}]`, el)
         }

@@ -36,11 +36,14 @@ class BrewServiceProvider : ServiceProvider {
             router.post(brew.config.updateUri) {
                 if (brew.updateUri != brew.config.updateUri) Response.text("Not Found", 404) else brew.handleUpdate(it)
             }
-            for (name in listOf("brew.js", "brew.min.js", "brew.min.js.map")) {
+            for (name in listOf("brew.js", "brew.min.js", "brew.min.js.map", "brew.csp.min.js", "brew.esm.js")) {
                 router.get("${brew.config.path}/$name") {
                     if (brew.scriptUri != null) Response.text("Not Found", 404) else brew.assets.response(name)
                 }
             }
+            router.post("${brew.config.path}/upload") { brew.handleUpload(it) }
+            router.get("${brew.config.path}/preview/{path}") { brew.handlePreview(it) }
         }
     }
 }
+

@@ -4,13 +4,13 @@ Resume point for the next agent session. Update this file whenever a milestone c
 
 ## State
 
-- **Active milestone:** M5 closing — PR → green CI → merge, then immediately start M6.
-- **M1–M4:** done — PRs #1–#4 merged.
-- **M5:** all ledger rows `done`; 100% Kover + 100% Vitest; bundles rebuilt. Awaiting PR → green CI → merge.
+- **Active milestone:** M6 closing — PR → green CI → merge, then immediately start M7.
+- **M1–M5:** done — PRs #1–#5 merged.
+- **M6:** all ledger rows `done`; 100% Kover + 100% Vitest; bundles rebuilt. Awaiting PR → green CI → merge.
 
 ## Next
 
-After M5 merges: branch `milestone/M6-uploads-platform` and exhaust M6→M7 until the livewire-v4-parity ledger is 100%.
+After M6 merges: branch `milestone/M7-dx-close` and exhaust M7 until the livewire-v4-parity ledger is 100%.
 
 ## Commands
 

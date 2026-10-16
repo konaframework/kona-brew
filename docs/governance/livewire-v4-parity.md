@@ -26,25 +26,25 @@ Status: `todo` · `done`.
 | PRO-10b | Effect `errors` | `Effects` map | M2 | done |
 | PRO-10c | Effects `dispatches`, `redirect`, `xjs`, `download`, `streams`, `scripts`, `assets` | `Effects` map | M3 | done |
 | PRO-10d | Effects `url`, `title` | `Effects` map | M5 | done |
-| PRO-11 | Locale memo (`SupportLocales`) — request locale restored on update | `memo.locale` → `Lang.setLocale` | M6 | todo |
-| PRO-12 | Release tokens (`SupportReleaseTokens`) — invalidate snapshots after deploy | `memo.release` + `Brew.releaseToken` | M6 | todo |
-| PRO-13 | Large payload handling (`SupportLargePayloads`) | payload limits + chunked snapshot errors | M6 | todo |
+| PRO-11 | Locale memo (`SupportLocales`) — request locale restored on update | `memo.locale` → `Lang.setLocale` | M6 | done |
+| PRO-12 | Release tokens (`SupportReleaseTokens`) — invalidate snapshots after deploy | `memo.release` + `Brew.releaseToken` | M6 | done |
+| PRO-13 | Large payload handling (`SupportLargePayloads`) | payload limits + chunked snapshot errors | M6 | done |
 | HYD-1 | Synthesizers: int, float, string, bool, null, array (list/assoc), stdClass, enum, Carbon/DateTime, Collection, Stringable | `IntSynth`… `java.time`, `List`/`Map`/`Set`, enums, `BigDecimal`/`BigInteger`, `UUID` | M1 | done |
 | HYD-2 | Tuple dehydration `[value, {s: key, …}]` for non-scalars | same | M1 | done |
 | HYD-3 | `Wireable` objects (`toLivewire` / `fromLivewire`) | `Wireable` interface (`toBrew` / `fromBrew`) | M1 | done |
-| HYD-4 | Custom synthesizers (`Livewire::propertySynthesizer`) incl. `get`/`set` for data binding, array-shaped synths | `Brew.propertySynthesizer(Synth)` | M6 | todo |
+| HYD-4 | Custom synthesizers (`Livewire::propertySynthesizer`) incl. `get`/`set` for data binding, array-shaped synths | `Brew.propertySynthesizer(Synth)` | M6 | done |
 | HYD-5 | Plain objects / DTOs (`std`) and data classes | Jackson-backed `ObjectSynth` (class pinned in meta) | M1 | done |
-| HYD-6 | Eloquent model / collection synth (`SupportModels`, `SupportLegacyModels`) — models re-queried by key | Extract `Model` synth (class + key) | M6 | todo |
+| HYD-6 | Eloquent model / collection synth (`SupportModels`, `SupportLegacyModels`) — models re-queried by key | Extract `Model` synth (class + key) | M6 | done |
 | HYD-7 | Deep `wire:model` paths (`todos.0.title`) via synth `get`/`set`, `__rm__` removal marker | `Synths.setPath` | M1 | done |
 | HYD-8 | Typed property guard: null/'' to non-nullable → unset/ignore; wrong type → 419 | `Coercion.toType` + `PropertyTypeMismatchException` | M1 | done |
 | SEC-1 | Only public props defined on subclass are state; base members hidden | `ComponentMeta` | M1 | done |
 | SEC-2 | Only public methods defined on subclass callable; `render`/lifecycle/`mount` not callable | `ComponentMeta.actions` | M1 | done |
 | SEC-3 | `#[Locked]` props reject client updates (`CannotUpdateLockedPropertyException`) | `@Locked` | M1 | done |
-| SEC-4 | Persistent middleware re-applied on update (`Livewire::addPersistentMiddleware`) | `Brew.addPersistentMiddleware` | M6 | todo |
-| SEC-5 | Global Livewire middleware on update route | `Brew.updateMiddleware(...)` | M6 | todo |
-| SEC-6 | Checksum failure debugging (`SupportChecksumErrorDebugging`) | debug-mode diff message | M6 | todo |
-| SEC-7 | `#[Authorize('ability', arg)]` on actions → 403 | `@Authorize` via Kona Gate | M6 | todo |
-| SEC-8 | `$this->authorize()` inside actions (AuthorizesRequests) | `Component.authorize(...)` | M6 | todo |
+| SEC-4 | Persistent middleware re-applied on update (`Livewire::addPersistentMiddleware`) | `Brew.addPersistentMiddleware` | M6 | done |
+| SEC-5 | Global Livewire middleware on update route | `Brew.updateMiddleware(...)` | M6 | done |
+| SEC-6 | Checksum failure debugging (`SupportChecksumErrorDebugging`) | debug-mode diff message | M6 | done |
+| SEC-7 | `#[Authorize('ability', arg)]` on actions → 403 | `@Authorize` via Kona Gate | M6 | done |
+| SEC-8 | `$this->authorize()` inside actions (AuthorizesRequests) | `Component.authorize(...)` | M6 | done |
 | SEC-9 | Security policy: denied classes for synth hydration | `SecurityPolicy` allow-list | M1 | done |
 | SEC-10 | Disable back-button cache (`SupportDisablingBackButtonCache`) | `Component.disableBackButtonCache()` | M5 | done |
 
@@ -54,7 +54,7 @@ Status: `todo` · `done`.
 |----|--------------------|------|---|--------|
 | CMP-1 | Class-based components (`Component` subclass + `render()`) | `abstract class Component` (Kotlin) / Java subclass | M1 | done |
 | CMP-2 | Single-file components (view + class in one file, `⚡name.blade.php`) | Kotlin class with inline `template()` Crema source | M1 | done |
-| CMP-3 | Multi-file components (`name/name.php` + `.blade.php` + `.js` + `.css`) | class + `views/brew/<name>.crema.html` + `<name>.js` + `<name>.css` | M6 | todo |
+| CMP-3 | Multi-file components (`name/name.php` + `.blade.php` + `.js` + `.css`) | class + `views/brew/<name>.crema.html` + `<name>.js` + `<name>.css` | M6 | done |
 | CMP-4 | Convention view lookup (`livewire.<name>` view path) when `render()` omitted | `views/brew/<name>.crema.html` | M1 | done |
 | CMP-5 | Name ↔ class mapping (kebab, dot-nesting `posts.create`), namespaces (`pages::`, `layouts::`) | `ComponentRegistry` names, `ns::name` | M1 | done |
 | CMP-6 | Programmatic registration (`Livewire::component`, `addLocation`, `addNamespace`) | `Brew.component`, `Brew.addLocation`, `Brew.addNamespace` | M1 | done |
@@ -103,7 +103,7 @@ Status: `todo` · `done`.
 | ACT-13 | `skipRender()` / `#[Renderless]` / `.renderless` modifier | `skipRender()`, `@Renderless` | M1 | done |
 | ACT-14 | `.async` modifier and `#[Async]` — parallel, non-blocking actions | `@Async`, `.async` | M3 | done |
 | ACT-15 | `.preserve-scroll` (`SupportPreserveScroll`) | same | M3 | done |
-| ACT-16 | Middleware applied to actions (persistent middleware) | see SEC-4 | M6 | todo |
+| ACT-16 | Middleware applied to actions (persistent middleware) | see SEC-4 | M6 | done |
 | ACT-17 | Protected/private methods not callable; `MethodNotFoundException` | same | M1 | done |
 | ACT-18 | Request bundling: interactions queued per component, `wire:model.live` updates coalesced, actions interrupt/queue (v4 `SupportRequestInteractions`) | JS message bus | M1 | done |
 
@@ -233,14 +233,14 @@ Status: `todo` · `done`.
 | DIR-10 | `wire:confirm` | same | M2 | done |
 | DIR-11 | `wire:transition` + `#[Transition]` (`type:`, `skip`) | same | M2 | done |
 | DIR-12 | `wire:init` | same | M1 | done |
-| DIR-13 | `wire:intersect` (`.once`, `.half`, `.full`, `.margin`, `:enter`, `:leave`) | same | M6 | todo |
+| DIR-13 | `wire:intersect` (`.once`, `.half`, `.full`, `.margin`, `:enter`, `:leave`) | same | M6 | done |
 | DIR-14 | `wire:poll` (`.Xs`, `.keep-alive`, `.visible`) | same | M2 | done |
 | DIR-15 | `wire:offline` (`.class`, `.attr`, `.remove`) | same | M2 | done |
 | DIR-16 | `wire:ignore` (`.self`, `.children`) | same | M1 | done |
 | DIR-17 | `wire:ref` + `$refs` / `$wire.$refs` / `->ref()` targeting events & streams | same | M2 | done |
 | DIR-18 | `wire:replace` (`.self`) | same (shipped with the M1 morph) | M2 | done |
 | DIR-19 | `wire:show` (+ `.transition`) | same | M2 | done |
-| DIR-20 | `wire:sort` (`wire:sort:item`, `:handle`, `:group`, `:ignore`) | same | M6 | todo |
+| DIR-20 | `wire:sort` (`wire:sort:item`, `:handle`, `:group`, `:ignore`) | same | M6 | done |
 | DIR-21 | `wire:stream` (`.replace`) + `$this->stream()` | same | M3 | done |
 | DIR-22 | `wire:text` | same | M2 | done |
 | DIR-23 | `wire:bind:attr` | same | M2 | done |
@@ -269,7 +269,7 @@ Status: `todo` · `done`.
 | ATR-16 | `#[Transition]` | `@Transition` | M2 | done |
 | ATR-17 | `#[Url]` | `@Url` | M5 | done |
 | ATR-18 | `#[Validate]` (+ deprecated `#[Rule]`) | `@Validate`, `@Rule` alias | M2 | done |
-| ATR-19 | `#[Authorize]` | `@Authorize` | M6 | todo |
+| ATR-19 | `#[Authorize]` | `@Authorize` | M6 | done |
 
 ## Crema (Blade) directives & assets
 
@@ -287,11 +287,11 @@ Status: `todo` · `done`.
 | BLD-10 | `@this` (legacy `$wire` alias) | `@this` | M3 | done |
 | BLD-11 | Morph markers `<!--[if BLOCK]><![endif]-->` around conditionals/loops (`inject_morph_markers`) | Crema `MORPH_MARKERS` | M1 | done |
 | BLD-12 | Asset routes `/livewire/livewire.js` (+ `.min.js`, `.js.map`), cache-busting `?id=` | `/brew/brew.js` (+ `.min.js`, `.map`) | M1 | done |
-| BLD-12b | CSP asset route `livewire.csp.min.js` | `/brew/brew.csp.min.js` | M6 | todo |
-| STY-1 | Scoped component styles (`<style>` in SFC, `name.css` in MFC), `:scope` root targeting | same | M6 | todo |
-| STY-2 | Global styles (`<style global>` / `name.global.css`), deduplication | same | M6 | todo |
-| STY-3 | CSS modules (`SupportCssModules`) | same | M6 | todo |
-| JSM-1 | Component JS modules (`<script>` in SFC → `name.js` in MFC, `this.$wire`) (`SupportJsModules`, `SupportJsComponent`) | same | M6 | todo |
+| BLD-12b | CSP asset route `livewire.csp.min.js` | `/brew/brew.csp.min.js` | M6 | done |
+| STY-1 | Scoped component styles (`<style>` in SFC, `name.css` in MFC), `:scope` root targeting | same | M6 | done |
+| STY-2 | Global styles (`<style global>` / `name.global.css`), deduplication | same | M6 | done |
+| STY-3 | CSS modules (`SupportCssModules`) | same | M6 | done |
+| JSM-1 | Component JS modules (`<script>` in SFC → `name.js` in MFC, `this.$wire`) (`SupportJsModules`, `SupportJsComponent`) | same | M6 | done |
 
 ## JavaScript runtime
 
@@ -303,7 +303,7 @@ Status: `todo` · `done`.
 | JS-3b | `$wire.$errors`, `$wire.$refs` | `$wire` | M2 | done |
 | JS-3c | `$wire.$entangle`, `$on`, `$dispatch*`, `$js`, `$intercept` | `$wire` | M3 | done |
 | JS-3d | `$wire.$parent`, `$island` | `$wire` | M4 | done |
-| JS-3e | `$wire.$upload*` | `$wire` | M6 | todo |
+| JS-3e | `$wire.$upload*` | `$wire` | M6 | done |
 | JS-4 | `Livewire.find(id)`, `first()`, `getByName(name)`, `all()` | same | M1 | done |
 | JS-5 | `Livewire.hook(...)`: `component.init`, `element.init`, `morph.updating/updated/removing/removed/adding/added`, `morph`, `commit`, `request`, `effect` | same | M1 | done |
 | JS-6 | `Livewire.directive(name, fn)` custom `wire:` directives | same | M1 | done |
@@ -314,21 +314,21 @@ Status: `todo` · `done`.
 | JS-11 | Offline detection | see DIR-15 | M2 | done |
 | JS-12 | Morph algorithm: keyed (wire:key/id) Alpine morph, block markers, `wire:ignore`, `wire:replace`, lookahead | Alpine morph + Brew hooks | M1 | done |
 | JS-13 | File downloads effect | M3 | done |
-| CSP-1 | CSP-safe build (`livewire.csp_safe`, Alpine CSP build, no `eval`) | `brew.csp.min.js` | M6 | todo |
+| CSP-1 | CSP-safe build (`livewire.csp_safe`, Alpine CSP build, no `eval`) | `brew.csp.min.js` | M6 | done |
 
 ## Uploads
 
 | ID | Livewire v4 surface | Brew | M | Status |
 |----|--------------------|------|---|--------|
-| UPL-1 | `WithFileUploads`, `wire:model` on `<input type=file>` single + `multiple` | `WithFileUploads` | M6 | todo |
-| UPL-2 | Temporary uploads (signed upload URL, temp dir, `TemporaryUploadedFile`), `store`, `storeAs`, `storePublicly` | `TemporaryUploadedFile` via Kona Storage | M6 | todo |
-| UPL-3 | Validation (`max`, `mimes`, `image`, global `temporary_file_upload.rules`) | same | M6 | todo |
-| UPL-4 | Preview URLs (`temporaryUrl()`, `preview_mimes`) | same | M6 | todo |
-| UPL-5 | Loading/progress events (`livewire-upload-start/finish/error/cancel/progress`), cancel | `brew-upload-*` | M6 | todo |
-| UPL-6 | JS upload API (`$wire.$upload`, `$uploadMultiple`, `$cancelUpload`, `$removeUpload`) | same | M6 | todo |
-| UPL-7 | S3 direct upload (pre-signed), cleanup of old temp files | Kona Storage S3 driver + cleanup | M6 | todo |
-| UPL-8 | Testing uploads (`UploadedFile::fake()`) | `UploadedFile.fake` in Testable | M6 | todo |
-| UPL-9 | Upload middleware / throttle config | config | M6 | todo |
+| UPL-1 | `WithFileUploads`, `wire:model` on `<input type=file>` single + `multiple` | `WithFileUploads` | M6 | done |
+| UPL-2 | Temporary uploads (signed upload URL, temp dir, `TemporaryUploadedFile`), `store`, `storeAs`, `storePublicly` | `TemporaryUploadedFile` via Kona Storage | M6 | done |
+| UPL-3 | Validation (`max`, `mimes`, `image`, global `temporary_file_upload.rules`) | same | M6 | done |
+| UPL-4 | Preview URLs (`temporaryUrl()`, `preview_mimes`) | same | M6 | done |
+| UPL-5 | Loading/progress events (`livewire-upload-start/finish/error/cancel/progress`), cancel | `brew-upload-*` | M6 | done |
+| UPL-6 | JS upload API (`$wire.$upload`, `$uploadMultiple`, `$cancelUpload`, `$removeUpload`) | same | M6 | done |
+| UPL-7 | S3 direct upload (pre-signed), cleanup of old temp files | Kona Storage S3 driver + cleanup | M6 | done |
+| UPL-8 | Testing uploads (`UploadedFile::fake()`) | `UploadedFile.fake` in Testable | M6 | done |
+| UPL-9 | Upload middleware / throttle config | config | M6 | done |
 
 ## Redirects, downloads, streaming
 
@@ -348,7 +348,7 @@ Status: `todo` · `done`.
 | TST-1 | `Livewire::test(name|class, params)`, `->set`, `->call`, `->toggle`, `->refresh` | `Brew.test(...)` | M1 | done |
 | TST-2 | `assertSet`, `assertNotSet`, `assertCount`, `assertSee`, `assertDontSee`, `assertSeeHtml`, `assertDontSeeHtml`, `assertSeeInOrder`, `assertViewHas`, `assertViewIs` | same | M1 | done |
 | TST-3 | `assertRenderSkipped`, `assertRenderNotSkipped`, `assertStatus`, `assertForbidden`, `assertUnauthorized` | same | M1 | done |
-| TST-3b | Status assertions driven by `#[Authorize]` / `authorize()` failures | same | M6 | todo |
+| TST-3b | Status assertions driven by `#[Authorize]` / `authorize()` failures | same | M6 | done |
 | TST-4 | `actingAs`, `withQueryParams`, `withCookie(s)`, `withHeaders`, `withoutLazyLoading` | same | M5/M6 | todo |
 | TST-5 | `assertJs`, `assertNoJs`, `assertRedirect*`, `assertNoRedirect`, `assertDispatched*`, `assertHasErrors*`, `assertFileDownloaded` | same | M2/M3 | todo |
 | TST-6 | Page contains component (`assertSeeLivewire`, `assertDontSeeLivewire`) | `assertSeeBrew` on Kona `HttpTestClient` | M5 | done |
@@ -364,7 +364,7 @@ Status: `todo` · `done`.
 | DX-3 | `livewire:publish --config`, `livewire:stubs`, `livewire:layout` | `brew:publish`, `brew:stubs`, `brew:layout` | M7 | todo |
 | DX-4 | Config core keys (component locations/namespaces, inject_assets, inject_morph_markers, payload) | `config/brew.*` | M1 | done |
 | DX-4b | Remaining config keys (layout, lazy placeholder, temp uploads, render_on_redirect, legacy_model_binding, navigate, smart_wire_keys, release_token, csp_safe) | `config/brew.*` | per feature (M4–M6) | todo |
-| DX-5 | Package development (register components/namespaces from packages) | `BrewServiceProvider` hooks | M6 | todo |
+| DX-5 | Package development (register components/namespaces from packages) | `BrewServiceProvider` hooks | M6 | done |
 | DX-6 | IDE support: Kona Idea / LSP completions for `<brew:…>`, `wire:*` | LSP contract notes | M7 | todo |
 | DX-7 | Docs for the M1 slice (`/docs/brew/*`: installation, components, properties, actions, templates, lifecycle, testing, JS runtime) | apps/docs in Kona | M1 | done |
 | DX-7b | Docs pages for every remaining topic in the Livewire v4 nav | apps/docs in Kona | each M (M2–M7) | todo |

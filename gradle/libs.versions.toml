@@ -21,6 +21,8 @@ kona-support = { module = "dev.kona:kona-support", version.ref = "kona" }
 kona-grind = { module = "dev.kona:kona-grind", version.ref = "kona" }
 kona-testing = { module = "dev.kona:kona-testing", version.ref = "kona" }
 kona-auth = { module = "dev.kona:kona-auth", version.ref = "kona" }
+kona-extract = { module = "dev.kona:kona-extract", version.ref = "kona" }
+kona-filesystem = { module = "dev.kona:kona-filesystem", version.ref = "kona" }
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }

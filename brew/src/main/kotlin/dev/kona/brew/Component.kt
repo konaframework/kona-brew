@@ -1,5 +1,7 @@
 package dev.kona.brew
 
+import dev.kona.auth.authorization.AuthorizationException
+import dev.kona.brew.features.SupportAuthorize
 import dev.kona.brew.features.SupportDownloads
 import dev.kona.brew.hydration.Coercion
 import dev.kona.brew.lifecycle.HookSet
@@ -150,6 +152,13 @@ abstract class Component {
 
     fun addError(key: String, message: String) {
         errorBag().add(key, message)
+    }
+
+    /** Authorize via Kona Gate (`$this->authorize('update', $post)`). */
+    fun authorize(ability: String, vararg arguments: Any?) {
+        val gate = SupportAuthorize.gateOrNull(state().manager)
+            ?: throw AuthorizationException("No Gate bound; cannot authorize [$ability]")
+        gate.authorize(ability, *arguments)
     }
 
     fun resetErrorBag() {

@@ -21,6 +21,8 @@ const results = await Promise.all([
     build({ ...shared, format: 'iife', outfile: join(resources, 'brew.js') }),
     build({ ...shared, format: 'iife', minify: true, sourcemap: 'linked', sourcesContent: false, outfile: join(resources, 'brew.min.js') }),
     build({ ...shared, format: 'esm', outfile: join(resources, 'brew.esm.js') }),
+    // CSP-safe build: same minify bundle under a dedicated name (Alpine CSP apps load this).
+    build({ ...shared, format: 'iife', minify: true, outfile: join(resources, 'brew.csp.min.js') }),
 ])
 
 const files = results.flatMap(result => result.outputFiles)
