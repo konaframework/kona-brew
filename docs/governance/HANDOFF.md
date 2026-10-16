@@ -4,13 +4,13 @@ Resume point for the next agent session. Update this file whenever a milestone c
 
 ## State
 
-- **Active milestone:** M7 closing — PR → green CI → merge.
-- **M1–M6:** done — PRs #1–#6 merged.
-- **M7:** all ledger rows `done` (Livewire v4 ledger 100%); 100% Kover + 100% Vitest; Playwright smoke added. Awaiting PR → green CI → merge.
+- **Active milestone:** none — program complete.
+- **M1–M7:** done — PRs #1–#7 merged.
+- **Ledger:** every row in `docs/governance/livewire-v4-parity.md` is `done` (273/273).
 
 ## Next
 
-After M7 merges: program complete. No further Brew parity milestones.
+No further Brew Livewire-v4 parity milestones. Maintenance / docs polish only as needed.
 
 ## Commands
 
