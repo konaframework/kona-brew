@@ -4,6 +4,8 @@ Brew is Kona's reactive server-component layer with **100% behavioral/API-shape 
 Read this file, [MILESTONES.md](MILESTONES.md) (active milestone) and the ledger
 [docs/governance/livewire-v4-parity.md](docs/governance/livewire-v4-parity.md) before writing code.
 
+Cross-session resume: [docs/governance/HANDOFF.md](docs/governance/HANDOFF.md).
+
 ## Models
 
 Prefer Claude Opus when the human requests it; otherwise use **Auto** (`inherit`). If a named model fails, fall back to `inherit` and continue.
