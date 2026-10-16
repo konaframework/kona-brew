@@ -1,28 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168.87 58" fill="none" role="img" aria-label="Brew">
   <title>Brew</title>
-  <!-- Light UI banner: concept mark + Outfit wordmark -->
-  <g transform="translate(2,4) scale(0.78125)">
-    <rect width="64" height="64" rx="14" fill="#F5F3EF"/>
-    <g stroke="#B45A26" stroke-linecap="round" stroke-linejoin="round" fill="none">
-      <ellipse cx="29.5" cy="34.5" rx="13" ry="3.4" stroke-width="2.4"/>
-      <path stroke-width="2.4" d="M16.5 34.5 C17 42 18 48.5 20 51.5 Q22.5 55 29.5 55 Q36.5 55 39 51.5 C41 48.5 42 42 42.5 34.5"/>
-      <path stroke-width="2.4" d="M42.5 37 C49.5 37.5 51 46.5 41 49.5"/>
-    </g>
-    <g stroke="#C98952" stroke-width="2.2" stroke-linecap="round" fill="none">
-      <path d="M20.5 33 C12.5 28.5 10.5 21.5 15 14.5 C18.5 9.5 24.5 7.5 28.5 7.5"/>
-      <path d="M38.5 33 C46.5 28.5 48.5 21.5 44 14.5 C40.5 9.5 34.5 7.5 30.5 7.5"/>
-    </g>
-    <g fill="#B45A26" opacity="0.45">
-      <circle cx="29.5" cy="31" r="0.85"/>
-      <circle cx="29.5" cy="27.5" r="0.8"/>
-      <circle cx="29.5" cy="24" r="0.75"/>
-      <circle cx="29.5" cy="20.5" r="0.7"/>
-      <circle cx="29.5" cy="17" r="0.65"/>
-    </g>
-    <g stroke="#D4A574" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none">
-      <path d="M26.5 16.5 C24 16.5 23.5 14.5 23.5 13 C23.5 10 21 9.5 19.5 9.5 C21 9.5 23.5 9 23.5 6 C23.5 4.5 24 3 26.5 3"/>
-      <path d="M32.5 16.5 C35 16.5 35.5 14.5 35.5 13 C35.5 10 38 9.5 39.5 9.5 C38 9.5 35.5 9 35.5 6 C35.5 4.5 35 3 32.5 3"/>
-    </g>
+  <!-- Light UI banner: transparent compact cup + Outfit wordmark -->
+  <g transform="translate(2,5) scale(0.78)">
+    <path fill="#D48C46" d="M16 30h28l-2.2 14.5c-.35 2.3-2.3 4-4.6 4H22.8c-2.3 0-4.25-1.7-4.6-4L16 30z"/>
+    <path fill="#BA622A" d="M16 28h28v3.2H16z"/>
+    <path fill="none" stroke="#E5A869" stroke-width="3.2" stroke-linecap="round" d="M44.5 32c5.2.4 6.2 8.2-1.2 10.2"/>
+    <path fill="none" stroke="#D48C46" stroke-width="2.4" stroke-linecap="round" opacity="0.9" d="M14 52h32"/>
+    <path fill="none" stroke="#BA622A" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"
+          d="M26 26c-2.2 0-2.8-1.4-2.8-2.8 0-2.4-2-2.8-3-2.8 1 0 3-.4 3-2.8C23.2 16 23.8 14.4 26 14.4"/>
+    <path fill="none" stroke="#BA622A" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"
+          d="M38 26c2.2 0 2.8-1.4 2.8-2.8 0-2.4 2-2.8 3-2.8-1 0-3-.4-3-2.8C40.8 16 40.2 14.4 38 14.4"/>
   </g>
   <path fill="#BA622A" d="M65.282 46.0V39.952H70.784Q72.38 39.952 73.346 39.091Q74.312 38.23 74.312 36.718Q74.312 35.71 73.871 34.975Q73.43 34.24 72.653 33.862Q71.876 33.484 70.784 33.484H65.282V27.688H70.406Q71.75 27.688 72.632 27.016Q73.514 26.344 73.514 24.916Q73.514 23.488 72.632 22.816Q71.75 22.144 70.406 22.144H65.282V16.096H72.758Q75.488 16.096 77.525 17.125Q79.562 18.154 80.696 19.939Q81.83 21.724 81.83 24.034Q81.83 27.226 79.562 29.242Q77.294 31.258 72.926 31.552L72.842 28.654Q77.588 28.948 80.108 31.258Q82.628 33.568 82.628 37.18Q82.628 39.784 81.326 41.779Q80.024 43.774 77.693 44.887Q75.362 46.0 72.254 46.0ZM58.478 46.0V16.096H66.71V46.0Z"/>
   <path fill="#BA622A" d="M85.652 46.0V25.336H93.884V46.0ZM93.884 34.828 90.062 31.426Q91.658 28.066 93.779 26.491Q95.899 24.916 99.092 24.916Q100.52 24.916 101.549 25.252Q102.578 25.588 103.208 26.218L98.588 32.77Q98.294 32.434 97.722 32.203Q97.151 31.972 96.404 31.972Q95.144 31.972 94.514 32.717Q93.884 33.463 93.884 34.828Z"/>
