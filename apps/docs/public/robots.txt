@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://konaframework.github.io/kona-brew/sitemap-index.xml

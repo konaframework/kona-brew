@@ -1,0 +1,92 @@
+// @ts-check
+import { defineConfig } from 'astro/config';
+import starlight from '@astrojs/starlight';
+import almasixTheme from '@almasix/starlight-theme';
+import { buildSidebar } from './sidebar.mjs';
+
+// GitHub Pages project site: PUBLIC_BASE_PATH=/kona-brew/ → https://konaframework.github.io/kona-brew/
+const base = process.env.PUBLIC_BASE_PATH || '/';
+const site = process.env.PUBLIC_SITE_URL || 'https://konaframework.github.io';
+const origin = site.replace(/\/$/, '');
+const normalizedBase = base === '/' ? '/' : `/${base.replace(/^\/|\/$/g, '')}/`;
+const ogImage = `${origin}${normalizedBase}og.svg`;
+const ogImageAlt = 'Brew — reactive server components for Kona';
+const sidebar = await buildSidebar();
+
+export default defineConfig({
+  site,
+  base,
+  trailingSlash: 'ignore',
+  integrations: [
+    starlight({
+      title: 'Brew',
+      description:
+        'Reactive server components for Kona. Kotlin-first, Java first-class — write state and actions on the server, keep the browser in sync.',
+      favicon: '/favicon.svg',
+      logo: {
+        light: './src/assets/brew-mark.svg',
+        dark: './src/assets/brew-mark-dark.svg',
+        alt: 'Brew',
+        replacesTitle: true,
+      },
+      social: [
+        {
+          icon: 'github',
+          label: 'GitHub',
+          href: 'https://github.com/konaframework/kona-brew',
+        },
+      ],
+      plugins: [
+        almasixTheme({
+          github: 'konaframework/kona-brew',
+          lightbox: false,
+        }),
+      ],
+      customCss: ['./src/styles/custom.css'],
+      components: {
+        SiteTitle: './src/components/SiteTitle.astro',
+      },
+      editLink: {
+        baseUrl: 'https://github.com/konaframework/kona-brew/edit/main/apps/docs/',
+      },
+      head: [
+        {
+          tag: 'meta',
+          attrs: {
+            name: 'theme-color',
+            content: '#E11D48',
+          },
+        },
+        {
+          tag: 'meta',
+          attrs: {
+            name: 'robots',
+            content: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
+          },
+        },
+        {
+          tag: 'meta',
+          attrs: {
+            property: 'og:image',
+            content: ogImage,
+          },
+        },
+        {
+          tag: 'meta',
+          attrs: {
+            property: 'og:image:alt',
+            content: ogImageAlt,
+          },
+        },
+        {
+          tag: 'meta',
+          attrs: {
+            name: 'twitter:card',
+            content: 'summary_large_image',
+          },
+        },
+      ],
+      sidebar,
+    }),
+  ],
+});
