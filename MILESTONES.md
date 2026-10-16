@@ -2,7 +2,7 @@
 
 Single source of truth for milestone status. Rules: [AGENTS.md](AGENTS.md). Ledger: [docs/governance/livewire-v4-parity.md](docs/governance/livewire-v4-parity.md).
 
-**Active milestone:** M7 — DX, browser suite & program close (closing)
+**Active milestone:** none — Livewire v4 ledger complete (M1–M7)
 
 The program is complete when every ledger row is `done` (M1–M7). Each milestone closes **all** ledger rows tagged with it.
 
@@ -108,7 +108,7 @@ package development hooks.
 
 ## M7 — DX, browser suite & program close
 
-**Branch:** `milestone/M7-dx-close` · **Status:** closing (PR pending)
+**Branch:** `milestone/M7-dx-close` · **Status:** done (merged #7)
 
 - [x] Ledger rows: all remaining rows `done` (ledger 100%).
 - [x] 100% Kover + 100% Vitest; Playwright Chromium smoke in CI.
