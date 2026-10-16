@@ -11,6 +11,9 @@ import java.nio.file.Path
  *
  * Default type comes from `brew.make.type` (`sfc` | `class` | `mfc`). Flags: `--class`, `--mfc`,
  * `--test`, `--emoji`, `--lang`, namespaces (`pages::`, `admin::`).
+ *
+ * Names that look like a todo list (`Todos`, `todo-list`, …) get a todos-shaped stub (class + Crema
+ * view by default). Other names keep the counter-shaped stub unless `--class` / `--mfc` is set.
  */
 class MakeBrewCommand : ConsoleCommand() {
     override val signature: String =
@@ -22,9 +25,9 @@ class MakeBrewCommand : ConsoleCommand() {
     override val description: String = "Create a new Brew component"
 
     override fun handle(): Int {
-        val raw = argumentOrFail("name")
+        val raw = argumentOrFail("name").replace('/', '.')
         if (!NAME.matches(raw)) {
-            error("Invalid component name [$raw]: use names like counter, posts.create-post or CreatePost")
+            error("Invalid component name [$raw]: use names like counter, posts.create-post, brew/todos or CreatePost")
             return FAILURE
         }
         val name = normalize(raw)
@@ -40,7 +43,9 @@ class MakeBrewCommand : ConsoleCommand() {
             segments.dropLast(1).map { it.replace('-', '_') }
         val pkg = packageParts.joinToString(".")
         val className = ComponentRegistry.studly(segments.last())
-        val type = resolveType()
+        val shape = stubShape(className, name)
+        // Todos stubs always use a separate Crema view (parity with the kit / samples).
+        val type = if (shape == StubShape.TODOS && !optionBool("mfc")) "class" else resolveType()
         val separate = type == "class" || type == "mfc"
         val emoji = optionBool("emoji")
         val viewLeaf = name.replace("::", ".")
@@ -54,16 +59,17 @@ class MakeBrewCommand : ConsoleCommand() {
         val root = if (lang == "java") "src/main/java" else "src/main/kotlin"
         val classRel = "$root/${pkg.replace('.', '/')}/$className.$ext"
         val files = linkedMapOf(
-            classRel to componentSource(base, lang, pkg, className, separate, viewName),
+            classRel to componentSource(base, lang, pkg, className, separate, viewName, shape),
         )
         if (separate) {
+            val viewStub = if (shape == StubShape.TODOS) TODOS_VIEW else VIEW
             files["src/main/resources/views/${viewName.replace('.', '/')}.crema.html"] =
-                BrewStubsCommand.load(base, "view.crema.html.stub", VIEW)
+                BrewStubsCommand.load(base, if (shape == StubShape.TODOS) "todos.view.crema.html.stub" else "view.crema.html.stub", viewStub)
         }
         if (optionBool("test")) {
             val testRoot = if (lang == "java") "src/test/java" else "src/test/kotlin"
             val stub = if (lang == "java") "test.java.stub" else "test.kt.stub"
-            val fallback = testSource(lang, pkg, className, name)
+            val fallback = testSource(lang, pkg, className, name, shape)
             files["$testRoot/${pkg.replace('.', '/')}/${className}Test.$ext"] =
                 BrewStubsCommand.load(base, stub, fallback)
                     .replace("{{package}}", pkg)
@@ -123,19 +129,38 @@ class MakeBrewCommand : ConsoleCommand() {
         name: String,
         separate: Boolean,
         view: String,
+        shape: StubShape,
     ): String {
-        val stubName = if (lang == "java") "component.java.stub" else "component.kt.stub"
-        val fallback = defaultComponent(lang, pkg, name, separate, view)
+        val stubName = when {
+            shape == StubShape.TODOS && lang == "java" -> "todos.component.java.stub"
+            shape == StubShape.TODOS -> "todos.component.kt.stub"
+            lang == "java" -> "component.java.stub"
+            else -> "component.kt.stub"
+        }
+        val fallback = defaultComponent(lang, pkg, name, separate, view, shape)
         val loaded = BrewStubsCommand.load(base, stubName, fallback)
             .replace("{{package}}", pkg)
             .replace("{{class}}", name)
             .replace("{{view}}", view)
         // Prefer the stub when its shape matches the requested type; otherwise use the generated default.
-        val stubOk = if (separate) "render()" in loaded else "template()" in loaded
+        val stubOk = if (separate) "render()" in loaded || "Todo" in loaded else "template()" in loaded
         return if (stubOk) loaded else fallback
     }
 
-    private fun defaultComponent(lang: String, pkg: String, name: String, separate: Boolean, view: String): String =
+    private fun defaultComponent(
+        lang: String,
+        pkg: String,
+        name: String,
+        separate: Boolean,
+        view: String,
+        shape: StubShape,
+    ): String =
+        when (shape) {
+            StubShape.TODOS -> todosComponent(lang, pkg, name, separate, view)
+            StubShape.COUNTER -> counterComponent(lang, pkg, name, separate, view)
+        }
+
+    private fun counterComponent(lang: String, pkg: String, name: String, separate: Boolean, view: String): String =
         if (lang == "java") {
             if (separate) {
                 """
@@ -220,8 +245,129 @@ class MakeBrewCommand : ConsoleCommand() {
             """.trimIndent() + "\n"
         }
 
-    private fun testSource(lang: String, pkg: String, name: String, component: String): String =
+    private fun todosComponent(lang: String, pkg: String, name: String, @Suppress("UNUSED_PARAMETER") separate: Boolean, view: String): String =
         if (lang == "java") {
+            """
+            package $pkg;
+
+            import io.konaframework.brew.Component;
+            import io.konaframework.brew.Computed;
+            import java.util.ArrayList;
+            import java.util.List;
+
+            public class $name extends Component {
+                public static class Todo {
+                    public String title = "";
+                    public boolean done = false;
+
+                    public Todo() {}
+
+                    public Todo(String title, boolean done) {
+                        this.title = title;
+                        this.done = done;
+                    }
+                }
+
+                public String draft = "";
+                public List<Todo> items = new ArrayList<>(List.of(
+                    new Todo("Grind the beans", false),
+                    new Todo("Steam the milk", true)
+                ));
+
+                public void add() {
+                    String title = draft.trim();
+                    if (title.isEmpty()) {
+                        return;
+                    }
+                    items.add(new Todo(title, false));
+                    draft = "";
+                }
+
+                public void remove(int index) {
+                    items.remove(index);
+                }
+
+                @Computed
+                public long remaining() {
+                    return items.stream().filter(todo -> !todo.done).count();
+                }
+
+                @Override
+                public Object render() {
+                    return view("$view");
+                }
+            }
+            """.trimIndent() + "\n"
+        } else {
+            """
+            package $pkg
+
+            import io.konaframework.brew.Component
+            import io.konaframework.brew.Computed
+
+            data class Todo(var title: String = "", var done: Boolean = false)
+
+            class $name : Component() {
+                var draft = ""
+                var items = mutableListOf(Todo("Grind the beans"), Todo("Steam the milk", done = true))
+
+                fun add() {
+                    val title = draft.trim()
+                    if (title.isEmpty()) return
+                    items.add(Todo(title))
+                    draft = ""
+                }
+
+                fun remove(index: Int) {
+                    items.removeAt(index)
+                }
+
+                @Computed
+                fun remaining(): Int = items.count { !it.done }
+
+                override fun render() = view("$view")
+            }
+            """.trimIndent() + "\n"
+        }
+
+    private fun testSource(lang: String, pkg: String, name: String, component: String, shape: StubShape): String =
+        if (shape == StubShape.TODOS) {
+            if (lang == "java") {
+                """
+                package $pkg;
+
+                import io.konaframework.brew.Brew;
+                import org.junit.jupiter.api.Test;
+
+                class ${name}Test {
+                    @Test
+                    void renders() {
+                        Brew.test($name.class)
+                            .set("draft", "Pull espresso")
+                            .call("add")
+                            .assertSee("Pull espresso");
+                    }
+                }
+                """.trimIndent() + "\n"
+            } else {
+                """
+                package $pkg
+
+                import io.konaframework.brew.Brew
+                import org.junit.jupiter.api.Test
+
+                class ${name}Test {
+                    @Test
+                    fun renders() {
+                        Brew.test("$component")
+                            .set("draft", "Pull espresso")
+                            .call("add")
+                            .assertSee("Pull espresso")
+                    }
+                }
+                """.trimIndent() + "\n"
+            }
+        } else if (lang == "java") {
             """
             package $pkg;
 
@@ -252,6 +398,16 @@ class MakeBrewCommand : ConsoleCommand() {
         }
 }
 
+private enum class StubShape { COUNTER, TODOS }
+
+private fun stubShape(@Suppress("UNUSED_PARAMETER") className: String, normalizedName: String): StubShape {
+    // Normalized leaf only — PascalCase names are kebab'd before this runs (`Todos` → `todos`).
+    val leaf = normalizedName.substringAfterLast('.').substringAfterLast("::").lowercase().replace('-', '_')
+    return if (leaf in TODOS_LEAVES) StubShape.TODOS else StubShape.COUNTER
+}
+
+private val TODOS_LEAVES = setOf("todos", "todo", "todo_list", "todolist")
+
 private val NAME = Regex("^([a-z][a-z0-9-]*::)?[A-Za-z][A-Za-z0-9-]*(\\.[A-Za-z][A-Za-z0-9-]*)*$")
 
 private val VIEW = """
@@ -259,4 +415,25 @@ private val VIEW = """
         <span>{{ count }}</span>
         <button wire:click="increment">+</button>
     </div>
+""".trimIndent() + "\n"
+
+private val TODOS_VIEW = """
+    <section class="card">
+        <h2>Todos <small>({{ remaining }} left)</small></h2>
+        <form wire:submit="add">
+            <input wire:model="draft" placeholder="What needs doing?">
+            <button type="submit">Add</button>
+        </form>
+        <ul>
+        @foreach(items as item)
+            <li wire:key="todo-{{ loop.index }}">
+                <label>
+                    <input type="checkbox" wire:model.live="items.{{ loop.index }}.done">
+                    {{ item.title }}
+                </label>
+                <button wire:click="remove({{ loop.index }})" aria-label="Remove">&times;</button>
+            </li>
+        @endforeach
+        </ul>
+    </section>
 """.trimIndent() + "\n"
