@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="Brew">
+  <title>Brew</title>
+  <rect width="64" height="64" rx="14" fill="#FFF1F2"/>
+  <g transform="translate(10,6)">
+    <path fill="#E11D48" d="M10 10c0-2.5 2-4.5 4.5-4.5h15c2.5 0 4.5 2 4.5 4.5V13H10v-3z"/>
+    <path fill="#E11D48" d="M8 15h28l-3 7H11L8 15z"/>
+    <path fill="#BE123C" d="M12 24h20l-1.5 16c-.3 2.8-2.6 5-5.4 5h-6.2c-2.8 0-5.1-2.2-5.4-5L12 24z"/>
+    <path fill="#FB7185" d="M20 45h4v7h-4z"/>
+    <ellipse cx="22" cy="54" rx="12" ry="3.5" fill="#E11D48"/>
+    <path stroke="#FB7185" stroke-width="2" stroke-linecap="round" fill="none" d="M14 3c1.4 1.8 1.4 3.5 0 5.2M22 1.5c1.4 1.8 1.4 3.5 0 5.2M30 3c1.4 1.8 1.4 3.5 0 5.2"/>
+  </g>
+</svg>

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 56" fill="none" role="img" aria-label="Brew">
+  <title>Brew</title>
+  <g transform="translate(2,4)">
+    <path fill="#FB7185" d="M14 8c0-2.2 1.8-4 4-4h12c2.2 0 4 1.8 4 4v2H14V8z"/>
+    <path fill="#FB7185" d="M12 12h24l-2.5 6H14.5L12 12z"/>
+    <path fill="#FECDD3" d="M16 20h16l-1.2 14c-.2 2.2-2 4-4.2 4h-5.2c-2.2 0-4-1.8-4.2-4L16 20z"/>
+    <path fill="#FDA4AF" d="M22 38h4v6h-4z"/>
+    <ellipse cx="24" cy="46" rx="10" ry="3" fill="#FB7185" opacity=".9"/>
+    <path stroke="#FECDD3" stroke-width="1.6" stroke-linecap="round" fill="none" d="M18 2c1.2 1.5 1.2 3 0 4.5M24 1c1.2 1.5 1.2 3 0 4.5M30 2c1.2 1.5 1.2 3 0 4.5"/>
+  </g>
+  <text x="58" y="38" font-family="Outfit, IBM Plex Sans, system-ui, sans-serif" font-size="32" font-weight="700" fill="#FB7185">Brew</text>
+</svg>

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none" role="img" aria-label="Brew">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF1F2"/>
+      <stop offset="0.55" stop-color="#FFE4E6"/>
+      <stop offset="1" stop-color="#CCFBF1"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <g transform="translate(120,170) scale(3.2)">
+    <path fill="#E11D48" d="M14 8c0-2.2 1.8-4 4-4h12c2.2 0 4 1.8 4 4v2H14V8z"/>
+    <path fill="#E11D48" d="M12 12h24l-2.5 6H14.5L12 12z"/>
+    <path fill="#BE123C" d="M16 20h16l-1.2 14c-.2 2.2-2 4-4.2 4h-5.2c-2.2 0-4-1.8-4.2-4L16 20z"/>
+    <path fill="#FB7185" d="M22 38h4v6h-4z"/>
+    <ellipse cx="24" cy="46" rx="10" ry="3" fill="#E11D48"/>
+    <path stroke="#FB7185" stroke-width="1.6" stroke-linecap="round" fill="none" d="M18 2c1.2 1.5 1.2 3 0 4.5M24 1c1.2 1.5 1.2 3 0 4.5M30 2c1.2 1.5 1.2 3 0 4.5"/>
+  </g>
+  <text x="340" y="320" font-family="Outfit, system-ui, sans-serif" font-size="120" font-weight="700" fill="#BE123C">Brew</text>
+  <text x="340" y="390" font-family="IBM Plex Sans, system-ui, sans-serif" font-size="36" fill="#0F766E">Reactive server components for Kona</text>
+</svg>

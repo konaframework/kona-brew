@@ -18,3 +18,5 @@ js/coverage/
 .kona/
 js/dist/
 js/test-results/
+apps/docs/dist/
+apps/docs/.astro/

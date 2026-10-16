@@ -26,15 +26,31 @@ class Counter : Component() {
 - Artifact: `dev.kona:kona-brew` (Kotlin internals, first-class Java API).
 - JS runtime: `js/` (Alpine.js + plugins, esbuild). Built bundles are committed under
   `brew/src/main/resources/dev/kona/brew/` and served from `/brew/brew.min.js`.
-- Docs: the Kona docs site, section **Brew** (`apps/docs/src/content/docs/docs/brew/` in
-  [konaframework/kona](https://github.com/konaframework/kona)).
+- **Docs (this repo):** https://konaframework.github.io/kona-brew/ — Astro + Starlight site under
+  `apps/docs/` (rose brand, Alpine coupling guides, examples). Framework primer also lives on the
+  [Kona docs](https://konaframework.github.io/kona/) site.
 - Status: [MILESTONES.md](MILESTONES.md) and the parity ledger
   [docs/governance/livewire-v4-parity.md](docs/governance/livewire-v4-parity.md).
+
+## Documentation site
+
+```bash
+cd apps/docs
+npm ci
+npm run dev          # http://127.0.0.1:4322
+PUBLIC_SITE_URL=https://konaframework.github.io PUBLIC_BASE_PATH=/kona-brew/ npm run build
+npm run preview
+```
+
+GitHub Pages is enabled for this repository (Settings → Pages → **GitHub Actions**).
+Workflow [`.github/workflows/docs.yml`](.github/workflows/docs.yml) builds `apps/docs` on pushes to
+`main` (and verifies the build on PRs that touch docs) then deploys to
+https://konaframework.github.io/kona-brew/.
 
 ## Requirements
 
 - JDK 21
-- Node 22 (only to work on the JS runtime)
+- Node 22 (JS runtime work, and to build/preview the docs site)
 - Kona artifacts in Maven local (until `dev.kona` is published to Maven Central)
 
 ## Build and test
