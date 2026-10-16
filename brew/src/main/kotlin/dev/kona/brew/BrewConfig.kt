@@ -44,6 +44,18 @@ class BrewConfig @JvmOverloads constructor(
     val navigateProgressBarColor: String = "#FF9A00",
     /** Enable View Transitions API on navigate (`brew.navigate.view_transitions`). */
     val navigateViewTransitions: Boolean = false,
+    /** Signed upload URL lifetime in seconds (`brew.temporary_file_upload.timeout`). */
+    val uploadTimeoutSeconds: Long = 300,
+    /** Delete temp uploads older than this many seconds (`brew.temporary_file_upload.cleanup`). */
+    val uploadCleanupSeconds: Long = 24 * 60 * 60,
+    /** Global temporary upload validation rules (`brew.temporary_file_upload.rules`). */
+    val uploadRules: List<String> = listOf("required", "file", "max:12288"),
+    /** Temp upload disk: `local` (signed Brew URL) or `s3` (pre-signed PUT). */
+    val uploadDisk: String = "local",
+    /** Base URL for S3-compatible pre-signed uploads when [uploadDisk] is `s3`. */
+    val uploadS3Endpoint: String? = null,
+    /** Serve the CSP-safe runtime (`brew.csp_safe`). */
+    val cspSafe: Boolean = false,
 ) {
     val updateUri: String get() = "$path/update"
 
@@ -77,6 +89,16 @@ class BrewConfig @JvmOverloads constructor(
                 navigateShowProgressBar = config.getBoolean("brew.navigate.show_progress_bar", true),
                 navigateProgressBarColor = config.getString("brew.navigate.progress_bar_color", "#FF9A00"),
                 navigateViewTransitions = config.getBoolean("brew.navigate.view_transitions", false),
+                uploadTimeoutSeconds = (config.getInt("brew.temporary_file_upload.timeout") ?: 300).toLong(),
+                uploadCleanupSeconds = (config.getInt("brew.temporary_file_upload.cleanup") ?: (24 * 60 * 60)).toLong(),
+                uploadRules = when (val rules = config.get<Any>("brew.temporary_file_upload.rules")) {
+                    is Collection<*> -> rules.map { it.toString() }
+                    is String -> rules.split('|').map { it.trim() }.filter { it.isNotEmpty() }
+                    else -> listOf("required", "file", "max:12288")
+                },
+                uploadDisk = config.getString("brew.temporary_file_upload.disk", "local"),
+                uploadS3Endpoint = config.getString("brew.temporary_file_upload.s3_endpoint"),
+                cspSafe = config.getBoolean("brew.csp_safe", false),
             )
         }
 

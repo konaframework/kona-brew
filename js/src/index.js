@@ -37,6 +37,9 @@ import { registerLazy } from './features/lazy.js'
 import { registerNavigate, navigateTo } from './features/navigate.js'
 import { registerCurrentDirective } from './features/current.js'
 import { registerNavigateDirective } from './directives/navigate.js'
+import { registerUploads } from './features/uploads.js'
+import { registerIntersectDirective } from './directives/intersect.js'
+import { registerSortDirective } from './directives/sort.js'
 import { dispatchGlobal, dispatchTo, on as listenGlobal } from './events.js'
 
 let Brew = {
@@ -97,6 +100,9 @@ registerLazy()
 registerNavigate()
 registerNavigateDirective()
 registerCurrentDirective()
+registerUploads()
+registerIntersectDirective()
+registerSortDirective()
 registerWildcardDirective()
 
 // Deferred so feature code can register action interceptors ahead of the built-in coordination...

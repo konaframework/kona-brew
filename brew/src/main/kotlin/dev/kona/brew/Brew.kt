@@ -73,6 +73,17 @@ object Brew {
     @JvmStatic
     fun propertySynthesizer(synth: Synth): BrewManager = manager().propertySynthesizer(synth)
 
+    @JvmStatic
+    fun releaseToken(token: String?): BrewManager = manager().releaseToken(token)
+
+    @JvmStatic
+    fun addPersistentMiddleware(vararg middleware: dev.kona.http.Middleware): BrewManager =
+        manager().addPersistentMiddleware(*middleware)
+
+    @JvmStatic
+    fun updateMiddleware(vararg middleware: dev.kona.http.Middleware): BrewManager =
+        manager().updateMiddleware(*middleware)
+
     /** Component currently executing on this thread (`Livewire::current()`). */
     @JvmStatic
     fun current(): Component? = manager().current()

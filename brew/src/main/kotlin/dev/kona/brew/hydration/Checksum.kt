@@ -25,10 +25,18 @@ class Checksum(key: String) {
     }
 
     /** Throws [CorruptComponentPayloadException] when the checksum is missing or does not match. */
-    fun verify(snapshot: Map<String, Any?>) {
+    fun verify(snapshot: Map<String, Any?>) = verify(snapshot, false)
+
+    fun verify(snapshot: Map<String, Any?>, debug: Boolean) {
         val provided = snapshot["checksum"] as? String ?: throw CorruptComponentPayloadException()
         val expected = generate(snapshot)
         if (!MessageDigest.isEqual(expected.toByteArray(), provided.toByteArray())) {
+            if (debug) {
+                throw CorruptComponentPayloadException(
+                    "Brew checksum mismatch. Expected [$expected] but received [$provided]. " +
+                        "Enable app.debug for this message (SupportChecksumErrorDebugging).",
+                )
+            }
             throw CorruptComponentPayloadException()
         }
     }

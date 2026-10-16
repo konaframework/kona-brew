@@ -2,7 +2,7 @@
 
 Single source of truth for milestone status. Rules: [AGENTS.md](AGENTS.md). Ledger: [docs/governance/livewire-v4-parity.md](docs/governance/livewire-v4-parity.md).
 
-**Active milestone:** M5 — Pages, navigation, URL & pagination (closing)
+**Active milestone:** M6 — Uploads, sorting, styles & platform (closing)
 
 The program is complete when every ledger row is `done` (M1–M7). Each milestone closes **all** ledger rows tagged with it.
 
@@ -80,7 +80,7 @@ recursive components, child event listeners, `@Isolate`, `@Lazy`/`@Defer` + plac
 
 ## M5 — Pages, navigation, URL & pagination
 
-**Branch:** `milestone/M5-pages-navigate` · **Status:** done (PR pending)
+**Branch:** `milestone/M5-pages-navigate` · **Status:** done (merged #5)
 
 - [x] Ledger rows: all M5 rows `done`.
 - [x] 100% Kover + 100% Vitest.
@@ -93,7 +93,13 @@ progress bar, view transitions, script rules, hooks), `wire:current`, `@Url` + `
 
 ## M6 — Uploads, sorting, styles & platform
 
-**Branch:** `milestone/M6-uploads-platform` · **Status:** planned
+**Branch:** `milestone/M6-uploads-platform` · **Status:** closing (PR pending)
+
+- [x] Ledger rows: all M6 rows `done` (33/33).
+- [x] 100% Kover (`kona-brew`) and 100% Vitest (`js/src`).
+- [x] `WithFileUploads`, signed local + S3 pre-sign, previews, cleanup, `UploadedFileFake`.
+- [x] `wire:sort`, `wire:intersect`, styles/CSS modules, JS modules, CSP build.
+- [x] `@Authorize`, locales, release tokens, middleware, Extract model synths.
 
 `WithFileUploads` (temp storage, signed URLs, previews, multiple, progress/cancel, S3, cleanup, testing), `wire:sort`,
 `wire:intersect`, multi-file components, scoped/global styles, CSS modules, component JS modules, CSP build, custom synthesizers,

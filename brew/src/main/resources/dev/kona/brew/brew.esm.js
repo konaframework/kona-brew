@@ -12448,6 +12448,15 @@ function registerModelDirective() {
     let { expression } = directive3;
     let modifiers = directive3.modifiers.filter((modifier) => modifier !== "renderless");
     if (!expression) return console.warn("Brew: [wire:model] is missing a value.", el);
+    if (el.type === "file") {
+      el.addEventListener("change", () => {
+        let files = el.files;
+        if (!files || files.length === 0) return;
+        if (el.multiple) component.$wire.$uploadMultiple(expression, files);
+        else component.$wire.$upload(expression, files[0]);
+      });
+      return;
+    }
     if (!Object.hasOwn(component.canonical, baseProperty(expression))) {
       return console.warn(`Brew: [wire:model="${expression}"] property does not exist on component: [${component.name}]`, el);
     }
@@ -13398,6 +13407,180 @@ function registerNavigateDirective() {
   });
 }
 
+// src/features/uploads.js
+var uploadDeps = {
+  fireAction
+};
+function uploadUri() {
+  let base = window.brewScriptConfig && window.brewScriptConfig.uri || "/brew/update";
+  return base.replace(/\/update$/, "/upload");
+}
+function fireUpload(name, detail) {
+  document.dispatchEvent(new CustomEvent("brew-upload-" + name, { detail, bubbles: true }));
+  document.dispatchEvent(new CustomEvent("livewire-upload-" + name, { detail, bubbles: true }));
+}
+var controllers = /* @__PURE__ */ new Map();
+async function uploadFiles(component, property, files, { multiple = false } = {}) {
+  let list = Array.from(files || []);
+  if (list.length === 0) return;
+  let key = component.id + ":" + property;
+  let ctrl = new AbortController();
+  controllers.set(key, ctrl);
+  fireUpload("start", { property, component });
+  try {
+    let info = { name: list[0].name, size: list[0].size, type: list[0].type };
+    let signed = await uploadDeps.fireAction(component, "_startUpload", [property, info, multiple]);
+    let uploadUrl = signed && signed.uploadUrl || uploadUri();
+    let isS3 = !!(signed && signed.isS3);
+    let paths = [];
+    for (let file of list) {
+      let body = file.arrayBuffer ? await file.arrayBuffer() : await new Response(file).arrayBuffer();
+      let doFetch = uploadDeps.fetch || fetch;
+      let response;
+      if (isS3) {
+        let headers = Object.assign(
+          { "Content-Type": file.type || "application/octet-stream" },
+          signed && signed.headers || {}
+        );
+        response = await doFetch(uploadUrl, { method: "PUT", headers, body, signal: ctrl.signal });
+        if (!response.ok) throw new Error("upload failed");
+        paths.push(signed && signed.path || file.name);
+      } else {
+        let sep = uploadUrl.includes("?") ? "&" : "?";
+        let url = uploadUrl + sep + `name=${encodeURIComponent(property)}&filename=${encodeURIComponent(file.name)}&size=${file.size}&multiple=${multiple}`;
+        response = await doFetch(url, {
+          method: "POST",
+          headers: { "Content-Type": file.type || "application/octet-stream", "X-Brew": "1" },
+          body,
+          signal: ctrl.signal
+        });
+        if (!response.ok) throw new Error("upload failed");
+        let json = await response.json();
+        paths.push(...json.paths || []);
+      }
+      fireUpload("progress", { property, progress: 100, component });
+    }
+    await uploadDeps.fireAction(component, "_finishUpload", [property, paths, multiple]);
+    fireUpload("finish", { property, component });
+  } catch (error2) {
+    await uploadDeps.fireAction(component, "_uploadErrored", [property, String(error2), multiple]).catch(() => {
+    });
+    fireUpload("error", { property, error: error2, component });
+  } finally {
+    controllers.delete(key);
+  }
+}
+function cancelUpload(component, property) {
+  let ctrl = controllers.get(component.id + ":" + property);
+  if (ctrl) ctrl.abort();
+  fireUpload("cancel", { property, component });
+}
+function registerUploads() {
+  wireProperty("$upload", (component) => (property, file, options) => uploadFiles(component, property, file ? [file] : [], { multiple: false, ...options || {} }));
+  wireProperty("$uploadMultiple", (component) => (property, files, options) => uploadFiles(component, property, files || [], { multiple: true, ...options || {} }));
+  wireProperty("$cancelUpload", (component) => (property) => cancelUpload(component, property));
+  wireProperty("$removeUpload", (component) => (property, filename) => uploadDeps.fireAction(component, "_removeUpload", [property, filename]));
+}
+
+// src/directives/intersect.js
+function registerIntersectDirective() {
+  let bind3 = (isLeave) => ({ el, directive: dir, component, cleanup }) => {
+    let once2 = dir.modifiers.includes("once");
+    let threshold = dir.modifiers.includes("full") ? 1 : dir.modifiers.includes("half") ? 0.5 : 0;
+    let marginMod = dir.modifiers.find((m) => m.startsWith("margin"));
+    let rootMargin = marginMod ? marginMod.replace("margin-", "").replace(/-/g, " ") : "0px";
+    let expression = dir.expression || "$refresh";
+    let leave = isLeave || dir.rawName.includes(":leave");
+    let fired = false;
+    let observer2 = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        let hit = leave ? !entry.isIntersecting : entry.isIntersecting;
+        if (!hit) return;
+        if (once2 && fired) return;
+        fired = true;
+        fireAction(component, expression);
+        if (once2) observer2.disconnect();
+      });
+    }, { threshold, rootMargin });
+    observer2.observe(el);
+    cleanup(() => observer2.disconnect());
+  };
+  directive2("intersect", bind3(false));
+  directive2("intersect:enter", bind3(false));
+  directive2("intersect:leave", bind3(true));
+}
+
+// src/directives/sort.js
+function itemOf(el, target) {
+  let node = target;
+  while (node && node !== el) {
+    if (node.hasAttribute && node.hasAttribute("wire:sort:item")) return node;
+    node = node.parentElement;
+  }
+  return null;
+}
+function registerSortDirective() {
+  directive2("sort", ({ el, directive: dir, component, cleanup }) => {
+    let method = dir.expression || "sort";
+    let group = el.getAttribute("wire:sort:group") || "default";
+    let dragging = null;
+    let onDragStart = (e) => {
+      let item = itemOf(el, e.target);
+      if (!item) return;
+      let ignored = false;
+      let node = e.target;
+      while (node && node !== item) {
+        if (node.hasAttribute && node.hasAttribute("wire:sort:ignore")) ignored = true;
+        node = node.parentElement;
+      }
+      if (ignored) return;
+      let handle = null;
+      for (let child of item.children) {
+        if (child.hasAttribute("wire:sort:handle")) handle = child;
+      }
+      if (handle && e.target !== handle && !handle.contains(e.target)) return;
+      dragging = item;
+      if (e.dataTransfer) {
+        e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("text/plain", item.getAttribute("wire:sort:item") || "");
+      }
+      item.setAttribute("data-sorting", "");
+    };
+    let onDragOver = (e) => {
+      if (!dragging) return;
+      e.preventDefault();
+      let over = itemOf(el, e.target);
+      if (!over || over === dragging) return;
+      el.insertBefore(dragging, over);
+    };
+    let onDrop = (e) => {
+      e.preventDefault();
+      if (!dragging) return;
+      dragging.removeAttribute("data-sorting");
+      let items = [...el.children].filter((node) => node.hasAttribute("wire:sort:item")).map((node) => node.getAttribute("wire:sort:item"));
+      fireAction(component, method, [items, group]);
+      dragging = null;
+    };
+    let onDragEnd = () => {
+      if (dragging) dragging.removeAttribute("data-sorting");
+      dragging = null;
+    };
+    for (let item of el.children) {
+      if (item.hasAttribute("wire:sort:item")) item.setAttribute("draggable", "true");
+    }
+    el.addEventListener("dragstart", onDragStart);
+    el.addEventListener("dragover", onDragOver);
+    el.addEventListener("drop", onDrop);
+    el.addEventListener("dragend", onDragEnd);
+    cleanup(() => {
+      el.removeEventListener("dragstart", onDragStart);
+      el.removeEventListener("dragover", onDragOver);
+      el.removeEventListener("drop", onDrop);
+      el.removeEventListener("dragend", onDragEnd);
+    });
+  });
+}
+
 // src/index.js
 var Brew = {
   directive: directive2,
@@ -13454,6 +13637,9 @@ registerLazy();
 registerNavigate();
 registerNavigateDirective();
 registerCurrentDirective();
+registerUploads();
+registerIntersectDirective();
+registerSortDirective();
 registerWildcardDirective();
 queueMicrotask(coordinateNetworkInteractions);
 window.Brew = Brew;

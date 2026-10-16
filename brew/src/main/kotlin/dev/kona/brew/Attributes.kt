@@ -181,3 +181,16 @@ annotation class Url(
 @Retention(AnnotationRetention.RUNTIME)
 @MustBeDocumented
 annotation class Session(val key: String = "")
+
+/**
+ * Authorize an action through Kona Gate before it runs (`#[Authorize('update', 'post')]`).
+ * [ability] is required; [arguments] are resolved from component properties when they match a property name,
+ * otherwise treated as literal strings.
+ */
+@Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.RUNTIME)
+@MustBeDocumented
+annotation class Authorize(
+    val ability: String,
+    vararg val arguments: String = [],
+)

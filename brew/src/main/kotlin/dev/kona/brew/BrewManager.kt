@@ -22,11 +22,26 @@ import dev.kona.brew.features.SupportSession
 import dev.kona.brew.features.SupportSlots
 import dev.kona.brew.features.SupportStreaming
 import dev.kona.brew.features.SupportTransitions
+import dev.kona.brew.features.SupportAuthorize
+import dev.kona.brew.features.SupportFileUploads
+import dev.kona.brew.features.SupportJsModules
+import dev.kona.brew.features.SupportLocales
+import dev.kona.brew.features.SupportReleaseTokens
+import dev.kona.brew.features.SupportStyles
 import dev.kona.brew.features.SupportValidation
 import dev.kona.brew.hydration.Checksum
 import dev.kona.brew.hydration.Coercion
+import dev.kona.brew.hydration.ModelCollectionSynth
+import dev.kona.brew.hydration.ModelSynth
 import dev.kona.brew.hydration.Synth
 import dev.kona.brew.hydration.Synthesizers
+import dev.kona.brew.uploads.SignedUpload
+import dev.kona.http.Middleware
+import java.nio.file.Files
+import java.nio.file.Path
+import java.util.HexFormat
+import javax.crypto.Mac
+import javax.crypto.spec.SecretKeySpec
 import dev.kona.brew.lifecycle.ComponentContext
 import dev.kona.brew.lifecycle.ComponentHook
 import dev.kona.brew.lifecycle.HookSet
@@ -85,7 +100,17 @@ class BrewManager @JvmOverloads constructor(
     @Volatile
     var lazyDisabled: Boolean = false
 
+    /** Deploy release token written into every snapshot (`Brew.releaseToken`). */
+    @Volatile
+    var releaseToken: String? = null
+
+    private val persistentMiddleware = CopyOnWriteArrayList<Middleware>()
+    private val updateMiddleware = CopyOnWriteArrayList<Middleware>()
+    private var uploadRootPath: Path? = null
+
     init {
+        synths.register(ModelCollectionSynth)
+        synths.register(ModelSynth)
         componentHook { SupportSlots() }
         componentHook { SupportNesting() }
         componentHook { SupportLazyLoading() }
@@ -107,6 +132,12 @@ class BrewManager @JvmOverloads constructor(
         componentHook { SupportQueryString() }
         componentHook { SupportSession() }
         componentHook { SupportPagination() }
+        componentHook { SupportLocales() }
+        componentHook { SupportReleaseTokens() }
+        componentHook { SupportAuthorize() }
+        componentHook { SupportFileUploads() }
+        componentHook { SupportStyles() }
+        componentHook { SupportJsModules() }
         views?.let { BrewCrema.install(it, this) }
     }
 
@@ -263,7 +294,7 @@ class BrewManager @JvmOverloads constructor(
         for (call in calls) {
             if (call["method"] !is String || call["params"] !is List<*>) throw CorruptComponentPayloadException()
         }
-        checksum.verify(snapshot)
+        checksum.verify(snapshot, debug = config.debug)
         @Suppress("UNCHECKED_CAST")
         val data = snapshot["data"] as Map<String, Any?>
         val component = newComponent(memo["name"] as String, memo["id"] as String)
@@ -473,6 +504,44 @@ class BrewManager @JvmOverloads constructor(
         return route
     }
 
+    /** `POST /brew/upload` — accept a signed temporary upload body. */
+    fun handleUpload(request: Request): Response {
+        val expires = request.query["expires"]?.toLongOrNull() ?: return Response.text("Invalid", 403)
+        val signature = request.query["signature"] ?: return Response.text("Invalid", 403)
+        val name = request.query["name"] ?: "file"
+        val multiple = request.query["multiple"] == "true"
+        val fileName = request.query["filename"]
+        val size = request.query["size"]
+        if (!verifyUploadSignature(name, expires, multiple, fileName, size, signature)) {
+            return Response.text("Invalid signature", 403)
+        }
+        val bytes = request.bodyBytes
+        if (bytes.isEmpty()) return Response.text("Empty upload", 422)
+        var maxRule: Int? = null
+        for (rule in config.uploadRules) {
+            if (rule.startsWith("max:")) {
+                maxRule = rule.removePrefix("max:").toIntOrNull()
+                break
+            }
+        }
+        if (maxRule != null && bytes.size > maxRule * 1024) {
+            return Response.text("File too large", 422)
+        }
+        val path = storeUpload(bytes, fileName ?: "upload.bin")
+        return Response.json(linkedMapOf("paths" to listOf(path)))
+    }
+
+    /** `GET /brew/preview/{path}` — serve a temporary upload for previews. */
+    fun handlePreview(request: Request): Response {
+        val relative = request.route("path") ?: request.path.substringAfter("/preview/").trimStart('/')
+        if (relative.contains("..")) return Response.text("Not Found", 404)
+        val file = uploadRoot().resolve(relative)
+        if (!Files.exists(file)) return Response.text("Not Found", 404)
+        val bytes = Files.readAllBytes(file)
+        return Response(200, "", linkedMapOf("Content-Type" to "application/octet-stream"))
+            .withBodyBytes(bytes)
+    }
+
     /** `POST /brew/update` (`HandleRequests::handleUpdate`). */
     fun handleUpdate(request: Request): Response {
         if (request.header("X-Brew") == null) return Response.text("Missing X-Brew header", 403)
@@ -542,6 +611,126 @@ class BrewManager @JvmOverloads constructor(
     internal fun freshInstance(component: Component): Component = registry.create(component.name())
 
     internal fun json(value: Any?): String = Coercion.mapper.writeValueAsString(value)
+
+    /** Set a deploy release token (`Livewire::releaseToken`). */
+    fun releaseToken(token: String?): BrewManager {
+        releaseToken = token
+        return this
+    }
+
+    /** Persistent middleware re-applied on every update (`Livewire::addPersistentMiddleware`). */
+    fun addPersistentMiddleware(vararg middleware: Middleware): BrewManager {
+        persistentMiddleware += middleware
+        return this
+    }
+
+    /** Global middleware on the update route (`Livewire::updateMiddleware`). */
+    fun updateMiddleware(vararg middleware: Middleware): BrewManager {
+        updateMiddleware += middleware
+        return this
+    }
+
+    fun persistentMiddleware(): List<Middleware> = persistentMiddleware.toList()
+
+    fun updateMiddleware(): List<Middleware> = updateMiddleware.toList()
+
+    /** Root directory for temporary uploads. */
+    fun uploadRoot(): Path {
+        val existing = uploadRootPath
+        if (existing != null) return existing
+        val created = Files.createTempDirectory("brew-uploads")
+        uploadRootPath = created
+        return created
+    }
+
+    fun uploadRoot(path: Path): BrewManager {
+        Files.createDirectories(path)
+        uploadRootPath = path
+        return this
+    }
+
+    /** Sign a temporary upload URL (`_startUpload`). */
+    fun signUpload(name: String, fileInfo: Map<String, Any?>, multiple: Boolean): SignedUpload {
+        val expires = System.currentTimeMillis() / 1000 + (config.uploadTimeoutSeconds)
+        val payload = "$name|$expires|$multiple|${fileInfo["name"]}|${fileInfo["size"]}"
+        val token = hmac(payload)
+        val url = "${config.path}/upload?expires=$expires&signature=$token"
+        return SignedUpload(url, token)
+    }
+
+    /**
+     * Pre-signed S3-compatible PUT details when `brew.temporary_file_upload.disk=s3`
+     * (`WithFileUploads` / Livewire S3 driver). Falls back to local signing when no endpoint is set.
+     */
+    fun signS3Upload(name: String, fileInfo: Map<String, Any?>, multiple: Boolean): Map<String, Any?> {
+        val endpoint = config.uploadS3Endpoint?.trimEnd('/')
+        if (endpoint.isNullOrBlank()) {
+            val local = signUpload(name, fileInfo, multiple)
+            return linkedMapOf("uploadUrl" to local.url, "token" to local.token, "isS3" to false)
+        }
+        val expires = System.currentTimeMillis() / 1000 + config.uploadTimeoutSeconds
+        val key = "livewire-tmp/" + java.util.UUID.randomUUID() + "-" + (fileInfo["name"] ?: "upload.bin")
+        val payload = "s3|$name|$expires|$multiple|$key|${fileInfo["size"]}"
+        val signature = hmac(payload)
+        val url = "$endpoint/$key?Expires=$expires&Signature=$signature"
+        return linkedMapOf(
+            "isS3" to true,
+            "uploadUrl" to url,
+            "token" to signature,
+            "path" to key,
+            "headers" to linkedMapOf("Content-Type" to (fileInfo["type"] ?: "application/octet-stream")),
+        )
+    }
+
+    /** Persist an uploaded body under the temp disk and return the relative path. */
+    fun storeUpload(bytes: ByteArray, originalName: String): String {
+        val root = uploadRoot()
+        val relative = "livewire-tmp/" + java.util.UUID.randomUUID() + "-" + originalName.replace(Regex("[^a-zA-Z0-9._-]"), "_")
+        val dest = root.resolve(relative)
+        Files.createDirectories(dest.parent)
+        Files.write(dest, bytes)
+        return relative
+    }
+
+    /** Verify a signed upload token is still valid. */
+    fun verifyUploadSignature(name: String, expires: Long, multiple: Boolean, fileName: String?, size: Any?, signature: String): Boolean {
+        if (expires < System.currentTimeMillis() / 1000) return false
+        val payload = "$name|$expires|$multiple|$fileName|$size"
+        return hmac(payload) == signature
+    }
+
+    /** Delete temporary uploads older than [config.uploadCleanupSeconds]. */
+    fun cleanupOldUploads(): Int {
+        val root = uploadRootPath ?: return 0
+        val cutoff = System.currentTimeMillis() - config.uploadCleanupSeconds * 1000L
+        var removed = 0
+        Files.walk(root).use { stream ->
+            stream.filter { Files.isRegularFile(it) }.forEach { path ->
+                if (Files.getLastModifiedTime(path).toMillis() < cutoff) {
+                    Files.deleteIfExists(path)
+                    removed++
+                }
+            }
+        }
+        return removed
+    }
+
+    private fun hmac(payload: String): String {
+        val key = config.key.ifBlank { "brew-upload" }.toByteArray()
+        val mac = Mac.getInstance("HmacSHA256")
+        mac.init(SecretKeySpec(key, "HmacSHA256"))
+        return HexFormat.of().formatHex(mac.doFinal(payload.toByteArray()))
+    }
+
+    /** Run update middlewares then [handleUpdate] (used by custom route wiring). */
+    fun handleUpdateWithMiddleware(request: Request): Response {
+        var handler = Handler { handleUpdate(it) }
+        for (mw in (updateMiddleware + persistentMiddleware).asReversed()) {
+            val next = handler
+            handler = Handler { req -> mw.handle(req, next) }
+        }
+        return handler.handle(request)
+    }
 
     private fun newId(): String {
         val random = ThreadLocalRandom.current()

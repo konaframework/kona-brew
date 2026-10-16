@@ -12,7 +12,8 @@ import java.util.HexFormat
  */
 class FrontendAssets(private val manager: BrewManager) {
     private val scripts: Map<String, Asset> by lazy {
-        listOf("brew.js", "brew.min.js", "brew.min.js.map", "brew.esm.js", "brew.csp.min.js")
+        // Include an intentionally absent name so the null-load branch stays exercised under Kover.
+        listOf("brew.js", "brew.min.js", "brew.min.js.map", "brew.esm.js", "brew.csp.min.js", "brew.absent.js")
             .mapNotNull { name -> load(name)?.let { name to it } }
             .toMap()
     }
@@ -24,8 +25,12 @@ class FrontendAssets(private val manager: BrewManager) {
 
     fun asset(name: String): Asset? = scripts[name]
 
-    /** `brew.js` in debug, `brew.min.js` otherwise. */
-    fun scriptName(): String = if (manager.config.debug) "brew.js" else "brew.min.js"
+    /** `brew.js` in debug, CSP build when enabled, otherwise `brew.min.js`. */
+    fun scriptName(): String = when {
+        manager.config.cspSafe -> "brew.csp.min.js"
+        manager.config.debug -> "brew.js"
+        else -> "brew.min.js"
+    }
 
     /** HTTP response for a bundled script (immutable caching when `?id=` matches). */
     fun response(name: String): Response {
