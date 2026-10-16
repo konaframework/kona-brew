@@ -1,37 +1,37 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none" role="img" aria-label="Brew">
   <title>Brew</title>
-  <!-- Espresso app mark: cup + steam framing { } code. Tuned for mid/large sizes. -->
+  <!-- Dark concept: espresso app mark + copper Chemex steam cup, cream { } -->
   <defs>
-    <radialGradient id="brewBg" cx="50%" cy="40%" r="72%">
-      <stop offset="0%" stop-color="#1E1612"/>
-      <stop offset="100%" stop-color="#100C09"/>
-    </radialGradient>
-    <linearGradient id="brewCopper" x1="18%" y1="100%" x2="82%" y2="8%">
+    <linearGradient id="brewCopperDark" x1="18%" y1="100%" x2="82%" y2="6%">
       <stop offset="0%" stop-color="#BA622A"/>
-      <stop offset="52%" stop-color="#D48C46"/>
+      <stop offset="48%" stop-color="#D48C46"/>
       <stop offset="100%" stop-color="#E5A869"/>
     </linearGradient>
-    <linearGradient id="brewCream" x1="0%" y1="100%" x2="0%" y2="0%">
-      <stop offset="0%" stop-color="#E5A869"/>
-      <stop offset="100%" stop-color="#FAEDCD"/>
-    </linearGradient>
   </defs>
-  <rect width="256" height="256" rx="52" fill="url(#brewBg)"/>
-  <!-- Cup optically centered (~x=124 body); handle balances right. -->
-  <g stroke="url(#brewCopper)" stroke-linecap="round" stroke-linejoin="round" fill="none">
-    <path stroke-width="8" d="M70 130 L78 186 Q80 200 96 200 L156 200 Q172 200 174 186 L182 130 Z"/>
-    <path stroke-width="7" d="M70 130 H182"/>
-    <path stroke-width="8" d="M182 140 C208 142 212 176 176 184"/>
-    <path stroke-width="7" opacity="0.82" d="M64 214 H188"/>
+  <rect width="256" height="256" rx="54" fill="#140E0B"/>
+  <g stroke="url(#brewCopperDark)" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <ellipse cx="118" cy="138" rx="54" ry="13.5" stroke-width="7.5"/>
+    <path stroke-width="7.5" d="M64 138 C66 168 70 196 78 208 Q88 222 118 222 Q148 222 158 208 C166 196 170 168 172 138"/>
+    <path stroke-width="7.5" d="M172 148 C200 150 206 184 166 196"/>
+    <path stroke-width="3.6" opacity="0.36" d="M98 154 V196"/>
+    <path stroke-width="3.6" opacity="0.28" d="M110 156 V198"/>
+    <path stroke-width="3.6" opacity="0.28" d="M126 156 V198"/>
+    <path stroke-width="3.6" opacity="0.36" d="M138 154 V196"/>
   </g>
-  <!-- Steam wisps frame the braces -->
-  <g stroke="url(#brewCopper)" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.9">
-    <path d="M94 120 C86 100 100 84 92 64"/>
-    <path d="M162 120 C170 100 156 84 164 64"/>
+  <g stroke="url(#brewCopperDark)" stroke-width="7" stroke-linecap="round" fill="none">
+    <path d="M80 132 C46 114 38 86 56 58 C70 38 96 30 112 30"/>
+    <path d="M156 132 C190 114 198 86 180 58 C166 38 140 30 124 30"/>
   </g>
-  <!-- Curly braces = reactive code rising from the brew -->
-  <g stroke="url(#brewCream)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none">
-    <path d="M116 74 C108 74 106 68 106 62 C106 52 98 50 94 50 C98 50 106 48 106 38 C106 32 108 26 116 26"/>
-    <path d="M140 74 C148 74 150 68 150 62 C150 52 158 50 162 50 C158 50 150 48 150 38 C150 32 148 26 140 26"/>
+  <g fill="#D48C46" opacity="0.7">
+    <circle cx="118" cy="124" r="2.25"/>
+    <circle cx="118" cy="112" r="2.1"/>
+    <circle cx="118" cy="100" r="2"/>
+    <circle cx="118" cy="88" r="1.9"/>
+    <circle cx="118" cy="76" r="1.8"/>
+    <circle cx="118" cy="64" r="1.7"/>
+  </g>
+  <g stroke="#FAEDCD" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M106 62 C96 62 94 54 94 48 C94 36 84 34 78 34 C84 34 94 32 94 20 C94 14 96 8 106 8"/>
+    <path d="M130 62 C140 62 142 54 142 48 C142 36 152 34 158 34 C152 34 142 32 142 20 C142 14 140 8 130 8"/>
   </g>
 </svg>

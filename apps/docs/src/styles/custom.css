@@ -10,13 +10,13 @@
   --brew-primary-soft: #e5a869;
   --brew-primary-deep: #ba622a;
   --brew-primary-mist: #faedcd;
-  --brew-paper: #faf6eb;
+  --brew-paper: #f5f3ef;
   --brew-paper-2: #faedcd;
   --brew-accent: #faedcd;
   --brew-accent-soft: #e5a869;
   --brew-accent-deep: #9a4e22;
   --brew-espresso: #1e1612;
-  --brew-espresso-deep: #100c09;
+  --brew-espresso-deep: #140e0b;
   --brew-glow: rgba(212, 140, 70, 0.28);
 
   --sl-font: 'Outfit', ui-sans-serif, system-ui, sans-serif;
@@ -43,7 +43,7 @@
   --sl-color-gray-4: #6b5a48;
   --sl-color-gray-5: #3a2c24;
   --sl-color-gray-6: #1e1612;
-  --sl-color-black: #100c09;
+  --sl-color-black: #140e0b;
 }
 
 :root[data-theme='light'] {
