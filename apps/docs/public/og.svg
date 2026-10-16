@@ -1,19 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none" role="img" aria-label="Brew for Kona">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#FAEDCD"/>
-      <stop offset="0.55" stop-color="#F3E2B8"/>
-      <stop offset="1" stop-color="#E5A869"/>
+      <stop stop-color="#F5F3EF"/>
+      <stop offset="0.55" stop-color="#EDE6DA"/>
+      <stop offset="1" stop-color="#D4A574"/>
     </linearGradient>
     <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(220 180) rotate(25) scale(520 380)">
-      <stop stop-color="#D48C46" stop-opacity="0.4"/>
+      <stop stop-color="#D48C46" stop-opacity="0.35"/>
       <stop offset="1" stop-color="#D48C46" stop-opacity="0"/>
     </radialGradient>
     <radialGradient id="glow2" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(960 460) rotate(-20) scale(420 300)">
-      <stop stop-color="#1E1612" stop-opacity="0.12"/>
-      <stop offset="1" stop-color="#1E1612" stop-opacity="0"/>
+      <stop stop-color="#140E0B" stop-opacity="0.1"/>
+      <stop offset="1" stop-color="#140E0B" stop-opacity="0"/>
     </radialGradient>
-    <linearGradient id="copper" x1="0" y1="1" x2="1" y2="0">
+    <linearGradient id="copper" x1="18%" y1="100%" x2="82%" y2="6%">
       <stop stop-color="#BA622A"/>
       <stop offset="0.5" stop-color="#D48C46"/>
       <stop offset="1" stop-color="#E5A869"/>
@@ -23,18 +23,30 @@
   <rect width="1200" height="630" fill="url(#glow)"/>
   <rect width="1200" height="630" fill="url(#glow2)"/>
   <rect x="48" y="48" width="1104" height="534" rx="28" stroke="#BA622A" stroke-opacity="0.28" stroke-width="2"/>
-  <!-- Compact mark -->
   <g transform="translate(120,175)">
-    <rect width="160" height="160" rx="36" fill="#100C09"/>
-    <g transform="translate(16,16) scale(2)">
-      <path fill="#D48C46" d="M16 30h28l-2.2 14.5c-.35 2.3-2.3 4-4.6 4H22.8c-2.3 0-4.25-1.7-4.6-4L16 30z"/>
-      <path fill="#BA622A" d="M16 28h28v3.2H16z"/>
-      <path fill="none" stroke="#E5A869" stroke-width="3.2" stroke-linecap="round" d="M44.5 32c5.2.4 6.2 8.2-1.2 10.2"/>
-      <path fill="none" stroke="#D48C46" stroke-width="2.4" stroke-linecap="round" opacity="0.9" d="M14 52h32"/>
-      <path fill="none" stroke="#FAEDCD" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"
-            d="M26 26c-2.2 0-2.8-1.4-2.8-2.8 0-2.4-2-2.8-3-2.8 1 0 3-.4 3-2.8C23.2 16 23.8 14.4 26 14.4"/>
-      <path fill="none" stroke="#FAEDCD" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"
-            d="M38 26c2.2 0 2.8-1.4 2.8-2.8 0-2.4 2-2.8 3-2.8-1 0-3-.4-3-2.8C40.8 16 40.2 14.4 38 14.4"/>
+    <rect width="160" height="160" rx="34" fill="#140E0B"/>
+    <g transform="translate(8,8) scale(0.5625)">
+      <g stroke="url(#copper)" stroke-linecap="round" stroke-linejoin="round" fill="none">
+        <ellipse cx="118" cy="138" rx="54" ry="13.5" stroke-width="7.5"/>
+        <path stroke-width="7.5" d="M64 138 C66 168 70 196 78 208 Q88 222 118 222 Q148 222 158 208 C166 196 170 168 172 138"/>
+        <path stroke-width="7.5" d="M172 148 C200 150 206 184 166 196"/>
+      </g>
+      <g stroke="url(#copper)" stroke-width="7" stroke-linecap="round" fill="none">
+        <path d="M80 132 C46 114 38 86 56 58 C70 38 96 30 112 30"/>
+        <path d="M156 132 C190 114 198 86 180 58 C166 38 140 30 124 30"/>
+      </g>
+      <g fill="#D48C46" opacity="0.7">
+        <circle cx="118" cy="124" r="2.25"/>
+        <circle cx="118" cy="112" r="2.1"/>
+        <circle cx="118" cy="100" r="2"/>
+        <circle cx="118" cy="88" r="1.9"/>
+        <circle cx="118" cy="76" r="1.8"/>
+        <circle cx="118" cy="64" r="1.7"/>
+      </g>
+      <g stroke="#FAEDCD" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none">
+        <path d="M106 62 C96 62 94 54 94 48 C94 36 84 34 78 34 C84 34 94 32 94 20 C94 14 96 8 106 8"/>
+        <path d="M130 62 C140 62 142 54 142 48 C142 36 152 34 158 34 C152 34 142 32 142 20 C142 14 140 8 130 8"/>
+      </g>
     </g>
   </g>
   <text x="340" y="280" font-family="Outfit, system-ui, sans-serif" font-size="108" font-weight="800" fill="#BA622A">Brew</text>

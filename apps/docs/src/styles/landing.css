@@ -19,14 +19,14 @@
   --landing-ink: #faf6eb;
   --landing-ink-soft: rgba(250, 246, 235, 0.78);
   --landing-ink-muted: rgba(250, 246, 235, 0.55);
-  --landing-surface: #100c09;
+  --landing-surface: #140e0b;
   --landing-surface-raised: #1e1612;
-  --landing-hero-fg: #faf6eb;
+  --landing-hero-fg: #f5f3ef;
   --landing-hero-muted: rgba(250, 246, 235, 0.82);
   --landing-hero-bg:
     radial-gradient(ellipse 90% 70% at 12% 18%, rgba(212, 140, 70, 0.34), transparent 55%),
     radial-gradient(ellipse 70% 60% at 88% 72%, rgba(250, 237, 205, 0.1), transparent 50%),
-    linear-gradient(155deg, #1e1612 0%, #2a1c14 42%, #100c09 100%);
+    linear-gradient(155deg, #1e1612 0%, #2a1c14 42%, #140e0b 100%);
   --landing-hero-stripe: rgba(255, 255, 255, 0.02);
   --landing-cta-secondary-border: rgba(255, 255, 255, 0.35);
   --landing-cta-secondary-hover: rgba(255, 255, 255, 0.06);
@@ -48,14 +48,14 @@
   --landing-ink: #1e1612;
   --landing-ink-soft: #5c4c3e;
   --landing-ink-muted: #8f7a62;
-  --landing-surface: #faf6eb;
+  --landing-surface: #f5f3ef;
   --landing-surface-raised: #ffffff;
   --landing-hero-fg: #1e1612;
   --landing-hero-muted: #5c4c3e;
   --landing-hero-bg:
     radial-gradient(ellipse 85% 65% at 12% 18%, rgba(212, 140, 70, 0.2), transparent 55%),
     radial-gradient(ellipse 75% 55% at 88% 70%, rgba(186, 98, 42, 0.1), transparent 52%),
-    linear-gradient(160deg, #faf6eb 0%, #faedcd 48%, #f3e2b8 100%);
+    linear-gradient(160deg, #f5f3ef 0%, #faedcd 48%, #f3e2b8 100%);
   --landing-hero-stripe: rgba(186, 98, 42, 0.05);
   --landing-cta-secondary-border: rgba(186, 98, 42, 0.3);
   --landing-cta-secondary-hover: rgba(212, 140, 70, 0.1);
@@ -368,13 +368,13 @@ html[data-theme='dark'] .landing-hero__eyebrow {
 
 .landing-cta__primary {
   background: var(--brew-primary);
-  color: #100c09 !important;
+  color: #140e0b !important;
   box-shadow: 0 0 0 0 transparent;
 }
 
 .landing-cta__primary:hover {
   background: var(--brew-primary-soft);
-  color: #100c09 !important;
+  color: #140e0b !important;
   transform: translateY(-2px);
   box-shadow: 0 10px 28px var(--brew-glow);
 }
@@ -502,12 +502,12 @@ html[data-theme='dark'] .landing-hero__eyebrow {
 
 .landing-close .landing-cta__primary {
   background: #faedcd;
-  color: #100c09 !important;
+  color: #140e0b !important;
 }
 
 .landing-close .landing-cta__primary:hover {
   background: #fff;
-  color: #100c09 !important;
+  color: #140e0b !important;
 }
 
 .landing-close .landing-cta__secondary {

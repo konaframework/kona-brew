@@ -1,14 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="Brew">
   <title>Brew</title>
-  <!-- Simplified favicon: solid cup + thick braces; readable at 16–32px. -->
-  <rect width="64" height="64" rx="14" fill="#100C09"/>
-  <path fill="#D48C46" d="M16 30h28l-2.2 14.5c-.35 2.3-2.3 4-4.6 4H22.8c-2.3 0-4.25-1.7-4.6-4L16 30z"/>
-  <path fill="#BA622A" d="M16 28h28v3.2H16z"/>
-  <path fill="none" stroke="#E5A869" stroke-width="3.2" stroke-linecap="round" d="M44.5 32c5.2.4 6.2 8.2-1.2 10.2"/>
-  <path fill="none" stroke="#D48C46" stroke-width="2.4" stroke-linecap="round" opacity="0.9" d="M14 52h32"/>
-  <!-- Braces as steam/code -->
-  <path fill="none" stroke="#FAEDCD" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"
-        d="M26 26c-2.2 0-2.8-1.4-2.8-2.8 0-2.4-2-2.8-3-2.8 1 0 3-.4 3-2.8C23.2 16 23.8 14.4 26 14.4"/>
-  <path fill="none" stroke="#FAEDCD" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"
-        d="M38 26c2.2 0 2.8-1.4 2.8-2.8 0-2.4 2-2.8 3-2.8-1 0-3-.4-3-2.8C40.8 16 40.2 14.4 38 14.4"/>
+  <!-- Favicon: simplified dark concept mark -->
+  <rect width="64" height="64" rx="14" fill="#140E0B"/>
+  <g stroke="#D48C46" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <ellipse cx="29.5" cy="34.5" rx="13" ry="3.4" stroke-width="2.4"/>
+    <path stroke-width="2.4" d="M16.5 34.5 C17 42 18 48.5 20 51.5 Q22.5 55 29.5 55 Q36.5 55 39 51.5 C41 48.5 42 42 42.5 34.5"/>
+    <path stroke-width="2.4" d="M42.5 37 C49.5 37.5 51 46.5 41 49.5"/>
+  </g>
+  <g stroke="#E5A869" stroke-width="2.2" stroke-linecap="round" fill="none">
+    <path d="M20.5 33 C12.5 28.5 10.5 21.5 15 14.5 C18.5 9.5 24.5 7.5 28.5 7.5"/>
+    <path d="M38.5 33 C46.5 28.5 48.5 21.5 44 14.5 C40.5 9.5 34.5 7.5 30.5 7.5"/>
+  </g>
+  <g fill="#D48C46" opacity="0.75">
+    <circle cx="29.5" cy="31" r="0.85"/>
+    <circle cx="29.5" cy="27.5" r="0.8"/>
+    <circle cx="29.5" cy="24" r="0.75"/>
+    <circle cx="29.5" cy="20.5" r="0.7"/>
+    <circle cx="29.5" cy="17" r="0.65"/>
+  </g>
+  <g stroke="#FAEDCD" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M26.5 16.5 C24 16.5 23.5 14.5 23.5 13 C23.5 10 21 9.5 19.5 9.5 C21 9.5 23.5 9 23.5 6 C23.5 4.5 24 3 26.5 3"/>
+    <path d="M32.5 16.5 C35 16.5 35.5 14.5 35.5 13 C35.5 10 38 9.5 39.5 9.5 C38 9.5 35.5 9 35.5 6 C35.5 4.5 35 3 32.5 3"/>
+  </g>
 </svg>
