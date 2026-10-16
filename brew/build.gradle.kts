@@ -66,6 +66,6 @@ tasks.register<JavaExec>("bench") {
     description = "Runs the Brew server hot-path baseline."
     group = "verification"
     classpath = sourceSets["test"].runtimeClasspath
-    mainClass.set("dev.kona.brew.bench.BrewBench")
+    mainClass.set("io.konaframework.brew.bench.BrewBench")
     providers.gradleProperty("benchIterations").orNull?.let { args(it) }
 }

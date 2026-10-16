@@ -1,7 +1,7 @@
 package app.brew;
 
-import dev.kona.brew.Component;
-import dev.kona.brew.Renderless;
+import io.konaframework.brew.Component;
+import io.konaframework.brew.Renderless;
 
 /** A single-file component: state, actions, and template in one class. */
 public class Counter extends Component {
