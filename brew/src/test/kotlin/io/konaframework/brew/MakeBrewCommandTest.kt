@@ -59,4 +59,33 @@ class MakeBrewCommandTest {
         assertEquals(1, run(dir, "ok", "--lang=scala"))
         assertFalse(Files.exists(dir.resolve("src/main/scala")))
     }
+
+    @Test
+    fun `todos-shaped names get todos stubs`(@TempDir dir: Path) {
+        assertEquals(0, run(dir, "Todos", "--test"))
+        val source = Files.readString(dir.resolve("src/main/kotlin/app/brew/Todos.kt"))
+        assertTrue(source.contains("var draft"), source)
+        assertTrue(source.contains("fun remaining()"), source)
+        assertTrue(source.contains("override fun render() = view(\"brew.todos\")"), source)
+        assertFalse(source.contains("var count"), source)
+        assertTrue(Files.exists(dir.resolve("src/main/resources/views/brew/todos.crema.html")))
+        val view = Files.readString(dir.resolve("src/main/resources/views/brew/todos.crema.html"))
+        assertTrue(view.contains("wire:submit=\"add\""), view)
+        val test = Files.readString(dir.resolve("src/test/kotlin/app/brew/TodosTest.kt"))
+        assertTrue(test.contains("call(\"add\")"), test)
+
+        assertEquals(0, run(dir, "todo-list", "--lang=java", "--force", "--test"))
+        val java = Files.readString(dir.resolve("src/main/java/app/brew/TodoList.java"))
+        assertTrue(java.contains("class Todo"), java)
+        assertTrue(java.contains("remaining()"), java)
+        assertTrue(Files.exists(dir.resolve("src/main/resources/views/brew/todo-list.crema.html")))
+        assertTrue(Files.exists(dir.resolve("src/test/java/app/brew/TodoListTest.java")))
+    }
+
+    @Test
+    fun `slash path names normalize like dotted`(@TempDir dir: Path) {
+        assertEquals(0, run(dir, "posts/create-post", "--class"))
+        assertTrue(Files.exists(dir.resolve("src/main/kotlin/app/brew/posts/CreatePost.kt")))
+        assertTrue(Files.exists(dir.resolve("src/main/resources/views/brew/posts/create-post.crema.html")))
+    }
 }
