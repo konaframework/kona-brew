@@ -1,9 +1,9 @@
 package routes;
 
-import dev.kona.core.Kona;
-import dev.kona.crema.CremaEngine;
-import dev.kona.http.Response;
-import dev.kona.http.Router;
+import io.konaframework.core.Kona;
+import io.konaframework.crema.CremaEngine;
+import io.konaframework.http.Response;
+import io.konaframework.http.Router;
 import java.util.Map;
 
 public final class WebRoutes {

@@ -1,7 +1,7 @@
 package app.brew
 
-import dev.kona.brew.Component
-import dev.kona.brew.Computed
+import io.konaframework.brew.Component
+import io.konaframework.brew.Computed
 
 /** Live search: the input syncs 300ms after typing stops and the list re-renders. */
 class Search : Component() {

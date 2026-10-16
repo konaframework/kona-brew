@@ -4,7 +4,7 @@ Paste this file (or its path) into a new chat so another agent can continue with
 
 ## Purpose
 
-**Brew** is Kona’s reactive server-component layer with **100% behavioral/API-shape parity with Laravel Livewire v4**. Artifact `dev.kona:kona-brew`, package `dev.kona.brew`. Kotlin-first, Java first-class. Org: [konaframework/kona-brew](https://github.com/konaframework/kona-brew).
+**Brew** is Kona’s reactive server-component layer with **100% behavioral/API-shape parity with Laravel Livewire v4**. Artifact `io.konaframework:kona-brew`, package `io.konaframework.brew`. Kotlin-first, Java first-class. Org: [konaframework/kona-brew](https://github.com/konaframework/kona-brew).
 
 Standalone docs (Astro + Starlight): https://konaframework.github.io/kona-brew/  
 Kona monorepo keeps only a **brief link-out** page (kona PR #94); do not re-expand Brew guides inside Kona.

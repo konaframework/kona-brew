@@ -4,12 +4,12 @@ plugins {
 }
 
 allprojects {
-    group = "dev.kona"
+    group = "io.konaframework"
     version = providers.gradleProperty("brew.version").get()
 
     repositories {
         mavenLocal {
-            content { includeGroup("dev.kona") }
+            content { includeGroup("io.konaframework") }
         }
         mavenCentral()
     }

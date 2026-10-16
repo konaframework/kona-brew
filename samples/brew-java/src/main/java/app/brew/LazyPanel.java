@@ -1,7 +1,7 @@
 package app.brew;
 
-import dev.kona.brew.Component;
-import dev.kona.brew.Lazy;
+import io.konaframework.brew.Component;
+import io.konaframework.brew.Lazy;
 
 /** Lazy-loaded panel nested under {@link Dashboard}. */
 @Lazy

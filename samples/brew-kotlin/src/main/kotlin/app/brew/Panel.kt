@@ -1,9 +1,9 @@
 package app.brew
 
-import dev.kona.brew.Component
-import dev.kona.brew.Lazy
-import dev.kona.brew.Modelable
-import dev.kona.brew.Reactive
+import io.konaframework.brew.Component
+import io.konaframework.brew.Lazy
+import io.konaframework.brew.Modelable
+import io.konaframework.brew.Reactive
 
 /** Nested child used by [Dashboard] — reactive title, modelable value, island body. */
 class Panel : Component() {

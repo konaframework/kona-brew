@@ -23,9 +23,9 @@ class Counter : Component() {
 <brew:counter />
 ```
 
-- Artifact: `dev.kona:kona-brew` (Kotlin internals, first-class Java API).
+- Artifact: `io.konaframework:kona-brew` (Kotlin internals, first-class Java API).
 - JS runtime: `js/` (Alpine.js + plugins, esbuild). Built bundles are committed under
-  `brew/src/main/resources/dev/kona/brew/` and served from `/brew/brew.min.js`.
+  `brew/src/main/resources/io/konaframework/brew/` and served from `/brew/brew.min.js`.
 - **Docs (this repo):** https://konaframework.github.io/kona-brew/ — Astro + Starlight site under
   `apps/docs/` (rose brand, Alpine coupling guides, examples). Framework primer also lives on the
   [Kona docs](https://konaframework.github.io/kona/) site.
@@ -51,7 +51,7 @@ https://konaframework.github.io/kona-brew/.
 
 - JDK 21
 - Node 22 (JS runtime work, and to build/preview the docs site)
-- Kona artifacts in Maven local (until `dev.kona` is published to Maven Central)
+- Kona artifacts in Maven local (until `io.konaframework` is published to Maven Central)
 
 ## Build and test
 

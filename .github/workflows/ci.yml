@@ -32,10 +32,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Resolve Kona core ref
+        id: kona
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          set -euo pipefail
+          if [ -n "${HEAD_REF}" ] && git ls-remote --exit-code --heads "https://github.com/konaframework/kona.git" "${HEAD_REF}" >/dev/null 2>&1; then
+            echo "ref=${HEAD_REF}" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=main" >> "$GITHUB_OUTPUT"
+          fi
       - uses: actions/checkout@v4
         with:
           repository: konaframework/kona
-          ref: main
+          ref: ${{ steps.kona.outputs.ref }}
           path: .kona
       - uses: actions/setup-java@v4
         with:
