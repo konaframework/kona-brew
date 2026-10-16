@@ -605,7 +605,7 @@ class M6CoverageSealTest {
             ModelSynth.hydrate(null, mapOf("class" to "java.lang.String", "key" to 1), ctx, null)
         }
         assertNull(ModelSynth.hydrate(null, mapOf("class" to "dev.kona.brew.M6CoverageSealTest"), ctx, null))
-        // hydrate will try Extract.of(StubUser).find — may return null without DB
+        // hydrate will try Cadence.of(StubUser).find — may return null without DB
         runCatching {
             ModelSynth.hydrate(null, mapOf("class" to StubUser::class.java.name, "key" to 7), ctx, null)
         }
@@ -664,5 +664,5 @@ class M6CoverageSealTest {
 
     class NoModel
 
-    class StubUser : dev.kona.extract.Extract<StubUser>()
+    class StubUser : dev.kona.cadence.Cadence<StubUser>()
 }

@@ -12,7 +12,7 @@ dependencies {
     api(libs.kona.session)
     api(libs.kona.support)
     api(libs.kona.auth)
-    api(libs.kona.extract)
+    api(libs.kona.cadence)
     api(libs.kona.filesystem)
     api(libs.jackson.databind)
     implementation(libs.jackson.module.kotlin)
