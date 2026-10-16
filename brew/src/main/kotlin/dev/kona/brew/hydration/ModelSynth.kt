@@ -1,20 +1,20 @@
 package dev.kona.brew.hydration
 
 import dev.kona.brew.CorruptComponentPayloadException
-import dev.kona.extract.Extract
+import dev.kona.cadence.Cadence
 import java.lang.reflect.Type
 
 /**
- * Extract model synthesizer — dehydrates to `{class, key}` and re-queries on hydrate
+ * Cadence model synthesizer — dehydrates to `{class, key}` and re-queries on hydrate
  * (`SupportModels` / Eloquent model synth).
  */
 object ModelSynth : Synth() {
     override val key: String = "mdl"
 
-    override fun match(value: Any): Boolean = value is Extract<*>
+    override fun match(value: Any): Boolean = value is Cadence<*>
 
     override fun dehydrate(value: Any, context: SynthContext): Pair<Any?, Map<String, Any?>> {
-        val model = value as Extract<*>
+        val model = value as Cadence<*>
         return null to linkedMapOf(
             "class" to model.javaClass.name,
             "key" to model.getKey(),
@@ -30,17 +30,17 @@ object ModelSynth : Synth() {
             throw CorruptComponentPayloadException("Class [$className] is not allowed in Brew snapshots")
         }
         val typeClass = Class.forName(className)
-        val companion = Extract::class.java.getMethod("of", Class::class.java).invoke(null, typeClass)
+        val companion = Cadence::class.java.getMethod("of", Class::class.java).invoke(null, typeClass)
         return companion.javaClass.getMethod("find", Any::class.java).invoke(companion, key)
     }
 }
 
-/** Collection of Extract models dehydrated as a list of model tuples. */
+/** Collection of Cadence models dehydrated as a list of model tuples. */
 object ModelCollectionSynth : Synth() {
     override val key: String = "mdlc"
 
     override fun match(value: Any): Boolean =
-        value is Collection<*> && value.isNotEmpty() && value.all { it is Extract<*> }
+        value is Collection<*> && value.isNotEmpty() && value.all { it is Cadence<*> }
 
     override fun dehydrate(value: Any, context: SynthContext): Pair<Any?, Map<String, Any?>> {
         @Suppress("UNCHECKED_CAST")

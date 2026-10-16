@@ -87,7 +87,7 @@ recursive components, child event listeners, `@Isolate`, `@Lazy`/`@Defer` + plac
 - [x] Full-page routes, layouts/titles/slots, `@Url`/`queryString`, `@Session`, `WithPagination`, `wire:navigate`/`wire:current`/`@persist`.
 
 
-Full-page routing, layouts/`@Layout`/`@Title`/slots, route params & Extract binding, `wire:navigate` (prefetch, persist, scroll,
+Full-page routing, layouts/`@Layout`/`@Title`/slots, route params & Cadence binding, `wire:navigate` (prefetch, persist, scroll,
 progress bar, view transitions, script rules, hooks), `wire:current`, `@Url` + `queryString()`, `@Session`, `WithPagination`
 (all variants/themes/hooks), full-page lazy, back-button cache, page testing helpers.
 
@@ -99,11 +99,11 @@ progress bar, view transitions, script rules, hooks), `wire:current`, `@Url` + `
 - [x] 100% Kover (`kona-brew`) and 100% Vitest (`js/src`).
 - [x] `WithFileUploads`, signed local + S3 pre-sign, previews, cleanup, `UploadedFileFake`.
 - [x] `wire:sort`, `wire:intersect`, styles/CSS modules, JS modules, CSP build.
-- [x] `@Authorize`, locales, release tokens, middleware, Extract model synths.
+- [x] `@Authorize`, locales, release tokens, middleware, Cadence model synths.
 
 `WithFileUploads` (temp storage, signed URLs, previews, multiple, progress/cancel, S3, cleanup, testing), `wire:sort`,
 `wire:intersect`, multi-file components, scoped/global styles, CSS modules, component JS modules, CSP build, custom synthesizers,
-Extract model synths, persistent/global middleware, `@Authorize`, locales, release tokens, large payloads, checksum debugging,
+Cadence model synths, persistent/global middleware, `@Authorize`, locales, release tokens, large payloads, checksum debugging,
 package development hooks.
 
 ## M7 — DX, browser suite & program close

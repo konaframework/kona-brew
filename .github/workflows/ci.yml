@@ -35,7 +35,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: konaframework/kona
-          ref: main
+          ref: feat/rename-extract-to-cadence
           path: .kona
       - uses: actions/setup-java@v4
         with:

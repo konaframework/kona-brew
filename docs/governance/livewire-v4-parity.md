@@ -34,7 +34,7 @@ Status: `todo` · `done`.
 | HYD-3 | `Wireable` objects (`toLivewire` / `fromLivewire`) | `Wireable` interface (`toBrew` / `fromBrew`) | M1 | done |
 | HYD-4 | Custom synthesizers (`Livewire::propertySynthesizer`) incl. `get`/`set` for data binding, array-shaped synths | `Brew.propertySynthesizer(Synth)` | M6 | done |
 | HYD-5 | Plain objects / DTOs (`std`) and data classes | Jackson-backed `ObjectSynth` (class pinned in meta) | M1 | done |
-| HYD-6 | Eloquent model / collection synth (`SupportModels`, `SupportLegacyModels`) — models re-queried by key | Extract `Model` synth (class + key) | M6 | done |
+| HYD-6 | Eloquent model / collection synth (`SupportModels`, `SupportLegacyModels`) — models re-queried by key | Cadence `Model` synth (class + key) | M6 | done |
 | HYD-7 | Deep `wire:model` paths (`todos.0.title`) via synth `get`/`set`, `__rm__` removal marker | `Synths.setPath` | M1 | done |
 | HYD-8 | Typed property guard: null/'' to non-nullable → unset/ignore; wrong type → 419 | `Coercion.toType` + `PropertyTypeMismatchException` | M1 | done |
 | SEC-1 | Only public props defined on subclass are state; base members hidden | `ComponentMeta` | M1 | done |
@@ -199,7 +199,7 @@ Status: `todo` · `done`.
 | PAG-2 | Layouts: default `layouts::app`, `#[Layout]`, `->layout()`, `{{ $slot }}` | `@Layout`, layout view with `slot` | M5 | done |
 | PAG-3 | `#[Title]`, `->title()` | `@Title` | M5 | done |
 | PAG-4 | Additional layout slots (`->slot('x')` / `<x-slot>` from page) | `View.slot(name)` | M5 | done |
-| PAG-5 | Route params → mount params, route model binding | route params; Extract binding | M5 | done |
+| PAG-5 | Route params → mount params, route model binding | route params; Cadence binding | M5 | done |
 | NAV-1 | `wire:navigate` SPA visits, `.hover` prefetch, redirects with `navigate: true` | same | M5 | done |
 | NAV-2 | `@persist('key')` elements across visits | same | M5 | done |
 | NAV-3 | `wire:current` (`.exact`, `.strict`) + `data-current` | same | M5 | done |
@@ -215,7 +215,7 @@ Status: `todo` · `done`.
 | PGN-1 | `WithPagination` (`page` in URL, `previousPage`, `nextPage`, `gotoPage`, `resetPage`, `setPage`) | `WithPagination` interface | M5 | done |
 | PGN-2 | `WithoutUrlPagination`, multiple paginators (`pageName`), scroll behaviour (`scrollTo`) | same | M5 | done |
 | PGN-3 | Hooks `updatingPage`, `updatedPage`, `updatingPaginators` … | same | M5 | done |
-| PGN-4 | Simple + cursor pagination, Tailwind/Bootstrap themes, custom pagination views (`paginationView()`) | Extract paginators + Crema views | M5 | done |
+| PGN-4 | Simple + cursor pagination, Tailwind/Bootstrap themes, custom pagination views (`paginationView()`) | Cadence paginators + Crema views | M5 | done |
 
 ## Directives (`wire:*`)
 
