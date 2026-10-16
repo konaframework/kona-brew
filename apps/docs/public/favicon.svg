@@ -1,12 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="Brew">
   <title>Brew</title>
-  <rect width="64" height="64" rx="14" fill="#FFF1F2"/>
-  <g transform="translate(10,6)">
-    <path fill="#E11D48" d="M10 10c0-2.5 2-4.5 4.5-4.5h15c2.5 0 4.5 2 4.5 4.5V13H10v-3z"/>
-    <path fill="#E11D48" d="M8 15h28l-3 7H11L8 15z"/>
-    <path fill="#BE123C" d="M12 24h20l-1.5 16c-.3 2.8-2.6 5-5.4 5h-6.2c-2.8 0-5.1-2.2-5.4-5L12 24z"/>
-    <path fill="#FB7185" d="M20 45h4v7h-4z"/>
-    <ellipse cx="22" cy="54" rx="12" ry="3.5" fill="#E11D48"/>
-    <path stroke="#FB7185" stroke-width="2" stroke-linecap="round" fill="none" d="M14 3c1.4 1.8 1.4 3.5 0 5.2M22 1.5c1.4 1.8 1.4 3.5 0 5.2M30 3c1.4 1.8 1.4 3.5 0 5.2"/>
-  </g>
+  <!-- Simplified favicon: solid cup + thick braces; readable at 16–32px. -->
+  <rect width="64" height="64" rx="14" fill="#100C09"/>
+  <path fill="#D48C46" d="M16 30h28l-2.2 14.5c-.35 2.3-2.3 4-4.6 4H22.8c-2.3 0-4.25-1.7-4.6-4L16 30z"/>
+  <path fill="#BA622A" d="M16 28h28v3.2H16z"/>
+  <path fill="none" stroke="#E5A869" stroke-width="3.2" stroke-linecap="round" d="M44.5 32c5.2.4 6.2 8.2-1.2 10.2"/>
+  <path fill="none" stroke="#D48C46" stroke-width="2.4" stroke-linecap="round" opacity="0.9" d="M14 52h32"/>
+  <!-- Braces as steam/code -->
+  <path fill="none" stroke="#FAEDCD" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"
+        d="M26 26c-2.2 0-2.8-1.4-2.8-2.8 0-2.4-2-2.8-3-2.8 1 0 3-.4 3-2.8C23.2 16 23.8 14.4 26 14.4"/>
+  <path fill="none" stroke="#FAEDCD" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"
+        d="M38 26c2.2 0 2.8-1.4 2.8-2.8 0-2.4 2-2.8 3-2.8-1 0-3-.4-3-2.8C40.8 16 40.2 14.4 38 14.4"/>
 </svg>
