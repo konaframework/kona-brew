@@ -24,8 +24,8 @@ export default defineConfig({
         'Brew for Kona — reactive server components. Kotlin-first, Java first-class — write state and actions on the server, keep the browser in sync.',
       favicon: '/favicon.svg',
       logo: {
-        light: './src/assets/brew-mark.svg',
-        dark: './src/assets/brew-mark-dark.svg',
+        light: './src/assets/brew-logo.svg',
+        dark: './src/assets/brew-logo-dark.svg',
         alt: 'Brew',
         replacesTitle: true,
       },

@@ -8,9 +8,9 @@ const base = import.meta.env.BASE_URL.endsWith('/')
 ---
 
 <div class="site-title sl-flex">
-  <a class="site-title-mark" href={base} aria-label="Brew">
-    <img class="light:sl-hidden print:hidden" alt="Brew" src={`${base}branding/brew-banner-dark.svg`} width="168" height="58" />
-    <img class="dark:sl-hidden print:block" alt="" src={`${base}branding/brew-banner.svg`} width="168" height="58" />
+  <a class="site-title-brand" href={base} aria-label="Brew">
+    <img class="light:sl-hidden print:hidden" alt="Brew" src={`${base}branding/brew-banner-dark.svg`} width="155" height="48" />
+    <img class="dark:sl-hidden print:block" alt="" src={`${base}branding/brew-banner.svg`} width="155" height="48" />
   </a>
 </div>
 
@@ -22,7 +22,7 @@ const base = import.meta.env.BASE_URL.endsWith('/')
       min-width: 0;
       white-space: nowrap;
     }
-    .site-title-mark {
+    .site-title-brand {
       display: inline-flex;
       align-items: flex-end;
       text-decoration: none;
@@ -31,7 +31,7 @@ const base = import.meta.env.BASE_URL.endsWith('/')
       padding: 0;
       line-height: 0;
     }
-    .site-title-mark img {
+    .site-title-brand img {
       display: block;
       height: calc(var(--sl-nav-height) - 2 * var(--sl-nav-pad-y));
       width: auto;

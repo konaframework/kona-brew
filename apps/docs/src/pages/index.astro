@@ -7,8 +7,8 @@ const base = import.meta.env.BASE_URL.endsWith('/')
 
 const brandLight = `${base}branding/brew-banner.svg`;
 const brandDark = `${base}branding/brew-banner-dark.svg`;
-const markLight = `${base}branding/brew-mark.svg`;
-const markDark = `${base}branding/brew-mark-dark.svg`;
+const logoLight = `${base}branding/brew-logo.svg`;
+const logoDark = `${base}branding/brew-logo-dark.svg`;
 const docsHub = `${base}guides/introduction/`;
 const install = `${base}guides/installation/`;
 const components = `${base}essentials/components/`;
@@ -52,8 +52,8 @@ const konaDocs = 'https://konaframework.github.io/kona/';
   <body class="landing">
     <header class="landing-top">
       <a class="landing-top__home" href={base} aria-label="Brew home">
-        <img class="landing-brand landing-brand--for-dark" src={brandDark} width="168" height="58" alt="" />
-        <img class="landing-brand landing-brand--for-light" src={brandLight} width="168" height="58" alt="" />
+        <img class="landing-brand landing-brand--for-dark" src={brandDark} width="155" height="48" alt="" />
+        <img class="landing-brand landing-brand--for-light" src={brandLight} width="155" height="48" alt="" />
       </a>
       <div class="landing-top__actions">
         <a class="landing-top__link" href={docsHub}>Docs</a>
@@ -87,15 +87,15 @@ const konaDocs = 'https://konaframework.github.io/kona/';
             <img
               class="landing-hero__brand landing-brand--for-dark"
               src={brandDark}
-              width="224"
-              height="77"
+              width="232"
+              height="71"
               alt="Brew"
             />
             <img
               class="landing-hero__brand landing-brand--for-light"
               src={brandLight}
-              width="224"
-              height="77"
+              width="232"
+              height="71"
               alt="Brew"
             />
             <p class="landing-hero__eyebrow">For the Kona framework</p>
@@ -111,8 +111,8 @@ const konaDocs = 'https://konaframework.github.io/kona/';
             </div>
           </div>
           <div class="landing-hero__visual" aria-hidden="true">
-            <img class="landing-hero__mark landing-brand--for-light" src={markLight} width="220" height="220" alt="" />
-            <img class="landing-hero__mark landing-brand--for-dark" src={markDark} width="220" height="220" alt="" />
+            <img class="landing-hero__logo landing-brand--for-light" src={logoLight} width="220" height="118" alt="" />
+            <img class="landing-hero__logo landing-brand--for-dark" src={logoDark} width="220" height="118" alt="" />
           </div>
         </div>
       </section>
