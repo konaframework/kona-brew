@@ -2,7 +2,7 @@
 
 Single source of truth for milestone status. Rules: [AGENTS.md](AGENTS.md). Ledger: [docs/governance/livewire-v4-parity.md](docs/governance/livewire-v4-parity.md).
 
-**Active milestone:** M6 — Uploads, sorting, styles & platform (closing)
+**Active milestone:** M7 — DX, browser suite & program close (closing)
 
 The program is complete when every ledger row is `done` (M1–M7). Each milestone closes **all** ledger rows tagged with it.
 
@@ -93,7 +93,7 @@ progress bar, view transitions, script rules, hooks), `wire:current`, `@Url` + `
 
 ## M6 — Uploads, sorting, styles & platform
 
-**Branch:** `milestone/M6-uploads-platform` · **Status:** closing (PR pending)
+**Branch:** `milestone/M6-uploads-platform` · **Status:** done (merged #6)
 
 - [x] Ledger rows: all M6 rows `done` (33/33).
 - [x] 100% Kover (`kona-brew`) and 100% Vitest (`js/src`).
@@ -108,7 +108,13 @@ package development hooks.
 
 ## M7 — DX, browser suite & program close
 
-**Branch:** `milestone/M7-dx-close` · **Status:** planned
+**Branch:** `milestone/M7-dx-close` · **Status:** closing (PR pending)
+
+- [x] Ledger rows: all remaining rows `done` (ledger 100%).
+- [x] 100% Kover + 100% Vitest; Playwright Chromium smoke in CI.
+- [x] `make:brew` flags (`--mfc`, `--class`, `--test`, `--emoji`, `pages::`), `brew:convert` / `publish` / `stubs` / `layout`.
+- [x] Testable: `actingAs`, cookies/headers, `withoutLazyLoading`, `assertJs` / `assertRedirect*`.
+- [x] LSP contract notes + M7 performance report.
 
 `make:brew` all flags, `brew:convert`, `brew:publish`/`stubs`/`layout`, config publishing, Kona Idea/LSP notes, Playwright browser
 suite, performance report, complete docs + samples audit, ledger 100%.

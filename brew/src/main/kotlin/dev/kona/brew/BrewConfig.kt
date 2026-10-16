@@ -36,6 +36,14 @@ class BrewConfig @JvmOverloads constructor(
     val scriptNonce: String? = null,
     /** Default lazy-load placeholder HTML (`brew.lazy_placeholder`). */
     val lazyPlaceholder: String? = null,
+    /** Default `make:brew` type: `sfc`, `class`, or `mfc` (`brew.make.type`). */
+    val makeType: String = "sfc",
+    /** Re-render after redirect effects (`brew.render_on_redirect`). */
+    val renderOnRedirect: Boolean = false,
+    /** Legacy model binding mode (`brew.legacy_model_binding`). */
+    val legacyModelBinding: Boolean = false,
+    /** Prefer smart wire keys (`brew.smart_wire_keys`). */
+    val smartWireKeys: Boolean = true,
     /** Default layout for full-page components (`brew.layout`, default `layouts.app`). */
     val layout: String = "layouts.app",
     /** Show the navigate progress bar (`brew.navigate.show_progress_bar`). */
@@ -85,6 +93,11 @@ class BrewConfig @JvmOverloads constructor(
                 debug = config.getBoolean("app.debug", false),
                 assetUrl = config.getString("brew.asset_url"),
                 scriptNonce = config.getString("brew.nonce"),
+                lazyPlaceholder = config.getString("brew.lazy_placeholder"),
+                makeType = config.getString("brew.make.type", "sfc"),
+                renderOnRedirect = config.getBoolean("brew.render_on_redirect", false),
+                legacyModelBinding = config.getBoolean("brew.legacy_model_binding", false),
+                smartWireKeys = config.getBoolean("brew.smart_wire_keys", true),
                 layout = config.getString("brew.layout", "layouts.app"),
                 navigateShowProgressBar = config.getBoolean("brew.navigate.show_progress_bar", true),
                 navigateProgressBarColor = config.getString("brew.navigate.progress_bar_color", "#FF9A00"),

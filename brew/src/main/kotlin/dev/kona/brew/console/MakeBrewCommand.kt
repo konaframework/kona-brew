@@ -1,5 +1,6 @@
 package dev.kona.brew.console
 
+import dev.kona.brew.Brew
 import dev.kona.brew.ComponentRegistry
 import dev.kona.grind.ConsoleCommand
 import java.nio.file.Files
@@ -8,14 +9,15 @@ import java.nio.file.Path
 /**
  * `./grind make:brew posts.create-post` — scaffolds a component (`make:livewire`).
  *
- * Default: single-file component (class with inline `template()`). `--class` also writes
- * `views/brew/<name>.crema.html` and a `render()` that points at it. `--test` adds a component test.
+ * Default type comes from `brew.make.type` (`sfc` | `class` | `mfc`). Flags: `--class`, `--mfc`,
+ * `--test`, `--emoji`, `--lang`, namespaces (`pages::`, `admin::`).
  */
 class MakeBrewCommand : ConsoleCommand() {
     override val signature: String =
-        "make:brew {name : Component name (posts.create-post, CreatePost, admin::users)} " +
-            "{--class : Separate Crema view file} {--test : Generate a test} {--lang= : kotlin or java} " +
-            "{--base= : Project root} {--force : Overwrite existing files}"
+        "make:brew {name : Component name (posts.create-post, CreatePost, pages::dashboard)} " +
+            "{--class : Separate Crema view file} {--mfc : Multi-file component assets} " +
+            "{--test : Generate a test} {--emoji : Prefix the view name with ⚡} " +
+            "{--lang= : kotlin or java} {--base= : Project root} {--force : Overwrite existing files}"
 
     override val description: String = "Create a new Brew component"
 
@@ -38,19 +40,35 @@ class MakeBrewCommand : ConsoleCommand() {
             segments.dropLast(1).map { it.replace('-', '_') }
         val pkg = packageParts.joinToString(".")
         val className = ComponentRegistry.studly(segments.last())
-        val separate = optionBool("class")
-        val viewName = "brew." + name.replace("::", ".")
+        val type = resolveType()
+        val separate = type == "class" || type == "mfc"
+        val emoji = optionBool("emoji")
+        val viewLeaf = name.replace("::", ".")
+        val viewName = if (emoji) {
+            val parts = viewLeaf.split('.')
+            "brew." + (parts.dropLast(1) + ("⚡" + parts.last())).joinToString(".")
+        } else {
+            "brew.$viewLeaf"
+        }
         val ext = if (lang == "java") "java" else "kt"
         val root = if (lang == "java") "src/main/java" else "src/main/kotlin"
+        val classRel = "$root/${pkg.replace('.', '/')}/$className.$ext"
         val files = linkedMapOf(
-            "$root/${pkg.replace('.', '/')}/$className.$ext" to componentSource(lang, pkg, className, separate, viewName),
+            classRel to componentSource(base, lang, pkg, className, separate, viewName),
         )
         if (separate) {
-            files["src/main/resources/views/${viewName.replace('.', '/')}.crema.html"] = VIEW
+            files["src/main/resources/views/${viewName.replace('.', '/')}.crema.html"] =
+                BrewStubsCommand.load(base, "view.crema.html.stub", VIEW)
         }
         if (optionBool("test")) {
             val testRoot = if (lang == "java") "src/test/java" else "src/test/kotlin"
-            files["$testRoot/${pkg.replace('.', '/')}/${className}Test.$ext"] = testSource(lang, pkg, className, name)
+            val stub = if (lang == "java") "test.java.stub" else "test.kt.stub"
+            val fallback = testSource(lang, pkg, className, name)
+            files["$testRoot/${pkg.replace('.', '/')}/${className}Test.$ext"] =
+                BrewStubsCommand.load(base, stub, fallback)
+                    .replace("{{package}}", pkg)
+                    .replace("{{class}}", className)
+                    .replace("{{name}}", name)
         }
         val force = optionBool("force")
         for ((relative, _) in files) {
@@ -65,8 +83,26 @@ class MakeBrewCommand : ConsoleCommand() {
             Files.writeString(dest, content)
             success("Created $relative")
         }
+        if (type == "mfc") {
+            val mfcDir = base.resolve(classRel).parent.resolve(className.lowercase())
+            Files.createDirectories(mfcDir)
+            Files.writeString(mfcDir.resolve("$className.js"), "export default function (\$wire) {}\n")
+            Files.writeString(mfcDir.resolve("$className.css"), "/* $className */\n")
+            success("Created MFC assets under $mfcDir")
+        }
         info("Render it with <brew:$name /> or @brew('$name')")
         return SUCCESS
+    }
+
+    private fun resolveType(): String {
+        if (optionBool("mfc")) return "mfc"
+        if (optionBool("class")) return "class"
+        val configured = try {
+            Brew.manager().config.makeType.lowercase()
+        } catch (_: Exception) {
+            "sfc"
+        }
+        return if (configured in setOf("sfc", "class", "mfc")) configured else "sfc"
     }
 
     private fun normalize(raw: String): String {
@@ -80,7 +116,26 @@ class MakeBrewCommand : ConsoleCommand() {
         return Files.walk(java).use { s -> if (s.anyMatch { it.toString().endsWith(".java") }) "java" else "kotlin" }
     }
 
-    private fun componentSource(lang: String, pkg: String, name: String, separate: Boolean, view: String): String =
+    private fun componentSource(
+        base: Path,
+        lang: String,
+        pkg: String,
+        name: String,
+        separate: Boolean,
+        view: String,
+    ): String {
+        val stubName = if (lang == "java") "component.java.stub" else "component.kt.stub"
+        val fallback = defaultComponent(lang, pkg, name, separate, view)
+        val loaded = BrewStubsCommand.load(base, stubName, fallback)
+            .replace("{{package}}", pkg)
+            .replace("{{class}}", name)
+            .replace("{{view}}", view)
+        // Prefer the stub when its shape matches the requested type; otherwise use the generated default.
+        val stubOk = if (separate) "render()" in loaded else "template()" in loaded
+        return if (stubOk) loaded else fallback
+    }
+
+    private fun defaultComponent(lang: String, pkg: String, name: String, separate: Boolean, view: String): String =
         if (lang == "java") {
             if (separate) {
                 """

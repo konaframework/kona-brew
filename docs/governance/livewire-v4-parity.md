@@ -64,8 +64,8 @@ Status: `todo` · `done`.
 | CMP-10 | Non-prop params become HTML attributes on root | `HtmlAttributeForwarding` | M4 | done |
 | CMP-11 | `render()` returning view with data (`->with()`), string templates, `view()` helpers | `view(name, data)`, `template(src)` | M1 | done |
 | CMP-11b | `->title()` / `->layout()` on the rendered view | `View.title/layout` | M5 | done |
-| CMP-12 | Component stubs customization (`livewire:stubs`) | `./grind brew:stubs` | M7 | todo |
-| CMP-13 | Default component type config (`make_command.type`) | `brew.make.type` config | M7 | todo |
+| CMP-12 | Component stubs customization (`livewire:stubs`) | `./grind brew:stubs` | M7 | done |
+| CMP-13 | Default component type config (`make_command.type`) | `brew.make.type` config | M7 | done |
 | CMP-14 | `$this->getId()`, `getName()`, `$this->id()` | `id()`, `name()` | M1 | done |
 | CMP-15 | Troubleshooting errors: component not found, blank render, class conflicts | `ComponentNotFoundException`, root checks | M1 | done |
 
@@ -349,25 +349,25 @@ Status: `todo` · `done`.
 | TST-2 | `assertSet`, `assertNotSet`, `assertCount`, `assertSee`, `assertDontSee`, `assertSeeHtml`, `assertDontSeeHtml`, `assertSeeInOrder`, `assertViewHas`, `assertViewIs` | same | M1 | done |
 | TST-3 | `assertRenderSkipped`, `assertRenderNotSkipped`, `assertStatus`, `assertForbidden`, `assertUnauthorized` | same | M1 | done |
 | TST-3b | Status assertions driven by `#[Authorize]` / `authorize()` failures | same | M6 | done |
-| TST-4 | `actingAs`, `withQueryParams`, `withCookie(s)`, `withHeaders`, `withoutLazyLoading` | same | M5/M6 | todo |
-| TST-5 | `assertJs`, `assertNoJs`, `assertRedirect*`, `assertNoRedirect`, `assertDispatched*`, `assertHasErrors*`, `assertFileDownloaded` | same | M2/M3 | todo |
+| TST-4 | `actingAs`, `withQueryParams`, `withCookie(s)`, `withHeaders`, `withoutLazyLoading` | same | M5/M6 | done |
+| TST-5 | `assertJs`, `assertNoJs`, `assertRedirect*`, `assertNoRedirect`, `assertDispatched*`, `assertHasErrors*`, `assertFileDownloaded` | same | M2/M3 | done |
 | TST-6 | Page contains component (`assertSeeLivewire`, `assertDontSeeLivewire`) | `assertSeeBrew` on Kona `HttpTestClient` | M5 | done |
-| TST-7 | Browser testing (Pest browser) | Playwright smoke suite for JS runtime | M7 | todo |
+| TST-7 | Browser testing (Pest browser) | Playwright smoke suite for JS runtime | M7 | done |
 
 ## Developer experience
 
 | ID | Livewire v4 surface | Brew | M | Status |
 |----|--------------------|------|---|--------|
 | DX-1 | `make:livewire` class + single-file components | `./grind make:brew` | M1 | done |
-| DX-1b | `make:livewire` all flags (`--mfc`, `--class`, `--test`, `--emoji`, `pages::`) | `./grind make:brew` | M7 | todo |
-| DX-2 | `livewire:convert` (SFC ↔ MFC ↔ class) | `./grind brew:convert` | M7 | todo |
-| DX-3 | `livewire:publish --config`, `livewire:stubs`, `livewire:layout` | `brew:publish`, `brew:stubs`, `brew:layout` | M7 | todo |
+| DX-1b | `make:livewire` all flags (`--mfc`, `--class`, `--test`, `--emoji`, `pages::`) | `./grind make:brew` | M7 | done |
+| DX-2 | `livewire:convert` (SFC ↔ MFC ↔ class) | `./grind brew:convert` | M7 | done |
+| DX-3 | `livewire:publish --config`, `livewire:stubs`, `livewire:layout` | `brew:publish`, `brew:stubs`, `brew:layout` | M7 | done |
 | DX-4 | Config core keys (component locations/namespaces, inject_assets, inject_morph_markers, payload) | `config/brew.*` | M1 | done |
-| DX-4b | Remaining config keys (layout, lazy placeholder, temp uploads, render_on_redirect, legacy_model_binding, navigate, smart_wire_keys, release_token, csp_safe) | `config/brew.*` | per feature (M4–M6) | todo |
+| DX-4b | Remaining config keys (layout, lazy placeholder, temp uploads, render_on_redirect, legacy_model_binding, navigate, smart_wire_keys, release_token, csp_safe) | `config/brew.*` | per feature (M4–M6) | done |
 | DX-5 | Package development (register components/namespaces from packages) | `BrewServiceProvider` hooks | M6 | done |
-| DX-6 | IDE support: Kona Idea / LSP completions for `<brew:…>`, `wire:*` | LSP contract notes | M7 | todo |
+| DX-6 | IDE support: Kona Idea / LSP completions for `<brew:…>`, `wire:*` | LSP contract notes | M7 | done |
 | DX-7 | Docs for the M1 slice (`/docs/brew/*`: installation, components, properties, actions, templates, lifecycle, testing, JS runtime) | apps/docs in Kona | M1 | done |
-| DX-7b | Docs pages for every remaining topic in the Livewire v4 nav | apps/docs in Kona | each M (M2–M7) | todo |
+| DX-7b | Docs pages for every remaining topic in the Livewire v4 nav | apps/docs in Kona | each M (M2–M7) | done |
 | DX-8 | Starter kit `kona new --kit=brew` uses kona-brew | Kona CLI | M1 cutover | done |
 | PERF-1 | Hot paths benchmarked (mount, update round-trip, morph), per-class metadata cached, no per-request reflection scans | `:kona-brew:bench`, `npm run bench`, [baseline](../performance/baseline.md) | M1 | done |
-| PERF-1b | Performance report (Chromium + concurrent load) | report | M7 | todo |
+| PERF-1b | Performance report (Chromium + concurrent load) | report | M7 | done |

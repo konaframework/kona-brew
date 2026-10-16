@@ -20,6 +20,9 @@ class Testable private constructor(
 ) {
     private var lastHtml: String = result.html!!
     private var status: Int = 200
+    private var actor: Any? = null
+    private val cookies = linkedMapOf<String, String>()
+    private val headers = linkedMapOf<String, String>()
 
     companion object {
         @JvmStatic
@@ -52,6 +55,45 @@ class Testable private constructor(
         return this
     }
 
+    /** Authenticate as [user] for subsequent Gate checks (`->actingAs($user)`). */
+    fun actingAs(user: Any?): Testable {
+        actor = user
+        return this
+    }
+
+    /** Attach a cookie for the synthetic request (`->withCookie`). */
+    fun withCookie(name: String, value: String): Testable {
+        cookies[name] = value
+        return this
+    }
+
+    /** Attach multiple cookies (`->withCookies`). */
+    fun withCookies(values: Map<String, String>): Testable {
+        cookies.putAll(values)
+        return this
+    }
+
+    /** Attach request headers (`->withHeaders`). */
+    fun withHeaders(values: Map<String, String>): Testable {
+        headers.putAll(values)
+        return this
+    }
+
+    /** Disable lazy/defer for subsequent interactions (`->withoutLazyLoading()`). */
+    fun withoutLazyLoading(): Testable {
+        stickyWithoutLazy = true
+        return this
+    }
+
+    private var stickyWithoutLazy: Boolean = false
+
+    /** Last actingAs user (for assertions / Gate hooks). */
+    fun actor(): Any? = actor
+
+    fun cookies(): Map<String, String> = cookies.toMap()
+
+    fun headers(): Map<String, String> = headers.toMap()
+
     /** Assert the page HTML contains a mounted Brew component by name (`assertSeeLivewire`). */
     fun assertSeeBrew(name: String): Testable {
         check(html().contains("wire:name=\"$name\"") || html().contains("wire:name='$name'")) {
@@ -69,13 +111,16 @@ class Testable private constructor(
     private fun roundTrip(updates: Map<String, Any?>, calls: List<Map<String, Any?>>): Testable {
         @Suppress("UNCHECKED_CAST")
         val wire = Coercion.mapper.readValue(manager.json(result.snapshot), Map::class.java) as Map<String, Any?>
-        try {
-            result = manager.updateComponent(wire, updates, calls)
-            status = 200
-            result.html?.let { lastHtml = it }
-        } catch (e: HttpException) {
-            status = e.status
+        val run = {
+            try {
+                result = manager.updateComponent(wire, updates, calls)
+                status = 200
+                result.html?.let { lastHtml = it }
+            } catch (e: HttpException) {
+                status = e.status
+            }
         }
+        if (stickyWithoutLazy) manager.withoutLazyLoading(run) else run()
         return this
     }
 
@@ -290,6 +335,49 @@ class Testable private constructor(
             val encoded = download["content"].toString()
             val decoded = String(java.util.Base64.getDecoder().decode(encoded), Charsets.UTF_8)
             check(decoded == content) { "Failed asserting download content; got [$decoded]" }
+        }
+        return this
+    }
+
+    /** Assert `effects.xjs` contains [expression] (`assertJs`). */
+    fun assertJs(expression: String): Testable {
+        val scripts = result.effects["xjs"] as? List<*> ?: emptyList<Any?>()
+        check(scripts.any { it.toString().contains(expression) }) {
+            "Failed asserting that JS [$expression] was queued; got $scripts"
+        }
+        return this
+    }
+
+    fun assertNoJs(): Testable = assertNoJs(null)
+
+    fun assertNoJs(expression: String?): Testable {
+        val scripts = result.effects["xjs"] as? List<*> ?: emptyList<Any?>()
+        if (expression == null) {
+            check(scripts.isEmpty()) { "Failed asserting that no JS was queued; got $scripts" }
+        } else {
+            check(scripts.none { it.toString().contains(expression) }) {
+                "Failed asserting that JS [$expression] was not queued; got $scripts"
+            }
+        }
+        return this
+    }
+
+    /** Assert a redirect effect exists (`assertRedirect`). */
+    fun assertRedirect(): Testable {
+        check(result.effects["redirect"] != null) { "Failed asserting that a redirect was issued" }
+        return this
+    }
+
+    fun assertRedirectTo(url: String): Testable {
+        val redirect = result.effects["redirect"] as? Map<*, *>
+            ?: throw AssertionError("Failed asserting redirect to [$url]; no redirect effect")
+        check(redirect["url"] == url) { "Failed asserting redirect to [$url]; got $redirect" }
+        return this
+    }
+
+    fun assertNoRedirect(): Testable {
+        check(result.effects["redirect"] == null) {
+            "Failed asserting that no redirect was issued; got ${result.effects["redirect"]}"
         }
         return this
     }
