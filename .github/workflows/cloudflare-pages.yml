@@ -4,8 +4,11 @@ name: Cloudflare Pages
 # Pages project: kona-brew-docs — custom domain brew.konaframework.org
 #
 # First publish: Cloudflare Dashboard → Connect to Git (no GitHub secrets).
+#   Project: kona-brew-docs · Root: apps/docs
+#   Build: npm ci && npm run build · Output: dist · NODE_VERSION=22
+#   (npm + package-lock.json — not Kona monorepo pnpm)
 # Optional harden: CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID for Wrangler deploy.
-# See kona docs/governance/docs-site.md
+# See docs/governance/docs-site.md
 
 on:
   push:
