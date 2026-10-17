@@ -27,7 +27,7 @@ class Counter : Component() {
 - JS runtime: `js/` (Alpine.js + plugins, esbuild). Built bundles are committed under
   `brew/src/main/resources/org/konaframework/brew/` and served from `/brew/brew.min.js`.
 - **Docs (this repo):** https://brew.konaframework.org/ — Astro + Starlight site under
-  `apps/docs/` (rose brand, Alpine coupling guides, examples). Framework primer also lives on the
+  `apps/docs/` (caramel/latte brand shared with Kona, Alpine coupling guides, examples). Framework primer also lives on the
   [Kona docs](https://docs.konaframework.org/) site.
 - Status: [MILESTONES.md](MILESTONES.md) and the parity ledger
   [docs/governance/livewire-v4-parity.md](docs/governance/livewire-v4-parity.md).
