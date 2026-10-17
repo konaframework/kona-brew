@@ -47,7 +47,7 @@ Kona monorepo keeps only a **brief link-out** page (kona PR #94); do not re-expa
 
 **Done on `main`:** M1–M7 parity, standalone docs + Pages, Cadence dependency cutover, espresso branding iterations through transparent cup mark (#15). Brand assets under `apps/docs/public/branding/` and `apps/docs/src/assets/`.
 
-**Palette (matches Kona):** light primary caramel `#DF8723` (soft `#E9A055`; accent *text* on cream uses caramel deep `#9A5812`; caramel buttons carry espresso `#1A120C` text), dark primary latte `#C9A57B` (soft `#DCC09A`, deep `#A67C52`). Light SVG assets fill the mark with `#DF8723`, dark assets with `#C9A57B`; `theme-color` is `#DF8723`. Surfaces (cream `#FAF6F0` / espresso `#1A120C`) and soft-cream dark headings `#E8D4B8` are unchanged.
+**Palette (matches Kona):** light primary caramel `#DF8723` (soft `#E9A055`, deep `#9A5812`); light accent warm brown `#74453F` (soft `#8B5A52`, deep `#5A322E`) for links / secondary emphasis on cream; caramel buttons carry espresso `#1A120C` text. Dark primary latte `#C9A57B` (soft `#DCC09A`, deep `#A67C52`); dark accent soft cream. Light SVG assets fill the mark with `#DF8723`, dark assets with `#C9A57B`; `theme-color` is `#DF8723`. Surfaces (cream `#FAF6F0` / espresso `#1A120C`) and soft-cream dark headings `#E8D4B8` are unchanged.
 
 **In-flight / local only:**
 

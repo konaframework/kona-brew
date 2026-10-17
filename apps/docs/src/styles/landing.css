@@ -1,8 +1,8 @@
 /*
  * Brew marketing landing at `/`.
  * Brand: caramel / latte / espresso / cream (shared Kona palette). Font: Outfit site-wide.
- * Light primary = caramel (#DF8723), accent text = caramel deep (#9A5812);
- * dark primary = latte (#C9A57B).
+ * Light primary = caramel (#DF8723), light accent = warm brown (#74453F);
+ * dark primary = latte (#C9A57B); dark accent stays soft cream.
  * Syncs theme via html[data-theme] + starlight-theme localStorage key.
  */
 
@@ -64,6 +64,9 @@
   --brew-primary: var(--brew-caramel);
   --brew-primary-soft: var(--brew-caramel-soft);
   --brew-primary-deep: var(--brew-caramel-deep);
+  --brew-accent: #74453f;
+  --brew-accent-soft: #8b5a52;
+  --brew-accent-deep: #5a322e;
   --brew-glow: rgba(223, 135, 35, 0.2);
 
   --landing-ink: #1e1612;
@@ -74,7 +77,7 @@
   --landing-surface-raised: #fffaf2;
   --landing-hero-fg: #1e1612;
   --landing-hero-muted: #43362c;
-  --landing-hero-eyebrow: var(--brew-caramel-deep);
+  --landing-hero-eyebrow: var(--brew-accent);
   --landing-hero-bg:
     radial-gradient(ellipse 95% 70% at 10% 8%, rgba(223, 135, 35, 0.14), transparent 55%),
     radial-gradient(ellipse 80% 55% at 95% 90%, rgba(223, 135, 35, 0.08), transparent 50%),
@@ -82,16 +85,16 @@
   --landing-hero-stripe: rgba(223, 135, 35, 0.06);
   --landing-cta-secondary-border: rgba(223, 135, 35, 0.45);
   --landing-cta-secondary-hover: rgba(223, 135, 35, 0.1);
-  --landing-cta-secondary-fg: var(--brew-caramel-deep);
+  --landing-cta-secondary-fg: var(--brew-accent);
   --landing-cta-primary-fg: #1a120c;
-  --landing-feature-heading: var(--brew-caramel-deep);
+  --landing-feature-heading: var(--brew-accent);
   --landing-close-bg:
     linear-gradient(135deg, #3d2914 0%, #6e4214 48%, #9a5812 100%);
   --landing-close-fg: #f5ebe0;
   --landing-close-muted: rgba(245, 235, 224, 0.92);
-  --landing-link: #4a3224;
-  --landing-link-hover: var(--brew-caramel-deep);
-  --landing-footer-link: var(--brew-caramel-deep);
+  --landing-link: var(--brew-accent);
+  --landing-link-hover: var(--brew-accent-deep);
+  --landing-footer-link: var(--brew-accent);
   --landing-top-bg: rgba(250, 246, 235, 0.9);
   --landing-top-border: rgba(30, 22, 18, 0.08);
   --landing-theme-btn-bg: rgba(30, 22, 18, 0.05);
