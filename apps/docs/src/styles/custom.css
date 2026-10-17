@@ -1,27 +1,30 @@
 /*
- * Brew brand — espresso / copper / cream.
- * Light primary = darker latte (#BA622A); dark primary = bright latte (#E09A58).
+ * Brew brand — mocha / espresso / cream.
+ * Light primary = Mocha (#6F4E37); dark primary = espresso roast (#A67C52).
+ * Surfaces stay espresso-deep; headings use mocha-cream (not pure white).
  * Overrides @almasix/starlight-theme oranges + cream paper for Brew surfaces.
  * Outfit is the UI font (reinforced; Almasix theme already loads it).
  * Code blocks: Monokai via expressiveCode in astro.config.mjs.
  */
 
 :root {
-  --brew-latte-bright: #e09a58;
-  --brew-latte-deep: #ba622a;
-  --brew-primary: var(--brew-latte-bright);
-  --brew-primary-soft: #e5a869;
-  --brew-primary-deep: var(--brew-latte-deep);
+  --brew-mocha: #6f4e37;
+  --brew-mocha-soft: #8b6340;
+  --brew-espresso-roast: #a67c52;
+  --brew-espresso-soft: #c4a574;
+  --brew-espresso: #1e1612;
+  --brew-espresso-deep: #140e0b;
+  --brew-primary: var(--brew-espresso-roast);
+  --brew-primary-soft: var(--brew-espresso-soft);
+  --brew-primary-deep: var(--brew-mocha);
   --brew-primary-mist: #faedcd;
   --brew-paper: #f5f3ef;
   --brew-paper-2: #faedcd;
   --brew-accent: #faedcd;
-  --brew-accent-soft: #e5a869;
-  --brew-accent-deep: #9a4e22;
-  --brew-espresso: #1e1612;
-  --brew-espresso-deep: #140e0b;
-  --brew-heading: #f0e2c8;
-  --brew-glow: rgba(224, 154, 88, 0.28);
+  --brew-accent-soft: var(--brew-espresso-soft);
+  --brew-accent-deep: #4a3224;
+  --brew-heading: #e8d4b8;
+  --brew-glow: rgba(166, 124, 82, 0.28);
 
   --sl-font: 'Outfit', ui-sans-serif, system-ui, sans-serif;
   --sl-font-mono: 'JetBrains Mono', ui-monospace, monospace;
@@ -39,7 +42,7 @@
   --sl-color-text-accent: var(--brew-primary-soft);
   --sl-color-bg-accent: var(--brew-primary);
 
-  /* Dark neutrals — espresso-tinted; headings use latte cream, not pure white */
+  /* Dark neutrals — espresso-tinted; headings use mocha cream, not pure white */
   --sl-color-white: var(--brew-heading);
   --sl-color-gray-1: #ebe0cc;
   --sl-color-gray-2: #c9b89a;
@@ -51,9 +54,10 @@
 }
 
 :root[data-theme='light'] {
-  --brew-primary: var(--brew-latte-deep);
-  --brew-primary-soft: #d48c46;
-  --brew-glow: rgba(186, 98, 42, 0.22);
+  --brew-primary: var(--brew-mocha);
+  --brew-primary-soft: var(--brew-mocha-soft);
+  --brew-primary-deep: #4a3224;
+  --brew-glow: rgba(111, 78, 55, 0.2);
 
   --sl-color-accent-low: var(--brew-primary-mist);
   --sl-color-accent: var(--brew-primary);
@@ -79,11 +83,11 @@
   --sl-color-hairline-shade: var(--sl-color-gray-6);
 }
 
-/* Copper glow atmosphere on dark */
+/* Espresso glow atmosphere on dark */
 :root:not([data-theme='light']) body {
   background-image:
     radial-gradient(1100px 520px at 8% -12%, var(--brew-glow), transparent 55%),
-    radial-gradient(800px 420px at 100% 0%, rgba(250, 237, 205, 0.06), transparent 50%);
+    radial-gradient(800px 420px at 100% 0%, rgba(232, 212, 184, 0.06), transparent 50%);
   background-attachment: fixed;
 }
 
