@@ -1,28 +1,31 @@
 /*
  * Brew marketing landing at `/`.
- * Brand: mocha / espresso / cream. Font: Outfit site-wide.
- * Light primary = Mocha (#6F4E37); dark primary = espresso roast (#A67C52).
+ * Brand: caramel / latte / espresso / cream (shared Kona palette). Font: Outfit site-wide.
+ * Light primary = caramel (#DF8723), accent text = caramel deep (#9A5812);
+ * dark primary = latte (#C9A57B).
  * Syncs theme via html[data-theme] + starlight-theme localStorage key.
  */
 
 :root {
-  --brew-mocha: #6f4e37;
-  --brew-mocha-soft: #8b6340;
-  --brew-espresso-roast: #a67c52;
-  --brew-espresso-soft: #c4a574;
+  --brew-caramel: #df8723;
+  --brew-caramel-soft: #e9a055;
+  --brew-caramel-deep: #9a5812;
+  --brew-latte: #c9a57b;
+  --brew-latte-soft: #dcc09a;
+  --brew-latte-deep: #a67c52;
   --brew-espresso: #1e1612;
   --brew-espresso-deep: #140e0b;
-  --brew-primary: var(--brew-espresso-roast);
-  --brew-primary-soft: var(--brew-espresso-soft);
-  --brew-primary-deep: var(--brew-mocha);
+  --brew-primary: var(--brew-latte);
+  --brew-primary-soft: var(--brew-latte-soft);
+  --brew-primary-deep: var(--brew-latte-deep);
   --brew-accent: #faedcd;
-  --brew-accent-soft: var(--brew-espresso-soft);
+  --brew-accent-soft: var(--brew-latte-soft);
   --brew-accent-deep: #4a3224;
-  --brew-glow: rgba(166, 124, 82, 0.36);
+  --brew-glow: rgba(201, 165, 123, 0.28);
   --landing-font: 'Outfit', ui-sans-serif, system-ui, sans-serif;
   --landing-ease: cubic-bezier(0.22, 1, 0.36, 1);
 
-  /* Dark default — espresso surfaces, mocha-cream type (no pure white) */
+  /* Dark default — espresso surfaces, soft cream type (no pure white) */
   --landing-ink: #e8d4b8;
   --landing-ink-soft: rgba(232, 212, 184, 0.78);
   --landing-ink-muted: rgba(232, 212, 184, 0.55);
@@ -31,35 +34,37 @@
   --landing-surface-raised: #1a1410;
   --landing-hero-fg: #e8d4b8;
   --landing-hero-muted: rgba(232, 212, 184, 0.86);
-  --landing-hero-eyebrow: var(--brew-espresso-soft);
+  --landing-hero-eyebrow: var(--brew-latte-soft);
   --landing-hero-bg:
-    radial-gradient(ellipse 100% 80% at 8% 0%, rgba(166, 124, 82, 0.34), transparent 52%),
+    radial-gradient(ellipse 100% 80% at 8% 0%, rgba(201, 165, 123, 0.28), transparent 52%),
     radial-gradient(ellipse 70% 55% at 92% 85%, rgba(232, 212, 184, 0.08), transparent 48%),
-    radial-gradient(ellipse 50% 40% at 55% 45%, rgba(111, 78, 55, 0.16), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 55% 45%, rgba(223, 135, 35, 0.08), transparent 60%),
     linear-gradient(165deg, #241810 0%, #1a1210 38%, #0f0b08 100%);
-  --landing-hero-stripe: rgba(166, 124, 82, 0.05);
+  --landing-hero-stripe: rgba(201, 165, 123, 0.05);
   --landing-cta-secondary-border: rgba(232, 212, 184, 0.32);
-  --landing-cta-secondary-hover: rgba(166, 124, 82, 0.14);
+  --landing-cta-secondary-hover: rgba(201, 165, 123, 0.14);
   --landing-cta-secondary-fg: #e8d4b8;
-  --landing-cta-primary-fg: #140e0b;
-  --landing-feature-heading: var(--brew-espresso-soft);
+  --landing-cta-primary-fg: #1a120c;
+  --landing-feature-heading: var(--brew-latte-soft);
   --landing-close-bg:
-    linear-gradient(135deg, #4a3224 0%, #6f4e37 42%, #a67c52 100%);
+    linear-gradient(135deg, #3d2914 0%, #7a4a1c 48%, #a67c52 100%);
   --landing-close-fg: #f5ebe0;
   --landing-close-muted: rgba(245, 235, 224, 0.9);
-  --landing-link: var(--brew-espresso-soft);
+  --landing-link: var(--brew-latte-soft);
   --landing-link-hover: #faedcd;
+  --landing-footer-link: var(--brew-primary);
   --landing-top-bg: rgba(20, 14, 11, 0.84);
-  --landing-top-border: rgba(166, 124, 82, 0.16);
-  --landing-theme-btn-bg: rgba(166, 124, 82, 0.12);
-  --landing-theme-btn-border: rgba(166, 124, 82, 0.3);
-  --landing-rule: rgba(166, 124, 82, 0.24);
+  --landing-top-border: rgba(201, 165, 123, 0.16);
+  --landing-theme-btn-bg: rgba(201, 165, 123, 0.12);
+  --landing-theme-btn-border: rgba(201, 165, 123, 0.3);
+  --landing-rule: rgba(201, 165, 123, 0.24);
 }
 
 :root[data-theme='light'] {
-  --brew-primary: var(--brew-mocha);
-  --brew-primary-soft: var(--brew-mocha-soft);
-  --brew-glow: rgba(111, 78, 55, 0.22);
+  --brew-primary: var(--brew-caramel);
+  --brew-primary-soft: var(--brew-caramel-soft);
+  --brew-primary-deep: var(--brew-caramel-deep);
+  --brew-glow: rgba(223, 135, 35, 0.2);
 
   --landing-ink: #1e1612;
   --landing-ink-soft: #43362c;
@@ -69,28 +74,29 @@
   --landing-surface-raised: #fffaf2;
   --landing-hero-fg: #1e1612;
   --landing-hero-muted: #43362c;
-  --landing-hero-eyebrow: var(--brew-mocha);
+  --landing-hero-eyebrow: var(--brew-caramel-deep);
   --landing-hero-bg:
-    radial-gradient(ellipse 95% 70% at 10% 8%, rgba(111, 78, 55, 0.16), transparent 55%),
-    radial-gradient(ellipse 80% 55% at 95% 90%, rgba(166, 124, 82, 0.14), transparent 50%),
+    radial-gradient(ellipse 95% 70% at 10% 8%, rgba(223, 135, 35, 0.14), transparent 55%),
+    radial-gradient(ellipse 80% 55% at 95% 90%, rgba(223, 135, 35, 0.08), transparent 50%),
     linear-gradient(168deg, #faf6eb 0%, #faedcd 46%, #edd8b4 100%);
-  --landing-hero-stripe: rgba(111, 78, 55, 0.06);
-  --landing-cta-secondary-border: rgba(111, 78, 55, 0.38);
-  --landing-cta-secondary-hover: rgba(111, 78, 55, 0.1);
-  --landing-cta-secondary-fg: var(--brew-mocha);
-  --landing-cta-primary-fg: #faf6eb;
-  --landing-feature-heading: var(--brew-mocha);
+  --landing-hero-stripe: rgba(223, 135, 35, 0.06);
+  --landing-cta-secondary-border: rgba(223, 135, 35, 0.45);
+  --landing-cta-secondary-hover: rgba(223, 135, 35, 0.1);
+  --landing-cta-secondary-fg: var(--brew-caramel-deep);
+  --landing-cta-primary-fg: #1a120c;
+  --landing-feature-heading: var(--brew-caramel-deep);
   --landing-close-bg:
-    linear-gradient(135deg, #3d281c 0%, #6f4e37 48%, #8b6340 100%);
+    linear-gradient(135deg, #3d2914 0%, #6e4214 48%, #9a5812 100%);
   --landing-close-fg: #f5ebe0;
   --landing-close-muted: rgba(245, 235, 224, 0.92);
   --landing-link: #4a3224;
-  --landing-link-hover: var(--brew-mocha);
+  --landing-link-hover: var(--brew-caramel-deep);
+  --landing-footer-link: var(--brew-caramel-deep);
   --landing-top-bg: rgba(250, 246, 235, 0.9);
   --landing-top-border: rgba(30, 22, 18, 0.08);
   --landing-theme-btn-bg: rgba(30, 22, 18, 0.05);
   --landing-theme-btn-border: rgba(30, 22, 18, 0.14);
-  --landing-rule: rgba(111, 78, 55, 0.22);
+  --landing-rule: rgba(223, 135, 35, 0.28);
 }
 
 *,
@@ -251,15 +257,15 @@ html[data-theme='light'] .landing-theme__icon--sun {
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(circle at 78% 22%, rgba(166, 124, 82, 0.22), transparent 38%),
+    radial-gradient(circle at 78% 22%, rgba(201, 165, 123, 0.2), transparent 38%),
     radial-gradient(circle at 18% 82%, rgba(232, 212, 184, 0.1), transparent 42%);
   animation: landing-glow 14s var(--landing-ease) infinite alternate;
 }
 
 html[data-theme='light'] .landing-hero__glow {
   background:
-    radial-gradient(circle at 78% 22%, rgba(111, 78, 55, 0.14), transparent 40%),
-    radial-gradient(circle at 18% 82%, rgba(166, 124, 82, 0.12), transparent 44%);
+    radial-gradient(circle at 78% 22%, rgba(223, 135, 35, 0.14), transparent 40%),
+    radial-gradient(circle at 18% 82%, rgba(223, 135, 35, 0.07), transparent 44%);
 }
 
 .landing-hero__grain {
@@ -568,7 +574,7 @@ html[data-theme='light'] .landing-hero__glow {
 }
 
 .landing-footer a {
-  color: var(--brew-primary);
+  color: var(--landing-footer-link);
 }
 
 .landing-footer a:hover {
