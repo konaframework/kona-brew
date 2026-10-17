@@ -47,6 +47,8 @@ Kona monorepo keeps only a **brief link-out** page (kona PR #94); do not re-expa
 
 **Done on `main`:** M1–M7 parity, standalone docs + Pages, Cadence dependency cutover, espresso branding iterations through transparent cup mark (#15). Brand assets under `apps/docs/public/branding/` and `apps/docs/src/assets/`.
 
+**Palette (matches Kona):** light primary caramel `#DF8723` (soft `#E9A055`; accent *text* on cream uses caramel deep `#9A5812`; caramel buttons carry espresso `#1A120C` text), dark primary latte `#C9A57B` (soft `#DCC09A`, deep `#A67C52`). Light SVG assets fill the mark with `#DF8723`, dark assets with `#C9A57B`; `theme-color` is `#DF8723`. Surfaces (cream `#FAF6F0` / espresso `#1A120C`) and soft-cream dark headings `#E8D4B8` are unchanged.
+
 **In-flight / local only:**
 
 - **Banner/logo refinement is actively in progress** on branch `docs/brew-cup-b-lockup` (dirty branding SVGs / favicon; not part of the handoff PR). Also watch for untracked `brew-*.svg` copies under sibling Kona `apps/docs/public/branding/`. Check `git status` / `gh pr list` before starting another branding pass.
