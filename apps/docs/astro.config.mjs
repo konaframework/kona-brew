@@ -4,9 +4,9 @@ import starlight from '@astrojs/starlight';
 import almasixTheme from '@almasix/starlight-theme';
 import { buildSidebar } from './sidebar.mjs';
 
-// GitHub Pages project site: PUBLIC_BASE_PATH=/kona-brew/ → https://konaframework.github.io/kona-brew/
+// Production: https://brew.konaframework.org (PUBLIC_BASE_PATH=/). GH Pages mirror: PUBLIC_BASE_PATH=/kona-brew/
 const base = process.env.PUBLIC_BASE_PATH || '/';
-const site = process.env.PUBLIC_SITE_URL || 'https://konaframework.github.io';
+const site = process.env.PUBLIC_SITE_URL || 'https://brew.konaframework.org';
 const origin = site.replace(/\/$/, '');
 const normalizedBase = base === '/' ? '/' : `/${base.replace(/^\/|\/$/g, '')}/`;
 const ogImage = `${origin}${normalizedBase}og.svg`;

@@ -29,4 +29,4 @@ Root attributes emitted by Brew: `wire:id`, `wire:name`, `wire:snapshot`, `wire:
 `@Locked`, `@Computed`, `@Validate` / `@Rule`, `@Layout`, `@Title`, `@Url`, `@Session`,
 `@Lazy` / `@Defer`, `@Isolate`, `@Reactive`, `@Modelable`, `@Authorize`, `@Renderless`, `@Async`, `@Js`, `@On`.
 
-IDE plugins should resolve these from `io.konaframework.brew` and offer import assists.
+IDE plugins should resolve these from `org.konaframework.brew` and offer import assists.

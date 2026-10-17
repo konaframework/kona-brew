@@ -1,0 +1,62 @@
+name: Cloudflare Pages
+
+# Primary docs host: https://brew.konaframework.org
+# Secrets (human-configured): CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID
+# Pages project: kona-brew-docs — custom domain brew.konaframework.org
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/docs/**'
+      - '.github/workflows/cloudflare-pages.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: cloudflare-pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Build + deploy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: apps/docs/package-lock.json
+      - name: Install dependencies
+        working-directory: apps/docs
+        run: npm ci
+      - name: Build docs
+        working-directory: apps/docs
+        env:
+          PUBLIC_SITE_URL: https://brew.konaframework.org
+          PUBLIC_BASE_PATH: /
+        run: npm run build
+      - name: Require Cloudflare secrets
+        id: cf
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          if [ -z "${CLOUDFLARE_API_TOKEN}" ] || [ -z "${CLOUDFLARE_ACCOUNT_ID}" ]; then
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::CLOUDFLARE secrets not set — build only. See README / docs/governance/HANDOFF.md"
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Deploy to Cloudflare Pages
+        if: steps.cf.outputs.configured == 'true'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: apps/docs
+          command: pages deploy dist --project-name=kona-brew-docs

@@ -9,12 +9,12 @@ plugins {
 }
 
 allprojects {
-    group = "io.konaframework"
+    group = "org.konaframework"
     version = providers.gradleProperty("brew.version").get()
 
     repositories {
         mavenLocal {
-            content { includeGroup("io.konaframework") }
+            content { includeGroup("org.konaframework") }
         }
         mavenCentral()
     }
@@ -58,7 +58,7 @@ fun Project.configureKonaBrewPublishing() {
         pom {
             name.set("kona-brew")
             description.set("Brew — reactive components for Kona (Livewire-class)")
-            url.set("https://github.com/konaframework/kona-brew")
+            url.set("https://brew.konaframework.org")
             inceptionYear.set("2025")
             licenses {
                 license {
@@ -71,7 +71,7 @@ fun Project.configureKonaBrewPublishing() {
                 developer {
                     id.set("konaframework")
                     name.set("Kona Framework contributors")
-                    url.set("https://github.com/konaframework")
+                    url.set("https://konaframework.org")
                 }
             }
             scm {
