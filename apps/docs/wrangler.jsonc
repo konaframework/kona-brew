@@ -1,6 +1,15 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  // Cloudflare Pages — https://brew.konaframework.org
+  // Cloudflare Pages project: kona-brew-docs → https://brew.konaframework.org
+  //
+  // Git integration (dashboard) — npm under apps/docs (package-lock.json):
+  //   Root directory:           apps/docs
+  //   Build command:            npm ci && npm run build
+  //   Build output directory:   dist
+  //   Env: PUBLIC_SITE_URL=https://brew.konaframework.org
+  //        PUBLIC_BASE_PATH=/
+  //        NODE_VERSION=22
+  // See docs/governance/docs-site.md
   "name": "kona-brew-docs",
   "compatibility_date": "2026-08-01",
   "pages_build_output_dir": "./dist"
