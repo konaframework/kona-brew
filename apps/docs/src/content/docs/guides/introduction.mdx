@@ -38,8 +38,17 @@ Corrupt checksums or locked-property writes fail the request. Missing components
 
 Brew is a **separate artifact** (`org.konaframework:kona-brew`) and a **separate repository** ([konaframework/kona-brew](https://github.com/konaframework/kona-brew)). It depends on Kona HTTP, session, Crema, and related modules. Framework guides for routing, Crema, and grind live on the [Kona docs site](https://docs.konaframework.org/).
 
+## Install in one command
+
+```bash
+kona install brew
+# or: kona new my-app --kit=brew
+```
+
+Details: [Installation](/guides/installation/).
+
 ## Next
 
 - [Requirements](/guides/requirements/) — JDK, Kona, Node
-- [Installation](/guides/installation/) — Gradle, provider, assets
+- [Installation](/guides/installation/) — `kona install brew`, kit, and optional manual setup
 - [Your first component](/guides/first-component/) — Kotlin + Java walkthrough
