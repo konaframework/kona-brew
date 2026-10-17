@@ -1,12 +1,16 @@
 name: Cloudflare Pages
 
 # Primary docs host: https://brew.konaframework.org
-# Pages project: kona-brew-docs — custom domain brew.konaframework.org
+# Worker (Workers Assets): kona-brew-docs — custom domain brew.konaframework.org
 #
-# First publish: Cloudflare Dashboard → Connect to Git (no GitHub secrets).
-#   Project: kona-brew-docs · Root: apps/docs
-#   Build: npm ci && npm run build · Output: dist · NODE_VERSION=22
-#   (npm + package-lock.json — not Kona monorepo pnpm)
+# First publish: Cloudflare Workers Builds Git integration (no GitHub secrets).
+#   Framework preset: None (not Astro)
+#   Root: apps/docs · Build: npm ci && npm run build
+#     (or Root: / · Build: npm ci --prefix apps/docs && npm run build --prefix apps/docs)
+#   Deploy: npx wrangler deploy  (ONLY — never "wrangler pages deploy" / --project-name)
+#   Preview: npx wrangler preview (wrangler.jsonc has "previews": {})
+#   PUBLIC_SITE_URL=https://brew.konaframework.org · PUBLIC_BASE_PATH=/ · NODE_VERSION=22
+#   (npm + apps/docs/package-lock.json — not Kona monorepo pnpm)
 # Optional harden: CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID for Wrangler deploy.
 # See docs/governance/docs-site.md
 
@@ -15,6 +19,7 @@ on:
     branches: [main]
     paths:
       - 'apps/docs/**'
+      - 'wrangler.jsonc'
       - '.github/workflows/cloudflare-pages.yml'
   workflow_dispatch:
 
@@ -54,15 +59,15 @@ jobs:
           set -euo pipefail
           if [ -z "${CLOUDFLARE_API_TOKEN}" ] || [ -z "${CLOUDFLARE_ACCOUNT_ID}" ]; then
             echo "configured=false" >> "$GITHUB_OUTPUT"
-            echo "::notice::No CLOUDFLARE_* secrets — build-only. Deploy via Cloudflare Git integration; see README"
+            echo "::notice::No CLOUDFLARE_* secrets — build-only. Deploy via Cloudflare Workers Builds; see docs/governance/docs-site.md"
           else
             echo "configured=true" >> "$GITHUB_OUTPUT"
           fi
-      - name: Deploy to Cloudflare Pages (Wrangler)
+      - name: Deploy to Cloudflare Workers (static assets)
         if: steps.cf.outputs.configured == 'true'
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: apps/docs
-          command: pages deploy dist --project-name=kona-brew-docs
+          command: deploy
