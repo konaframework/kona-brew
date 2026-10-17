@@ -24,7 +24,7 @@ Put classes in `app.brew` (or configure `brew.class_namespace`).
 ```kotlin
 package app.brew
 
-import io.konaframework.brew.Component
+import org.konaframework.brew.Component
 
 class Counter : Component() {
     var count = 0
@@ -57,7 +57,7 @@ class Counter : Component() {
 ```java
 package app.brew;
 
-import io.konaframework.brew.Component;
+import org.konaframework.brew.Component;
 
 public class Counter extends Component {
     public int count = 0;
@@ -120,7 +120,7 @@ val html = Brew.mount("counter", mapOf("start" to 3))
 
 ## 4. Route to the page
 
-Wire a normal Kona route that returns the Crema view (see [Kona routing](https://konaframework.github.io/kona/docs/http/routing/)). On first paint you should see `3`. Each click posts to `/brew/update` and morphs the new HTML.
+Wire a normal Kona route that returns the Crema view (see [Kona routing](https://docs.konaframework.org/docs/http/routing/)). On first paint you should see `3`. Each click posts to `/brew/update` and morphs the new HTML.
 
 ## 5. Test without a browser
 

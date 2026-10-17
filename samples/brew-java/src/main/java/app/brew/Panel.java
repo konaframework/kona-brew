@@ -1,8 +1,8 @@
 package app.brew;
 
-import io.konaframework.brew.Component;
-import io.konaframework.brew.Modelable;
-import io.konaframework.brew.Reactive;
+import org.konaframework.brew.Component;
+import org.konaframework.brew.Modelable;
+import org.konaframework.brew.Reactive;
 import java.util.Map;
 
 /** Nested child used by {@link Dashboard} — reactive title, modelable value. */

@@ -9,7 +9,9 @@
     "start": "astro dev --port 4322",
     "build": "astro build",
     "preview": "astro preview --port 4322",
-    "astro": "astro"
+    "astro": "astro",
+    "cf:deploy": "wrangler pages deploy dist --project-name=kona-brew-docs",
+    "cf:preview": "wrangler pages deploy dist --project-name=kona-brew-docs --branch=preview"
   },
   "dependencies": {
     "@almasix/starlight-theme": "^0.1.1",
@@ -19,5 +21,8 @@
   },
   "engines": {
     "node": ">=22"
+  },
+  "devDependencies": {
+    "wrangler": "^4.151.1"
   }
 }

@@ -1,19 +1,19 @@
 package bootstrap
 
-import io.konaframework.brew.BrewServiceProvider
-import io.konaframework.core.Application
-import io.konaframework.core.Env
-import io.konaframework.core.Kona
-import io.konaframework.crema.CremaServiceProvider
-import io.konaframework.http.HttpKernel
-import io.konaframework.http.HttpMiddleware
-import io.konaframework.http.HttpServiceProvider
-import io.konaframework.http.KonaHttpServer
-import io.konaframework.http.Router
-import io.konaframework.session.SessionManager
-import io.konaframework.session.SessionServiceProvider
-import io.konaframework.session.StartSession
-import io.konaframework.session.VerifyCsrfToken
+import org.konaframework.brew.BrewServiceProvider
+import org.konaframework.core.Application
+import org.konaframework.core.Env
+import org.konaframework.core.Kona
+import org.konaframework.crema.CremaServiceProvider
+import org.konaframework.http.HttpKernel
+import org.konaframework.http.HttpMiddleware
+import org.konaframework.http.HttpServiceProvider
+import org.konaframework.http.KonaHttpServer
+import org.konaframework.http.Router
+import org.konaframework.session.SessionManager
+import org.konaframework.session.SessionServiceProvider
+import org.konaframework.session.StartSession
+import org.konaframework.session.VerifyCsrfToken
 import routes.WebRoutes
 
 object App {

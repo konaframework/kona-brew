@@ -2,11 +2,11 @@ package sample
 
 import bootstrap.App
 import com.fasterxml.jackson.databind.ObjectMapper
-import io.konaframework.brew.Brew
-import io.konaframework.core.Kona
-import io.konaframework.http.HttpKernel
-import io.konaframework.http.Request
-import io.konaframework.http.Response
+import org.konaframework.brew.Brew
+import org.konaframework.core.Kona
+import org.konaframework.http.HttpKernel
+import org.konaframework.http.Request
+import org.konaframework.http.Response
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue

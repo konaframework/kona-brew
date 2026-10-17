@@ -9,7 +9,7 @@ description: JDK, Kona version, Node, and tooling needed to run and develop Brew
 |-------------|----------------|
 | **JDK** | 21+ (virtual threads; same as Kona) |
 | **Kona** | Matching snapshot/release of `kona-http`, `kona-session`, `kona-crema`, and related modules (see your Brew release notes) |
-| **Brew** | `io.konaframework:kona-brew` |
+| **Brew** | `org.konaframework:kona-brew` |
 | **Browser** | Modern evergreen browsers; Alpine 3.x APIs |
 
 Session + CSRF are required for update requests that carry `_token`. Cookie or server session drivers both work when wired through Kona’s session provider.
@@ -23,7 +23,7 @@ Session + CSRF are required for update requests that carry `_token`. Cookie or s
 | **Gradle** | Wrapper included (`./gradlew`) |
 | **Maven local** | Until Central publishes are live: publish Kona then Brew with `publishToMavenLocal` |
 
-You do **not** need Node to *use* Brew in an application. The client bundles (`brew.min.js`, `brew.js`, `brew.esm.js`, `brew.csp.min.js`) are committed under `brew/src/main/resources/io/konaframework/brew/` and served by the framework.
+You do **not** need Node to *use* Brew in an application. The client bundles (`brew.min.js`, `brew.js`, `brew.esm.js`, `brew.csp.min.js`) are committed under `brew/src/main/resources/org/konaframework/brew/` and served by the framework.
 
 ## Alpine.js
 

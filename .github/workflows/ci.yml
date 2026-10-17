@@ -58,7 +58,7 @@ jobs:
         working-directory: .kona
         run: ./gradlew publishToMavenLocal -x test --no-configuration-cache
       - name: Brew tests with 100% line + branch coverage
-        run: ./gradlew :kona-brew:test :kona-brew:koverVerify
+        run: ./gradlew :kona-brew:test :kona-brew:koverVerify --rerun-tasks --no-build-cache
       - name: Kotlin + Java samples
         run: ./gradlew :brew-sample-kotlin:test :brew-sample-java:test
 

@@ -4,7 +4,7 @@ import { join, dirname, basename } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const root = dirname(fileURLToPath(import.meta.url))
-const resources = join(root, '..', 'brew', 'src', 'main', 'resources', 'io', 'konaframework', 'brew')
+const resources = join(root, '..', 'brew', 'src', 'main', 'resources', 'org', 'konaframework', 'brew')
 const dist = join(root, 'dist')
 const check = process.argv.includes('--check')
 

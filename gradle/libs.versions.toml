@@ -14,16 +14,16 @@ lettuce = "6.5.5.RELEASE"
 netty = "4.1.119.Final"
 
 [libraries]
-kona-core = { module = "io.konaframework:kona-core", version.ref = "kona" }
-kona-http = { module = "io.konaframework:kona-http", version.ref = "kona" }
-kona-crema = { module = "io.konaframework:kona-crema", version.ref = "kona" }
-kona-session = { module = "io.konaframework:kona-session", version.ref = "kona" }
-kona-support = { module = "io.konaframework:kona-support", version.ref = "kona" }
-kona-grind = { module = "io.konaframework:kona-grind", version.ref = "kona" }
-kona-testing = { module = "io.konaframework:kona-testing", version.ref = "kona" }
-kona-auth = { module = "io.konaframework:kona-auth", version.ref = "kona" }
-kona-cadence = { module = "io.konaframework:kona-cadence", version.ref = "kona" }
-kona-filesystem = { module = "io.konaframework:kona-filesystem", version.ref = "kona" }
+kona-core = { module = "org.konaframework:kona-core", version.ref = "kona" }
+kona-http = { module = "org.konaframework:kona-http", version.ref = "kona" }
+kona-crema = { module = "org.konaframework:kona-crema", version.ref = "kona" }
+kona-session = { module = "org.konaframework:kona-session", version.ref = "kona" }
+kona-support = { module = "org.konaframework:kona-support", version.ref = "kona" }
+kona-grind = { module = "org.konaframework:kona-grind", version.ref = "kona" }
+kona-testing = { module = "org.konaframework:kona-testing", version.ref = "kona" }
+kona-auth = { module = "org.konaframework:kona-auth", version.ref = "kona" }
+kona-cadence = { module = "org.konaframework:kona-cadence", version.ref = "kona" }
+kona-filesystem = { module = "org.konaframework:kona-filesystem", version.ref = "kona" }
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }

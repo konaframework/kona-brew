@@ -47,7 +47,7 @@ block markers, request bus, hooks, custom directives, error modals), testing API
 - [x] JS: `wire:loading`, `data-loading`, `wire:dirty`, `wire:confirm`, `wire:offline`, `wire:poll`, `wire:cloak`,
       `wire:show`, `wire:text`, `wire:bind`, `wire:transition` + `@Transition`, `wire:ref` + `$refs` / `$errors`,
       `x-modelable`, form disable-during-submit.
-- [x] Bundles rebuilt into `brew/src/main/resources/io/konaframework/brew/`.
+- [x] Bundles rebuilt into `brew/src/main/resources/org/konaframework/brew/`.
 
 `Form` objects, `@Validate`/`rules()`/messages/attributes, `validate`/`validateOnly`, error bag API, `$errors` (Crema + JS), real-time
 validation, form hooks; `wire:loading` (+ targets/delays), `data-loading`, `wire:dirty`, `wire:confirm`, `wire:offline`, `wire:poll`,

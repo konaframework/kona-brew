@@ -1,9 +1,9 @@
 package routes
 
-import io.konaframework.core.Kona
-import io.konaframework.crema.CremaEngine
-import io.konaframework.http.Response
-import io.konaframework.http.Router
+import org.konaframework.core.Kona
+import org.konaframework.crema.CremaEngine
+import org.konaframework.http.Response
+import org.konaframework.http.Router
 
 object WebRoutes {
     fun register(router: Router) {

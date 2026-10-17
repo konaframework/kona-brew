@@ -24,11 +24,11 @@ Prefer Claude Opus when the human requests it; otherwise use **Auto** (`inherit`
 
 ## Architecture locks
 
-- Group `io.konaframework`, artifact `kona-brew`, package `io.konaframework.brew`.
+- Group `org.konaframework`, artifact `kona-brew`, package `org.konaframework.brew`.
 - Depends on published Kona artifacts (`kona-core`, `kona-http`, `kona-crema`, `kona-session`, `kona-support`). CI builds Kona `main` and runs `publishToMavenLocal` first.
 - Wire protocol mirrors Livewire v4: `wire:snapshot` / `wire:effects` / `wire:id` / `wire:name` on the root element, `POST /brew/update` with `{ _token, components: [{ snapshot, updates, calls }] }`.
 - Template surface: `<brew:name />`, `@brew('name')`, `@brewStyles`, `@brewScripts`, `@island`, `@placeholder`, `@persist`, `@teleport`, `@script`, `@assets`. Directives keep the `wire:` prefix exactly as Livewire.
-- JS runtime: `js/` (ESM, esbuild). Built bundle is committed under `brew/src/main/resources/io/konaframework/brew/` and CI checks it is fresh.
+- JS runtime: `js/` (ESM, esbuild). Built bundle is committed under `brew/src/main/resources/org/konaframework/brew/` and CI checks it is fresh.
 - Virtual threads; no blocking in Netty event loop; per-class reflection metadata cached once (`ClassValue`).
 - CLI output only through Kona `ConsoleIO` / `GrindIO`.
 

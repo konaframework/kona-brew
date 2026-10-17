@@ -23,12 +23,12 @@ class Counter : Component() {
 <brew:counter />
 ```
 
-- Artifact: `io.konaframework:kona-brew` (Kotlin internals, first-class Java API).
+- Artifact: `org.konaframework:kona-brew` (Kotlin internals, first-class Java API).
 - JS runtime: `js/` (Alpine.js + plugins, esbuild). Built bundles are committed under
-  `brew/src/main/resources/io/konaframework/brew/` and served from `/brew/brew.min.js`.
-- **Docs (this repo):** https://konaframework.github.io/kona-brew/ — Astro + Starlight site under
+  `brew/src/main/resources/org/konaframework/brew/` and served from `/brew/brew.min.js`.
+- **Docs (this repo):** https://brew.konaframework.org/ — Astro + Starlight site under
   `apps/docs/` (rose brand, Alpine coupling guides, examples). Framework primer also lives on the
-  [Kona docs](https://konaframework.github.io/kona/) site.
+  [Kona docs](https://docs.konaframework.org/) site.
 - Status: [MILESTONES.md](MILESTONES.md) and the parity ledger
   [docs/governance/livewire-v4-parity.md](docs/governance/livewire-v4-parity.md).
 
@@ -38,20 +38,20 @@ class Counter : Component() {
 cd apps/docs
 npm ci
 npm run dev          # http://127.0.0.1:4322
-PUBLIC_SITE_URL=https://konaframework.github.io PUBLIC_BASE_PATH=/kona-brew/ npm run build
+PUBLIC_SITE_URL=https://brew.konaframework.org PUBLIC_BASE_PATH=/ npm run build
 npm run preview
 ```
 
 GitHub Pages is enabled for this repository (Settings → Pages → **GitHub Actions**).
 Workflow [`.github/workflows/docs.yml`](.github/workflows/docs.yml) builds `apps/docs` on pushes to
 `main` (and verifies the build on PRs that touch docs) then deploys to
-https://konaframework.github.io/kona-brew/.
+https://brew.konaframework.org/.
 
 ## Requirements
 
 - JDK 21
 - Node 22 (JS runtime work, and to build/preview the docs site)
-- Kona artifacts in Maven local (until `io.konaframework` is published to Maven Central)
+- Kona artifacts in Maven local (until `org.konaframework` is published to Maven Central)
 
 ## Build and test
 
@@ -96,3 +96,14 @@ Baseline numbers: [docs/performance/baseline.md](docs/performance/baseline.md).
 ## License
 
 Apache-2.0
+
+## Docs hosting
+
+Primary: [brew.konaframework.org](https://brew.konaframework.org) (Cloudflare Pages project `kona-brew-docs`).
+
+```bash
+cd apps/docs
+PUBLIC_SITE_URL=https://brew.konaframework.org PUBLIC_BASE_PATH=/ npm run build
+```
+
+Deploy workflow: `.github/workflows/cloudflare-pages.yml`. Required GitHub secrets (human-configured): `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`. Mirror: GitHub Pages at `/kona-brew/` via `.github/workflows/docs.yml`.

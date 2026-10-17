@@ -1,6 +1,6 @@
 package app.brew;
 
-import io.konaframework.brew.Component;
+import org.konaframework.brew.Component;
 
 /** Parent that nests children, an island, and a lazy panel. */
 public class Dashboard extends Component {
