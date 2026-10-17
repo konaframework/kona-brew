@@ -1,20 +1,20 @@
 ---
 title: Installation
-description: Add Brew with one command — kona install brew — or scaffold a new app with the brew kit.
+description: Add Brew with one command — ./grind install brew (or kona grind install brew) — or scaffold with the brew kit.
 ---
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-Brew should feel like a one-liner. Prefer **`kona install`** (or the brew starter kit). Manual Gradle edits are optional and listed at the end.
+Brew should feel like a one-liner. Prefer **`./grind install`** (or **`kona grind install`**), or the brew starter kit. Manual Gradle edits are optional and listed at the end.
 
 ## Already have a Kona app?
 
 From the app root (where `build.gradle.kts` / `build.gradle` lives):
 
 ```bash
-kona install brew
-# same thing, app-local:
 ./grind install brew
+# from anywhere under the app:
+kona grind install brew
 ```
 
 That command:
@@ -32,7 +32,8 @@ Then refresh Gradle and rebuild:
 Pin a version when you need to:
 
 ```bash
-kona install brew --version=0.1.0
+./grind install brew --version=0.1.0
+# or: kona grind install brew --version=0.1.0
 ```
 
 See the full package installer docs on Kona: [Installing packages](https://docs.konaframework.org/docs/packages/install/).
@@ -110,7 +111,7 @@ When you manage the layout yourself:
 
 ## Going deeper — manual Gradle (optional)
 
-Only if you are not using `kona install` / the kit:
+Only if you are not using `./grind install` / the kit:
 
 ```kotlin
 dependencies {
@@ -183,5 +184,5 @@ Until Maven Central publishes are live for your version line, publish to Maven l
 ## Next
 
 - [Your first component](/guides/first-component/) — full Kotlin + Java tutorial
-- [Kona — installing packages](https://docs.konaframework.org/docs/packages/install/) — `kona install` catalog and flags
+- [Kona — installing packages](https://docs.konaframework.org/docs/packages/install/) — `./grind install` catalog and flags
 - [Kona installation](https://docs.konaframework.org/docs/guides/installation/) — base framework setup
