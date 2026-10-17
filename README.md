@@ -106,4 +106,4 @@ cd apps/docs
 PUBLIC_SITE_URL=https://brew.konaframework.org PUBLIC_BASE_PATH=/ npm run build
 ```
 
-Deploy workflow: `.github/workflows/cloudflare-pages.yml`. Required GitHub secrets (human-configured): `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`. Mirror: GitHub Pages at `/kona-brew/` via `.github/workflows/docs.yml`.
+Deploy: prefer Cloudflare **Connect to Git** for project `kona-brew-docs` (no GitHub secrets). Optional later: `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` so `.github/workflows/cloudflare-pages.yml` can Wrangler-deploy. Mirror: GitHub Pages at `/kona-brew/` via `.github/workflows/docs.yml`. Central publish order: see [kona publishing.md](https://github.com/konaframework/kona/blob/main/docs/governance/publishing.md).

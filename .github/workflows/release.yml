@@ -1,7 +1,8 @@
 name: Publish to Maven Central
 
 # Tag-triggered. Publish Kona to Central first, then tag brew (order: kona → brew → inertia).
-# Secrets: see https://github.com/konaframework/kona/blob/main/docs/governance/publishing.md
+# Auth: Portal user token + GPG (OIDC Trusted Publishing not GA for Central yet).
+# Secrets: https://github.com/konaframework/kona/blob/main/docs/governance/publishing.md
 on:
   push:
     tags:
