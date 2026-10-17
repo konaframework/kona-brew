@@ -1,8 +1,8 @@
 /*
  * Brew brand — caramel / latte / espresso / cream (shared Kona palette).
- * Light primary = caramel (#DF8723); dark primary = latte (#C9A57B).
- * Caramel is ~2.4:1 on cream, so light-mode accent TEXT uses caramel deep (#9A5812);
- * caramel stays for fills, borders and buttons (with espresso text).
+ * Light primary = caramel (#DF8723); light accent = warm brown (#74453F, ~7.3:1 on cream).
+ * Dark primary = latte (#C9A57B); dark accent stays soft cream for emphasis on espresso.
+ * Caramel stays for fills, borders and buttons (with espresso #1A120C text).
  * Surfaces stay espresso-deep; headings use soft cream (not pure white).
  * Overrides @almasix/starlight-theme oranges + cream paper for Brew surfaces.
  * Outfit is the UI font (reinforced; Almasix theme already loads it).
@@ -61,15 +61,18 @@
   --brew-primary: var(--brew-caramel);
   --brew-primary-soft: var(--brew-caramel-soft);
   --brew-primary-deep: var(--brew-caramel-deep);
+  --brew-accent: #74453f;
+  --brew-accent-soft: #8b5a52;
+  --brew-accent-deep: #5a322e;
   --brew-glow: rgba(223, 135, 35, 0.2);
 
   --sl-color-accent-low: var(--brew-primary-mist);
   --sl-color-accent: var(--brew-primary);
-  --sl-color-accent-high: var(--brew-primary-deep);
-  --sl-color-text-accent: var(--brew-primary-deep);
+  --sl-color-accent-high: var(--brew-accent);
+  --sl-color-text-accent: var(--brew-accent);
   --sl-color-bg-accent: var(--brew-primary);
 
-  /* Cream paper — espresso ink */
+  /* Cream paper — espresso body ink; accent text uses warm brown */
   --sl-color-white: #1e1612;
   --sl-color-gray-1: #2a221c;
   --sl-color-gray-2: #43362c;
@@ -106,7 +109,7 @@ a:not(.sl-link-button):hover {
 :root[data-theme='light'] nav.sidebar a[aria-current='page'],
 :root[data-theme='light'] .sidebar-content a[aria-current='page'],
 :root[data-theme='light'] starlight-toc li a[aria-current='true'] {
-  color: var(--brew-primary-deep) !important;
+  color: var(--brew-accent) !important;
 }
 
 .hero .actions a.sl-link-button:not([data-variant='minimal']).primary,

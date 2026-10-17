@@ -2,6 +2,10 @@
 
 Stack: **Astro + Starlight + `@almasix/starlight-theme`**, **npm** under `apps/docs/` (`package-lock.json`), **Cloudflare Workers Assets** primary at [brew.konaframework.org](https://brew.konaframework.org).
 
+## Brand (locked — matches Kona)
+
+Light primary caramel `#DF8723`, light accent warm brown `#74453F` (soft `#8B5A52`, deep `#5A322E`). Dark primary latte `#C9A57B`; dark accent soft cream. CSS: `apps/docs/src/styles/custom.css` and `landing.css`. Logos keep caramel/latte fills only — accent is theme/CSS, not a mark recolor. `theme-color` stays `#DF8723`.
+
 | Path | Role |
 |------|------|
 | `apps/docs/` | Public Starlight site |
