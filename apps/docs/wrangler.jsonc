@@ -1,16 +1,31 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  // Cloudflare Pages project: kona-brew-docs → https://brew.konaframework.org
+  // Cloudflare Workers + static assets → https://brew.konaframework.org
+  // Worker / Workers Builds project: kona-brew-docs
   //
-  // Git integration (dashboard) — npm under apps/docs (package-lock.json):
-  //   Root directory:           apps/docs
-  //   Build command:            npm ci && npm run build
-  //   Build output directory:   dist
-  //   Env: PUBLIC_SITE_URL=https://brew.konaframework.org
-  //        PUBLIC_BASE_PATH=/
-  //        NODE_VERSION=22
+  // Dashboard → Settings → Builds (Framework preset: None) — npm, lockfile apps/docs/package-lock.json:
+  //   Root directory:   apps/docs                 (this file)
+  //   Build command:    npm ci && npm run build
+  //   — or —
+  //   Root directory:   /                         (repo-root wrangler.jsonc → apps/docs/dist)
+  //   Build command:    npm ci --prefix apps/docs && npm run build --prefix apps/docs
+  //
+  //   Deploy command:   npx wrangler deploy
+  //   NEVER:            npx wrangler pages deploy … --project-name=kona-brew-docs
+  //   Preview command:  npx wrangler preview
+  //                     (requires "previews": {} below)
+  //   Build vars:       PUBLIC_SITE_URL=https://brew.konaframework.org
+  //                     PUBLIC_BASE_PATH=/
+  //                     NODE_VERSION=22
+  //
+  // Workers Assets only — no pages_build_output_dir.
   // See docs/governance/docs-site.md
   "name": "kona-brew-docs",
   "compatibility_date": "2026-08-01",
-  "pages_build_output_dir": "./dist"
+  // Required when Workers Builds runs `npx wrangler preview` (non-production).
+  "previews": {},
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page"
+  }
 }
