@@ -99,20 +99,21 @@ Apache-2.0
 
 ## Docs hosting
 
-Primary: [brew.konaframework.org](https://brew.konaframework.org) (Cloudflare Pages project `kona-brew-docs`).
+Primary: [brew.konaframework.org](https://brew.konaframework.org) (Cloudflare Worker `kona-brew-docs`, static Workers Assets).
 
 ```bash
 cd apps/docs
 PUBLIC_SITE_URL=https://brew.konaframework.org PUBLIC_BASE_PATH=/ npm run build
 ```
 
-Deploy: prefer Cloudflare **Connect to Git** for project `kona-brew-docs` (no GitHub secrets). Dashboard settings (npm — not Kona’s pnpm monorepo):
+Deploy: Cloudflare **Workers Builds** Git integration for project `kona-brew-docs` (no GitHub secrets, no `CLOUDFLARE_API_TOKEN` build variable). Deploy with `npx wrangler deploy` — never `wrangler pages deploy`. Dashboard settings (Framework preset **None**; npm — not Kona’s pnpm monorepo):
 
 | Setting | Value |
 |---------|--------|
-| Root directory | `apps/docs` |
+| Root directory | `apps/docs` (or `/` with build command `npm ci --prefix apps/docs && npm run build --prefix apps/docs`) |
 | Build command | `npm ci && npm run build` |
-| Build output directory | `dist` |
-| Env | `PUBLIC_SITE_URL=https://brew.konaframework.org`, `PUBLIC_BASE_PATH=/`, `NODE_VERSION=22` |
+| Deploy command | `npx wrangler deploy` |
+| Non-production (preview) command | `npx wrangler preview` |
+| Build variables | `PUBLIC_SITE_URL=https://brew.konaframework.org`, `PUBLIC_BASE_PATH=/`, `NODE_VERSION=22` |
 
 Full notes: [docs/governance/docs-site.md](docs/governance/docs-site.md). Optional later: `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` so `.github/workflows/cloudflare-pages.yml` can Wrangler-deploy. Mirror: GitHub Pages at `/kona-brew/` via `.github/workflows/docs.yml`. Central publish order: see [kona publishing.md](https://github.com/konaframework/kona/blob/main/docs/governance/publishing.md).
