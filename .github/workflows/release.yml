@@ -2,7 +2,8 @@ name: Publish to Maven Central
 
 # Tag-triggered. Publish Kona to Central first, then tag brew (order: kona → brew → inertia).
 # Auth: Portal user token + GPG (OIDC Trusted Publishing not GA for Central yet).
-# Secrets: https://github.com/konaframework/kona/blob/main/docs/governance/publishing.md
+# Secrets live on the GitHub Environment `maven-central`.
+# Docs: https://github.com/konaframework/kona/blob/main/docs/governance/publishing.md
 on:
   push:
     tags:
@@ -12,6 +13,7 @@ jobs:
   publish:
     name: Publish kona-brew
     runs-on: ubuntu-latest
+    environment: maven-central
     permissions:
       contents: read
     steps:
@@ -38,7 +40,7 @@ jobs:
             fi
           done
           if [ "$missing" -ne 0 ]; then
-            echo "Configure secrets documented in kona docs/governance/publishing.md"
+            echo "Add secrets to Environment 'maven-central' (see kona docs/governance/publishing.md)"
             exit 1
           fi
       - name: Publish to Maven Central
