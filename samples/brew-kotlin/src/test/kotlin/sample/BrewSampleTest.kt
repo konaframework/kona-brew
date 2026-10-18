@@ -81,6 +81,52 @@ class BrewSampleTest {
         assertTrue(component["effects"]["html"].asText().contains("<output>4</output>"))
     }
 
+    /**
+     * Kit-equivalent smoke: Todos mount + `/brew/update` add (moved from kona `GeneratedAppBuildTest`).
+     * Kona CI no longer publishes or resolves kona-brew; this sample owns that coverage.
+     */
+    @Test
+    fun `adding a todo round-trips through the update endpoint`() {
+        val kernel = kernel()
+        val page = kernel.handle(Request.get("/"))
+        val html = page.body
+        assertTrue(html.contains("wire:name=\"todos\""), html)
+        assertTrue(html.contains("1 left") || html.contains("(1 left)"), html)
+        val todos = html.indexOf("wire:name=\"todos\"").let { html.lastIndexOf("wire:snapshot=", it) }
+        val payload = mapOf(
+            "_token" to attr(html, "data-csrf"),
+            "components" to listOf(
+                mapOf(
+                    "snapshot" to attr(html, "wire:snapshot", todos),
+                    "updates" to mapOf("draft" to "Pull espresso"),
+                    "calls" to listOf(
+                        mapOf(
+                            "path" to "",
+                            "method" to "add",
+                            "params" to emptyList<Any>(),
+                            "metadata" to emptyMap<String, Any>(),
+                        ),
+                    ),
+                ),
+            ),
+        )
+
+        val update = kernel.handle(
+            Request(
+                "POST",
+                "/brew/update",
+                headers = mapOf("Content-Type" to "application/json", "X-Brew" to "1", "Cookie" to cookieHeader(page)),
+                body = json.writeValueAsString(payload),
+            ),
+        )
+
+        assertEquals(200, update.status, update.body)
+        val component = json.readTree(update.body)["components"][0]
+        val effectsHtml = component["effects"]["html"].asText()
+        assertTrue(effectsHtml.contains("Pull espresso"), update.body)
+        assertTrue(effectsHtml.contains("2 left") || effectsHtml.contains("(2 left)"), update.body)
+    }
+
     @Test
     fun `updates without a valid csrf token are rejected`() {
         val kernel = kernel()

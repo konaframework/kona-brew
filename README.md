@@ -65,6 +65,7 @@ git clone https://github.com/konaframework/kona ../kona
 
 # 3. Samples
 ./gradlew :brew-sample-kotlin:test :brew-sample-java:test
+# Samples own kit HTTP smoke (mount + /brew/update); kona CI does not check out or publish kona-brew.
 
 # 4. JS runtime: tests with 100% coverage, then rebuild the committed bundles
 cd js
