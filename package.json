@@ -1,0 +1,12 @@
+{
+  "name": "kona-brew",
+  "private": true,
+  "description": "Kona Brew — root scripts so Workers Builds works when dashboard root is / (preview builds often force /)",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "npm ci --prefix apps/docs && npm run build --prefix apps/docs"
+  },
+  "license": "Apache-2.0"
+}
