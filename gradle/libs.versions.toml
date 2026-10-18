@@ -1,5 +1,5 @@
 [versions]
-kona = "0.1.0-SNAPSHOT"
+kona = "0.1.0"
 kotlin = "2.1.20"
 kover = "0.9.1"
 maven-publish = "0.34.0"
