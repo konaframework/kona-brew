@@ -73,6 +73,8 @@ cd apps/docs && npm ci && npm run dev
 
 Key paths: `brew/` (Kotlin), `js/` (Alpine runtime), `apps/docs/` (site), `samples/`, `docs/governance/`.
 
+**Kit HTTP smoke (owns what kona CI used to run):** Kotlin + Java samples cover mount + `/brew/update` (counter + Todos add). Kona’s main CI does **not** check out or publish this repo; coordinate-only checks stay in Kona `CliTest`.
+
 Sibling: Inertia is `/home/smaosa/kona-inertia` (unrelated to Brew).
 
 ## Open gaps / next priorities
