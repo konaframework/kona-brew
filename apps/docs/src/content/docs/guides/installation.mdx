@@ -1,42 +1,128 @@
 ---
 title: Installation
-description: Add Brew to a Kona project — Gradle, service provider, assets, and grind commands.
+description: Add Brew with one command — ./grind install brew (or kona grind install brew) — or scaffold with the brew kit.
 ---
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-## Add the dependency
+Brew should feel like a one-liner. Prefer **`./grind install`** (or **`kona grind install`**), or the brew starter kit. Manual Gradle edits are optional and listed at the end.
 
-Brew ships as `org.konaframework:kona-brew`. Add it next to your other Kona dependencies:
+## Already have a Kona app?
 
-```kotlin
-dependencies {
-    implementation("org.konaframework:kona-http:0.1.0-SNAPSHOT")
-    implementation("org.konaframework:kona-session:0.1.0-SNAPSHOT")
-    implementation("org.konaframework:kona-crema:0.1.0-SNAPSHOT")
-    implementation("org.konaframework:kona-brew:0.1.0-SNAPSHOT")
-}
-```
-
-Until Central publishes are live, publish both repos to Maven local:
+From the app root (where `build.gradle.kts` / `build.gradle` lives):
 
 ```bash
-# From a Kona checkout
-./gradlew publishToMavenLocal -x test
-
-# From a kona-brew checkout
-./gradlew :kona-brew:publishToMavenLocal
+./grind install brew
+# from anywhere under the app:
+kona grind install brew
 ```
 
-Or scaffold with the brew starter kit (when available on your Kona CLI):
+That command:
+
+1. Adds `org.konaframework:kona-brew` to your Gradle dependencies.
+2. Registers `BrewServiceProvider` in `src/main/resources/META-INF/kona/providers` so grind/`PackageDiscovery` loads it on boot.
+
+Then refresh Gradle and rebuild:
+
+```bash
+./gradlew build
+# or just restart ./grind serve
+```
+
+Pin a version when you need to:
+
+```bash
+./grind install brew --version=0.1.0
+# or: kona grind install brew --version=0.1.0
+```
+
+See the full package installer docs on Kona: [Installing packages](https://docs.konaframework.org/docs/packages/install/).
+
+## Starting from zero
+
+Scaffold an app that already includes Brew, Crema, session, and CSRF:
 
 ```bash
 kona new my-app --kit=brew
+# Java sample path:
+kona new my-app --kit=brew --lang=java
+cd my-app
+./grind serve
 ```
 
-## Register the provider
+## After install — quick check
 
-Register HTTP, session, Crema, and Brew. Session + CSRF matter because update requests carry `_token`.
+1. Create a component: `./grind make:brew counter`
+2. Embed `<brew:counter />` in a Crema page.
+3. Open the page and click — the count should update without a full reload.
+4. In DevTools, confirm `window.Brew` and `window.Alpine` exist.
+
+Brew injects its script/styles into HTML responses by default (`brew.inject_assets`). For layouts you control yourself, add `@brewStyles` / `@brewScripts` — see [Assets](#assets-in-layouts).
+
+Existing apps need **session + CSRF** on the web middleware stack (the brew kit wires this for you). Update requests carry `_token`.
+
+## grind commands
+
+Once Brew’s provider is registered, app-local grind picks up Brew commands:
+
+```bash
+./grind make:brew counter
+./grind make:brew todos --class
+./grind make:brew counter --lang=java --test
+./grind brew:publish
+./grind brew:stubs
+./grind brew:layout
+```
+
+Details: [grind commands](/dx/grind/).
+
+## Assets in layouts
+
+When you manage the layout yourself:
+
+```crema
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>@yield('title', 'App')</title>
+    @brewStyles
+</head>
+<body>
+    @yield('content')
+    @brewScripts
+</body>
+</html>
+```
+
+`@brewScripts` emits the CSRF-aware tag that loads Alpine + Brew and calls `Brew.start()` on `DOMContentLoaded`.
+
+## Config keys
+
+| Key | Default | Role |
+|-----|---------|------|
+| `app.key` | — | HMAC key for snapshot checksums |
+| `brew.class_namespace` | `app.brew` | Package roots for `<brew:name />` resolution |
+| `brew.path` | `/brew` | Base path for update + script routes |
+| `brew.view_prefix` | `brew` | Convention view prefix (`views/brew/<name>.crema.html`) |
+| `brew.inject_assets` | `true` | Auto-inject styles/scripts into HTML responses |
+| `brew.inject_morph_markers` | `true` | Wrap loops/conditionals for keyed morph |
+| `brew.csrf` | `true` | Require CSRF token on updates when a session exists |
+
+## Going deeper — manual Gradle (optional)
+
+Only if you are not using `./grind install` / the kit:
+
+```kotlin
+dependencies {
+    implementation("org.konaframework:kona-http:0.1.0")
+    implementation("org.konaframework:kona-session:0.1.0")
+    implementation("org.konaframework:kona-crema:0.1.0")
+    implementation("org.konaframework:kona-brew:0.1.0")
+}
+```
+
+Then register providers yourself (or write `BrewServiceProvider` into `META-INF/kona/providers`):
 
 <Tabs syncKey="lang">
 <TabItem label="Kotlin">
@@ -91,85 +177,12 @@ Kona.create(args)
 </TabItem>
 </Tabs>
 
-`BrewServiceProvider` binds `BrewManager`, discovers components under `app.brew` by default, and registers:
+`BrewServiceProvider` binds `BrewManager`, discovers components under `app.brew` by default, and registers `POST /brew/update` plus the `/brew/brew.js` script routes.
 
-| Method | Path | Purpose |
-|--------|------|---------|
-| `POST` | `/brew/update` | Apply property updates + action calls; return new snapshots and HTML |
-| `GET` | `/brew/brew.js` | Readable client bundle |
-| `GET` | `/brew/brew.min.js` | Minified bundle (+ `.map`) |
-| `GET` | `/brew/brew.csp.min.js` | CSP-oriented bundle when configured |
-
-When `brew.inject_assets` is true (default), Brew injects styles and the script tag into full HTML responses that do not already include `@brewScripts`.
-
-## Assets in layouts
-
-For layouts you control explicitly:
-
-```crema
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>@yield('title', 'App')</title>
-    @brewStyles
-</head>
-<body>
-    @yield('content')
-    @brewScripts
-</body>
-</html>
-```
-
-`@brewScripts` emits the CSRF-aware script tag that loads Alpine + Brew and calls `Brew.start()` on `DOMContentLoaded` (unless you set `window.brewScriptConfig` for a custom ESM bundle).
-
-## grind commands
-
-After Brew is registered, app-local grind picks up Brew commands:
-
-```bash
-./grind make:brew counter
-./grind make:brew todos --class
-./grind make:brew counter --lang=java --test
-./grind brew:publish
-./grind brew:stubs
-./grind brew:layout
-./grind brew:convert path/to/Component.kt
-```
-
-See [grind commands](/dx/grind/) for details.
-
-## Config keys
-
-| Key | Default | Role |
-|-----|---------|------|
-| `app.key` | — | HMAC key for snapshot checksums |
-| `brew.class_namespace` | `app.brew` | Package roots for `<brew:name />` resolution |
-| `brew.path` | `/brew` | Base path for update + script routes |
-| `brew.view_prefix` | `brew` | Convention view prefix (`views/brew/<name>.crema.html`) |
-| `brew.inject_assets` | `true` | Auto-inject styles/scripts into HTML responses |
-| `brew.inject_morph_markers` | `true` | Wrap loops/conditionals for keyed morph |
-| `brew.csrf` | `true` | Require CSRF token on updates when a session exists |
-| `brew.payload.max_size` | `1_048_576` | Max request body bytes (`0` disables) |
-| `brew.payload.max_components` | `20` | Max components per update |
-| `brew.payload.max_calls` | `50` | Max method calls per component |
-| `brew.payload.max_nesting_depth` | `10` | Max dot-path depth for `wire:model` updates |
-
-Custom routes:
-
-```kotlin
-Brew.setUpdateRoute("/custom/brew/update")
-Brew.setScriptRoute("/custom/brew/script.js")
-```
-
-## Verify the install
-
-1. Create a counter with `./grind make:brew counter`.
-2. Embed `<brew:counter />` in a Crema page.
-3. Open the page, click the button, and confirm the count updates without a full reload.
-4. In DevTools, confirm `window.Brew` and `window.Alpine` exist.
+Until Maven Central publishes are live for your version line, publish to Maven local from the Kona and kona-brew checkouts (`./gradlew publishToMavenLocal`), or use SNAPSHOT coordinates that resolve from `mavenLocal()`.
 
 ## Next
 
 - [Your first component](/guides/first-component/) — full Kotlin + Java tutorial
+- [Kona — installing packages](https://docs.konaframework.org/docs/packages/install/) — `./grind install` catalog and flags
 - [Kona installation](https://docs.konaframework.org/docs/guides/installation/) — base framework setup
