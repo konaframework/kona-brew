@@ -1,3 +1,5 @@
+> **MOVED** to [konaframework/kona](https://github.com/konaframework/kona) (`modules/brew`, `apps/brew-docs`, `js/brew`). This repository is **archived**. Do not open PRs or publish from here.
+
 # Brew
 
 Brew is Kona's reactive server-component layer. You write components as Kotlin or Java classes with public state
